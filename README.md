@@ -8,5 +8,6 @@
 
 - leetcode branch
   릿코드 문제 정리
+  125
 
 - backjoon branch
