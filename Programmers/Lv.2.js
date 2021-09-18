@@ -1,3 +1,34 @@
+// 위클리 챌린지 7주차 입실 퇴실
+// 어려웠던 문제, 특이하게 푼 것 같다.
+function solution(enter, leave) {
+    const N = enter.length
+    const ans = Array.from({ length: N }, () => new Set())
+    const room = []
+
+    for (let i = 0; i < N; i++) {
+        room.push(enter[i])
+        if (room.length > 1) {
+            room.forEach(member => {
+                room.forEach(mem => {
+                    ans[member - 1].add(mem)
+                })
+            })
+        }
+        while (true) {
+            if (room.includes(leave[0])) {
+                room.splice(room.indexOf(leave[0]), 1)
+                leave.shift()
+            } else {
+                break
+            }
+        }
+    }
+    return ans.map(v => v.size === 0 ? 0 : v.size - 1)
+}
+// 다른사람풀이
+
+
+
 // 위클리 챌린지 5주차 모음 사전
 // 백트래킹문제라고 생각했음
 function solution(word) {

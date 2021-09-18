@@ -1,66 +1,50 @@
-function solution(weights, head2head) {
-    const ans = [];
-    head2head.forEach((head, idx) => {
-        const tmp = head.split('')
-        const info = {}
-        info.weight = weights[idx]
-        info.idx = idx
-        info.winToBig = 0
-        info.battle = 0
-        info.win = 0
-        tmp.forEach((fight, i) => {
-            if (fight === 'N') { }
-            else if (fight === 'L') info.battle += 1
-            else if (fight === 'W') {
-                info.battle += 1
-                info.win += 1
-                if (info.weight < weights[i]) info.winToBig += 1
-            }
-        })
-        ans.push(info)
-    })
-    ans.sort((a, b) => {
-        if (a.win / a.battle > b.win / b.battle) {
-            return -1
-        } else if (a.win / a.battle < b.win / b.battle) {
-            return 1
-        } else {
-            if (a.winToBig > b.winToBig) {
-                return -1
-            } else if (a.winToBig < b.winToBig) {
-                return 1
+function solution(enter, leave) {
+    const N = enter.length
+    const ans = Array.from({ length: N }, () => new Set())
+    const room = []
+
+    for (let i = 0; i < N; i++) {
+        room.push(enter[i])
+        if (room.length > 1) {
+            room.forEach(member => {
+                room.forEach(member => {
+                })
+
+                ans[member - 1]
+            })
+        }
+        while (true) {
+            if (room.includes(leave[0])) {
+                room.splice(room.indexOf(leave[0]), 1)
+                leave.shift()
             } else {
-                if (a.weight > b.weight) {
-                    return -1
-                } else if (a.weight < b.weight) {
-                    return 1
-                } else {
-                    if (a.idx > b.idx) {
-                        return -1
-                    } else if (a.idx < b.idx) {
-                        return 1
-                    }
-                }
+                break
             }
         }
-    })
+    }
+    console.log(room)
 }
-// var items = [
-//     { name: 'Edward', value: 21 },
-//     { name: 'Sharpe', value: 37 },
-//     { name: 'And', value: 45 },
-//     { name: 'The', value: -12 },
-//     { name: 'Magnetic', value: 13 },
-//     { name: 'Zeros', value: 37 }
-// ];
-// items.sort(function (a, b) {
-//     if (a.value > b.value) {
-//         return 1;
-//     }
-//     if (a.value < b.value) {
-//         return -1;
-//     }
-//     // a must be equal to b
-//     return 0;
-// });
-// console.log(items)
+
+
+function solution(enter, leave) {
+    const N = enter.length
+    const ans = Array.from({ length: N }, () => new Set())
+
+    for (let i = 0; i < N; i++) {
+        // i번째 사람보다 먼저 들어온 사람
+        const fastEnter = enter.slice(0, i)
+        let flag = false
+        // i번째 사람보다 늦게 나간 사람
+        const lateLeave = leave.slice(leave.indexOf(enter[i]) + 1, N)
+        console.log('fastEnter', fastEnter)
+        console.log('lateLeave', lateLeave)
+        lateLeave.forEach(v => {
+            if (fastEnter.includes(v)) {
+                ans[i - 1].add(v)
+                ans[v - 1].add(i)
+            }
+        })
+    }
+    console.log(ans.map(v => Array.from(v)))
+    return ans.map(v => v.size)
+}
