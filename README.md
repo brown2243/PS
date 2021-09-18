@@ -6,6 +6,7 @@
 - programmers branch
   프로그래머즈 문제 정리
   위클리 6주
+  위클리 7주
 - leetcode branch
   릿코드 문제 정리
   125
