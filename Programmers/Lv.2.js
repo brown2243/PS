@@ -1,3 +1,15 @@
+// 위클리 챌린지 8주차 최소직사각형
+// 문제 해결책이 안떠올라서 그렇지 쉬운 문제
+function solution(sizes) {
+    return sizes.
+        reduce((acc, cur) => {
+            const a = Math.max(acc[0], Math.max(cur[0], cur[1]))
+            const b = Math.max(acc[0], Math.min(cur[0], cur[1]))
+            return [a, b]
+        }, [0, 0])
+        .reduce((acc, cur) => acc * cur)
+}
+
 // 위클리 챌린지 7주차 입실 퇴실
 // 어려웠던 문제, 특이하게 푼 것 같다.
 function solution(enter, leave) {
