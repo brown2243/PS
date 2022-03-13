@@ -87,3 +87,62 @@ function FrogRiverOne2(X, A) {
   }
   return -1;
 }
+
+// PermCheck
+function PermCheck(A) {
+  A.sort((a, b) => a - b);
+  for (let i = 0; i < A.length; i++) {
+    if (A[i] !== i + 1) return 0;
+  }
+  return 1;
+}
+
+// MaxCounters
+// timeOut
+function MaxCounters1(N, A) {
+  const ans = new Array(N).fill(0);
+  for (let i = 0; i < A.length; i++) {
+    if (A[i] === N + 1) {
+      const max = Math.max(...ans);
+      ans.forEach((_, idx) => {
+        ans[idx] = max;
+      });
+    } else {
+      ans[A[i] - 1] += 1;
+    }
+  }
+  return ans;
+}
+function MaxCounters2(N, A) {
+  const ans = new Array(N).fill(0);
+  let max = 0;
+  let lastMax = 0;
+
+  A.forEach((val) => {
+    if (val === N + 1) {
+      max = lastMax;
+    } else {
+      ans[val - 1] = Math.max(ans[val - 1] + 1, max + 1);
+      lastMax = Math.max(lastMax, ans[val - 1]);
+    }
+  });
+
+  return ans.map((v) => Math.max(v, max));
+}
+
+// MissingInteger
+// 88(tiemOut) -> 100
+function MissingInteger(A) {
+  const set = new Set(A);
+  const arr = Array.from(set).sort((a, b) => a - b);
+  const idx = arr.findIndex((val) => val > 0);
+
+  if (arr[idx] !== 1) return 1;
+  let ans = 2;
+  for (let i = idx + 1; i < arr.length; i++, ans++) {
+    if (arr[i] !== ans) {
+      return ans;
+    }
+  }
+  return ans;
+}

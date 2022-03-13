@@ -1,81 +1,22 @@
-function makeCamelCase(str) {
-  const splitedStr = str.split(/[^a-zA-Z0-9]/);
-  const first = splitedStr.slice(0, 1).map((str) => str.toLowerCase());
-  const left = splitedStr
-    .slice(1)
-    .map(
-      (str) =>
-        str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase()
-    );
-  return first.concat(left).join("");
-}
+// you can write to stdout for debugging purposes, e.g.
+// console.log('this is a debug message');
 
-function makeConstantCase(str) {
-  const splitedStr = str.split(/[^a-zA-Z0-9]/);
-  const newStrArr = [];
+function solution(N, A) {
+  const ans = new Array(N).fill(0);
+  let max = 0;
+  let lastMax = 0;
 
-  splitedStr.forEach((word) => {
-    const temp = [];
-    const splitedWord = word.split("");
-    let text = "";
-    splitedWord.forEach((s, idx) => {
-      if (idx === 0) {
-        text += s;
-      } else {
-        if (s === s.toUpperCase()) {
-          temp.push(text);
-          text = s;
-        } else {
-          text += s;
-        }
-      }
-    });
-    temp.push(text);
-    newStrArr.push(...temp);
+  A.forEach((val) => {
+    console.log(ans);
+    if (val === N + 1) {
+      max = lastMax;
+    } else {
+      ans[val - 1] = Math.max(ans[val - 1] + 1, max + 1);
+      lastMax = Math.max(lastMax, ans[val - 1]);
+    }
   });
-  return newStrArr.map((str) => str.toUpperCase()).join("_");
-}
-function makeSnakeCase(str) {
-  const splitedStr = str.split(/[^a-zA-Z0-9]/);
-  const newStrArr = [];
+  console.log(ans);
 
-  splitedStr.forEach((word) => {
-    const temp = [];
-    const splitedWord = word.split("");
-    let text = "";
-    splitedWord.forEach((s, idx) => {
-      if (idx === 0) {
-        text += s;
-      } else {
-        if (s === s.toUpperCase()) {
-          temp.push(text);
-          text = s;
-        } else {
-          text += s;
-        }
-      }
-    });
-    temp.push(text);
-    newStrArr.push(...temp);
-  });
-  return newStrArr.map((str) => str.toLowerCase()).join("_");
+  return ans.map((v) => Math.max(v, max));
 }
-
-class RC {
-  constructor(str) {
-    this.str = str;
-    this.camelCase = makeCamelCase(str);
-    this.constantCase = makeConstantCase(str);
-    this.snakeCase = makeSnakeCase(str);
-  }
-}
-
-(() => {
-  const rc = new RC("Just_someSample-text");
-  console.log(rc);
-  console.log(rc.camelCase);
-  console.log(rc.constantCase);
-  console.log(rc.snakeCase);
-  const rc2 = new RC("JustAssdWTqwtwqdWs_someSample-text");
-  console.log(rc2);
-})();
+solution(5, [3, 4, 4, 6, 1, 4, 4]);
