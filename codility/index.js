@@ -146,3 +146,40 @@ function MissingInteger(A) {
   }
   return ans;
 }
+
+// Lesson 5 Prefix Sums
+// PassingCars
+function PassingCars(A) {
+  const max = 1000000000;
+  let zeroCnt = 0,
+    total = 0;
+
+  for (let i = 0; i < A.length; i++) {
+    if (A[i] === 0) {
+      zeroCnt += 1;
+    } else {
+      total += zeroCnt;
+    }
+  }
+  return max < total ? -1 : total;
+}
+// CountDiv
+function CountDiv(A, B, K) {
+  return Math.floor(B / K) - Math.ceil(A / K) + 1;
+}
+
+// GenomicRangeQuery
+function GenomicRangeQuery(S, P, Q) {
+  const ans = [];
+  const shock = ["A", "C", "G", "T"];
+
+  for (let i = 0; i < P.length; i++) {
+    const str = S.slice(P[i], Q[i] + 1);
+    const idx = shock.findIndex((v) => str.indexOf(v) !== -1);
+    ans.push(idx + 1);
+  }
+  return ans;
+}
+// 애매하게 최적화 하려하는게 더 느리다 ㅋㅋㅋ.ㅋ...
+// const arr = Array.from(new Set(S.slice(P[i], Q[i] + 1)));
+// const idx = shock.findIndex((v) => arr.indexOf(v) !== -1);

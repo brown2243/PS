@@ -1,22 +1,12 @@
-// you can write to stdout for debugging purposes, e.g.
-// console.log('this is a debug message');
+function solution(S, P, Q) {
+  const ans = [];
+  const shock = ["A", "C", "G", "T"];
 
-function solution(N, A) {
-  const ans = new Array(N).fill(0);
-  let max = 0;
-  let lastMax = 0;
-
-  A.forEach((val) => {
-    console.log(ans);
-    if (val === N + 1) {
-      max = lastMax;
-    } else {
-      ans[val - 1] = Math.max(ans[val - 1] + 1, max + 1);
-      lastMax = Math.max(lastMax, ans[val - 1]);
-    }
-  });
-  console.log(ans);
-
-  return ans.map((v) => Math.max(v, max));
+  for (let i = 0; i < P.length; i++) {
+    const arr = Array.from(new Set(S.slice(P[i], Q[i] + 1)));
+    const idx = shock.findIndex((v) => arr.indexOf(v) !== -1);
+    ans.push(idx + 1);
+  }
+  return ans;
 }
-solution(5, [3, 4, 4, 6, 1, 4, 4]);
+solution("CAGCCTA", [2, 5, 0], [4, 5, 6]);
