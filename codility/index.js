@@ -169,6 +169,9 @@ function CountDiv(A, B, K) {
 }
 
 // GenomicRangeQuery
+// 애매하게 최적화 하려하는게 더 느리다 ㅋㅋㅋ.ㅋ...
+// const arr = Array.from(new Set(S.slice(P[i], Q[i] + 1)));
+// const idx = shock.findIndex((v) => arr.indexOf(v) !== -1);
 function GenomicRangeQuery(S, P, Q) {
   const ans = [];
   const shock = ["A", "C", "G", "T"];
@@ -180,6 +183,64 @@ function GenomicRangeQuery(S, P, Q) {
   }
   return ans;
 }
-// 애매하게 최적화 하려하는게 더 느리다 ㅋㅋㅋ.ㅋ...
-// const arr = Array.from(new Set(S.slice(P[i], Q[i] + 1)));
-// const idx = shock.findIndex((v) => arr.indexOf(v) !== -1);
+
+// MinAvgTwoSlice
+// 이 문제는 2개, 3개 집합만 구하면 된다는걸 파악하고 품
+function MinAvgTwoSlice(A) {
+  const N = A.length;
+  let smallAvg = (A[0] + A[1]) / 2;
+  let startPoint = 0;
+
+  for (let i = 0; i < N - 1; i++) {
+    const partAvg2 = A.slice(i, i + 2).reduce((acc, cur) => acc + cur) / 2;
+
+    if (partAvg2 < smallAvg) {
+      smallAvg = partAvg2;
+      startPoint = i;
+    }
+  }
+
+  for (let i = 0; i < N - 2; i++) {
+    const partAvg3 = A.slice(i, i + 3).reduce((acc, cur) => acc + cur) / 3;
+    if (partAvg3 < smallAvg) {
+      smallAvg = partAvg3;
+      startPoint = i;
+    }
+  }
+
+  return startPoint;
+}
+
+// Lesson 6 Sorting
+// Distinct
+function Distinct(A) {
+  return new Set(A).size;
+}
+
+// MaxProductOfThree
+// 너무 떄려 맞춘듯 -> 이게 맞는 풀이법인데 3번쨰꺼 없으면 완벽
+function MaxProductOfThree(A) {
+  A.sort((a, b) => b - a);
+  const N = A.length;
+  return Math.max(
+    [A[0], A[1], A[2]].reduce((acc, cur) => acc * cur, 1),
+    [A[0], A[N - 1], A[N - 2]].reduce((acc, cur) => acc * cur, 1),
+    [A[N - 3], A[N - 1], A[N - 2]].reduce((acc, cur) => acc * cur, 1)
+  );
+}
+
+// Triangle
+function Triangle(A) {
+  A.sort((a, b) => a - b);
+
+  for (let i = 0; i < A.length - 2; i++) {
+    if (
+      A[i] < A[i + 1] + A[i + 2] &&
+      A[i + 1] < A[i] + A[i + 2] &&
+      A[i + 2] < A[i + 1] + A[i]
+    ) {
+      return 1;
+    }
+  }
+  return 0;
+}

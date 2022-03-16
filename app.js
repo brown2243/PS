@@ -1,12 +1,17 @@
-function solution(S, P, Q) {
-  const ans = [];
-  const shock = ["A", "C", "G", "T"];
+// you can write to stdout for debugging purposes, e.g.
+// console.log('this is a debug message');
 
-  for (let i = 0; i < P.length; i++) {
-    const arr = Array.from(new Set(S.slice(P[i], Q[i] + 1)));
-    const idx = shock.findIndex((v) => arr.indexOf(v) !== -1);
-    ans.push(idx + 1);
+function solution(A) {
+  A.sort((a, b) => a - b);
+
+  for (let i = 0; i < A.length - 2; i++) {
+    if (
+      A[i] < A[i + 1] + A[i + 2] &&
+      A[i + 1] < A[i] + A[i + 2] &&
+      A[i + 2] < A[i + 1] + A[i]
+    ) {
+      return 1;
+    }
   }
-  return ans;
+  return 0;
 }
-solution("CAGCCTA", [2, 5, 0], [4, 5, 6]);
