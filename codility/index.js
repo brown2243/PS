@@ -244,3 +244,56 @@ function Triangle(A) {
   }
   return 0;
 }
+
+// NumberOfDiscIntersections
+// 2번쨰 조건이 핵심이네
+function NumberOfDiscIntersections(A) {
+  const N = A.length;
+  const arr = A.map((val, idx) => [idx - val, idx + val]);
+  arr.sort((a, b) => a[0] - b[0]);
+
+  let total = 0;
+
+  for (let i = 0; i < N - 1; i++) {
+    for (let j = i + 1; j < N; j++) {
+      if (total > 10000000) {
+        return -1;
+      }
+      if (arr[j][0] > arr[i][1]) {
+        break;
+      }
+      if (arr[i][1] >= arr[j][0]) {
+        total += 1;
+      }
+    }
+  }
+
+  return total;
+}
+
+// Lesson 7 Stacks and Queues
+// Brackets
+function Brackets(S) {
+  const box = [];
+  const arr = S.split("");
+  const obj = {
+    "}": "{",
+    "]": "[",
+    ")": "(",
+  };
+  for (let i = 0; i < arr.length; i++) {
+    if (!obj[arr[i]]) {
+      box.push(arr[i]);
+    } else {
+      if (obj[arr[i]] === box[box.length - 1]) {
+        box.pop();
+      } else {
+        return 0;
+      }
+    }
+  }
+
+  return box.length === 0 ? 1 : 0;
+}
+
+//
