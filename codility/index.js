@@ -296,4 +296,93 @@ function Brackets(S) {
   return box.length === 0 ? 1 : 0;
 }
 
-//
+// fish
+// 이거는 못푼 문제 ㅅㅂ 답봄
+function fish(A, B) {
+  const N = A.length;
+  const river = [];
+  let i = 0;
+
+  while (i < N) {
+    if (B[i] === 0 && B[river[river.length - 1]] === 1) {
+      if (A[i] > A[river[river.length - 1]]) {
+        river.pop();
+      } else {
+        i++;
+      }
+    } else {
+      river.push(i);
+      i++;
+    }
+  }
+  return river.length;
+}
+// Nesting
+// 위 Brackets과 동일하기 풀리는 문제
+function Nesting(S) {
+  const box = [];
+  const arr = S.split("");
+  const obj = {
+    ")": "(",
+  };
+  for (let i = 0; i < arr.length; i++) {
+    if (!obj[arr[i]]) {
+      box.push(arr[i]);
+    } else {
+      if (obj[arr[i]] === box[box.length - 1]) {
+        box.pop();
+      } else {
+        return 0;
+      }
+    }
+  }
+
+  return box.length === 0 ? 1 : 0;
+}
+
+// StoneWall
+// 답 봄 로직 생각이 안남
+function StoneWall(H) {
+  const N = H.length;
+
+  let ans = 0;
+  const blockQueue = [];
+
+  for (let i = 0; i < N; i++) {
+    const now = H[i];
+    while (blockQueue.length && blockQueue[blockQueue.length - 1] > now) {
+      blockQueue.pop();
+    }
+    if (blockQueue.length === 0 || blockQueue[blockQueue.length - 1] < now) {
+      blockQueue.push(now);
+      ans++;
+    }
+  }
+  return ans;
+}
+
+// Lesson 8 Leader
+// Dominator
+function Dominator(A) {
+  const N = A.length;
+  const cnt = A.reduce((acc, cur) => {
+    acc[cur] = acc[cur] + 1 || 1;
+    return acc;
+  }, {});
+
+  let idx = 0;
+  let max = 0;
+  const keys = Object.keys(cnt);
+  keys.forEach((key) => {
+    if (cnt[key] > max) {
+      idx = key;
+      max = cnt[key];
+    }
+  });
+
+  if (N / 2 >= max) {
+    return -1;
+  }
+
+  return A.indexOf(Number(idx));
+}
