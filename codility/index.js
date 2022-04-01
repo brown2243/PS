@@ -386,3 +386,187 @@ function Dominator(A) {
 
   return A.indexOf(Number(idx));
 }
+
+// EquiLeader
+function EquiLeader(A) {
+  const N = A.length;
+
+  const cnt = A.reduce((acc, cur) => {
+    acc[cur] = acc[cur] + 1 || 1;
+    return acc;
+  }, {});
+
+  let idx = 0;
+  let max = 0;
+  const keys = Object.keys(cnt);
+  keys.forEach((key) => {
+    if (cnt[key] > max) {
+      idx = key;
+      max = cnt[key];
+    }
+  });
+  idx = Number(idx);
+  let counter = 0;
+  const maxCntBox = [];
+  for (let i = 0; i < N; i++) {
+    if (A[i] === idx) {
+      counter++;
+    }
+    maxCntBox.push(counter);
+  }
+
+  let ans = 0;
+
+  for (let i = 0; i < N - 1; i++) {
+    const leftN = i + 1;
+    const rightN = N - i - 1;
+
+    const left = maxCntBox[leftN - 1];
+    const right = maxCntBox[N - 1] - left;
+
+    if (left / leftN > 0.5 && right / rightN > 0.5) {
+      ans++;
+    }
+  }
+
+  return ans;
+}
+
+// Lesson 9 Maximum slice problem
+function MaxProfit(A) {
+  const N = A.length;
+
+  let min = A[0];
+  let gap = 0;
+  for (let i = 1; i < N; i++) {
+    min = Math.min(min, A[i]);
+    gap = Math.max(gap, A[i] - min);
+  }
+
+  return gap;
+}
+
+// MaxSliceSum
+function MaxSliceSum(A) {
+  const N = A.length;
+  const ans = [A[0]];
+
+  for (let i = 1; i < N; i++) {
+    ans.push(Math.max(A[i], ans[ans.length - 1] + A[i]));
+  }
+
+  return Math.max(...ans);
+}
+
+// MaxDoubleSliceSum
+// 답 봄
+function MaxDoubleSliceSum(A) {
+  const N = A.length;
+
+  if (N === 3) {
+    return 0;
+  }
+
+  const leftArr = new Array(N).fill(0);
+  const rightArr = new Array(N).fill(0);
+
+  for (let i = 1; i < N - 1; i++) {
+    leftArr[i] = Math.max(0, leftArr[i - 1] + A[i]);
+  }
+
+  for (let i = N - 2; i > 0; i--) {
+    rightArr[i] = Math.max(0, rightArr[i + 1] + A[i]);
+  }
+
+  let maxSum = 0;
+
+  for (let i = 1; i < N - 1; i++) {
+    maxSum = Math.max(maxSum, leftArr[i - 1] + rightArr[i + 1]);
+  }
+  return maxSum;
+}
+
+// Lesson 10 Prime and composite numbers
+// CountFactors
+// 간단하게 약수 찾는 방식으로는 답 안나와서 알고리즘 검색
+// https://kbw1101.tistory.com/32
+function CountFactors(N) {
+  if (N === 1) {
+    return 1;
+  }
+  let ans = 2;
+  for (let i = 2; i < N / 2 + 1; i++) {
+    if (N % i === 0) {
+      ans++;
+    }
+  }
+  return ans;
+}
+function CountFactors2(N) {
+  if (N === 1) {
+    return 1;
+  }
+
+  const ans = [];
+  for (let i = 1; i < Math.sqrt(N) + 1; i++) {
+    if (N % i === 0) {
+      ans.push(i);
+    }
+  }
+  const A = ans.length;
+  for (let i = 0; i < A; i++) {
+    ans.push(N / ans[i]);
+  }
+  return new Set(ans).size;
+}
+// MinPerimeterRectangle
+function MinPerimeterRectangle(N) {
+  const ans = [];
+  for (let i = 1; i < Math.sqrt(N) + 1; i++) {
+    if (N % i === 0) {
+      ans.push(i);
+    }
+  }
+  const key = ans.pop();
+  return (key + N / key) * 2;
+}
+
+// 답 봄, 로직은 대강 비슷한데 sqrt 하는게...
+function Flags(A) {
+  const N = A.length;
+  if (N < 3) {
+    return 0;
+  }
+  const peeks = [];
+  for (let i = 1; i < N - 1; i++) {
+    if (A[i] > A[i - 1] && A[i] > A[i + 1]) {
+      peeks.push(i);
+    }
+  }
+
+  const P = peeks.length;
+  if (P <= 2) {
+    return P;
+  }
+
+  const maxFlags = Math.floor(Math.sqrt(peeks[P - 1] - peeks[0]) + 1);
+
+  for (let i = maxFlags; i >= 2; i--) {
+    let cnt = 1;
+    let curLocation = peeks[0];
+
+    for (let j = 1; j < P; j++) {
+      if (curLocation + i <= peeks[j]) {
+        curLocation = peeks[j];
+        cnt++;
+      }
+    }
+    if (cnt >= i) {
+      return i;
+    }
+  }
+  return 2;
+}
+solution([1, 5, 3, 4, 3, 4, 1, 2, 3, 4, 6, 2]);
+// 1. peak P와 Q사이의 거리(배열 A에서 index)가 챙겨간 깃발의 갯수보다 크거나 같아야 깃발을 꽂을 수 있다.
+// 2. 이 때, 배열 A의 peak에 꽂을 수 있는 가장 큰 깃발의 수를 구하면 된다.
