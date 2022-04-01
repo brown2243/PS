@@ -1,54 +1,35 @@
-function countFactors2(N) {
-  const ans = [1];
-  for (let i = 1; i < Math.sqrt(N) + 1; i++) {
-    if (N % i === 0) {
-      ans.push(i);
-    }
-  }
-  const A = ans.length;
-  for (let i = 0; i < A; i++) {
-    ans.push(N / ans[i]);
-  }
-  return Array.from(new Set(ans)).sort((a, b) => a - b);
-}
-
 function solution(A) {
   const N = A.length;
-  if (N < 3) {
-    return 0;
-  }
-  const peaks = [];
-  peaks.push(false);
-  for (let i = 1; i < N - 1; i++) {
-    if (A[i] > A[i - 1] && A[i] > A[i + 1]) {
-      peaks.push(true);
-    } else {
-      peaks.push(false);
-    }
-  }
-  peaks.push(false);
-  const countFactors = countFactors2(N);
-  for (let i = 1; i < countFactors.length; i++) {
-    console.log(i);
-    const divider = countFactors[i];
-    let idx = 0;
-    let checker = true;
-    while (idx < N) {
-      const part = peaks.slice(idx, idx + divider);
-      console.log(idx, N, part);
-      if (part.every((p) => p === false)) {
-        checker = false;
-        break;
+  const divisors = new Array(N * 2 + 1).fill(0);
+
+  A.forEach((_, idx) => {
+    divisors[A[idx]] += 1;
+  });
+
+  const ans = [];
+  for (let i = 0; i < N; i++) {
+    let cnt = 0;
+    console.log("i", i);
+    for (let j = 1; j * j <= A[i]; j++) {
+      console.log("j", A[i], j);
+      if (A[i] % j === 0) {
+        cnt += divisors[j];
+
+        if (A[i] / j !== j) {
+          cnt += divisors[A[i] / j];
+        }
       }
-      idx += divider;
     }
-    if (idx >= N && checker) {
-      console.log(`ans`, divider);
-      return N / divider;
-    }
+    ans[i] = N - cnt;
   }
-  return 0;
+  return ans;
 }
-solution([1, 2, 3, 4, 3, 4, 1, 2, 3, 4, 6, 2]);
-// 1. peak P와 Q사이의 거리(배열 A에서 index)가 챙겨간 깃발의 갯수보다 크거나 같아야 깃발을 꽂을 수 있다.
-// 2. 이 때, 배열 A의 peak에 꽂을 수 있는 가장 큰 깃발의 수를 구하면 된다.
+solution([3, 1, 2, 3, 6]);
+
+// 원소 A[i]의 약수가 아닌 수는 전체 원소의 개수에서 약수인 수를 빼서 구했다.
+// 맨 처음에는 배열안에서 각각의 수가 몇개인지 구해준다. 원소의 개수를 담는 배열의 범위는 idx값이 1부터 N*2까지 담을 수 있도록 만들었다. 왜냐하면 문제의 조건 중에 A[I]의 원소가 될 수 있는 범위는 1부터 N*2까지 이기 때문이다.
+//  처음에 이 조건을 제대로 안보고 풀려고 하다보니 조금 헤맸다.
+// 그리고나서 배열 A를 순회하면서 약수 j = 1부터 시작해서 A의 원소를 나누기 시작한다.
+//  만약에 나눠지면, numCnt배열에서 해당 약수의 개수를 divisors개수에 합해주었다.
+//  그리고나서 A[i]/j의 값이 j가 아니라면 이 수 역시 약수가 되기 때문에 numCnt에서 찾아서 divisors에 더해준 후 전체 배열의 개수인 N에서 빼주었다.
+// 시간 복잡도는 O(N * log(N))가 나왔으며 total 100%가 나왔다.
