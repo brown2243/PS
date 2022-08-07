@@ -1,0 +1,20 @@
+{
+  "name": "ps",
+  "version": "1.0.0",
+  "description": "- main branch   알고리즘 관련 지식 정리",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brown2243/PS.git"
+  },
+  "author": "brown",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/brown2243/PS/issues"
+  },
+  "homepage": "https://github.com/brown2243/PS#readme"
+}
