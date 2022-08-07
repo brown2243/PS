@@ -83,6 +83,7 @@
 
 {
   // 교점에 별 만들기
+  // 내가 짠 식, 완전 통과는 안됌 ㅅㅂ
 
   function getPoint(line1, line2) {
     const [ax1, by1, c1] = line1;
@@ -136,4 +137,54 @@
     });
     return sheet.map((row) => row.join(""));
   }
+  // 아래 참조함
+  // max min 부분, 교차점 구하는 부분이 달랐음
+  // https://velog.io/@front/%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%A8%B8%EC%8A%A4-%EA%B5%90%EC%A0%90%EC%97%90-%EB%B3%84-%EB%A7%8C%EB%93%A4%EA%B8%B0-%EC%9C%84%ED%81%B4%EB%A6%AC-%EC%B1%8C%EB%A6%B0%EC%A7%80-10%EC%A3%BC%EC%B0%A8
+  function solution(lines) {
+    const box = [];
+    const N = lines.length;
+
+    const INF = Number.MAX_SAFE_INTEGER;
+    let minX = INF;
+    let minY = INF;
+    let maxX = -INF;
+    let maxY = -INF;
+
+    for (let i = 0; i < N - 1; i++) {
+      const line1 = lines[i];
+      for (let j = i + 1; j < N; j++) {
+        const line2 = lines[j];
+        const [a, b, e] = line1;
+        const [c, d, f] = line2;
+
+        const mod = a * d - b * c;
+        if (!mod) continue; // 분모가 0인 경우 -> 서로 평행하거나 일치
+
+        const xNumerator = b * f - e * d;
+        const yNumerator = e * c - a * f;
+        if (xNumerator % mod || yNumerator % mod) continue; // 정수가 아닌 교차점
+
+        const x = xNumerator / mod;
+        const y = yNumerator / mod;
+
+        box.push([x, y]);
+        minX = Math.min(minX, x);
+        minY = Math.min(minY, y);
+        maxX = Math.max(maxX, x);
+        maxY = Math.max(maxY, y);
+      }
+    }
+
+    const YN = maxY - minY + 1;
+    const sheet = Array.from({ length: YN }, () =>
+      new Array(maxX - minX + 1).fill(".")
+    );
+
+    box.forEach((line) => {
+      const [x, y] = line;
+      sheet[YN - (y - minY) - 1][x - minX] = "*";
+    });
+    return sheet.map((row) => row.join(""));
+  }
+  //
 }
