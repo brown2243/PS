@@ -63,3 +63,29 @@ console.log('|\\_/|\n|q p|   /}\n( 0 )"""\\\n|"^"`    |\n||_/=\\\\__|\n');
 
   console.log(parseInt(inputs) - 543);
 }
+
+// 킹, 퀸, 룩, 비숍, 나이트, 폰
+{
+  const fs = require("fs");
+  const inputs = fs
+    // .readFileSync("backjon/input.txt")
+    .readFileSync("/dev/stdin")
+    .toString()
+    .trim()
+    .split(" ");
+  // .split("\n");
+
+  const target = [1, 1, 2, 2, 2, 8];
+  const ans = inputs.map((val, idx) => target[idx] - Number(val));
+  console.log(ans.join(" "));
+}
+
+// 새싹
+{
+  console.log("         ,r'\"7");
+  console.log("r`-_   ,'  ,/");
+  console.log(" \\. \". L_r'");
+  console.log("   `~\\/");
+  console.log("      |");
+  console.log("      |");
+}
