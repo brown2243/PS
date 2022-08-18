@@ -1,22 +1,32 @@
-// 오븐 시계
+// 더하기 사이클
 {
   const fs = require("fs");
   const inputs = fs
-    .readFileSync("backjon/input.txt")
-    // .readFileSync("/dev/stdin")
+    // .readFileSync("backjon/input.txt")
+    .readFileSync("/dev/stdin")
     .toString()
-    .trim()
-    .split("\n");
+    .trim();
+  // .split("\n");
   // .split(" ");
 
-  const leftTime = Number(inputs[1]);
-  const [hours, mins] = inputs[0].split(" ").map(Number);
+  const N = Number(inputs);
+  let num = N;
 
-  const totalMins = hours * 60 + mins + leftTime;
-  const h =
-    Math.floor(totalMins / 60) > 24
-      ? 24 - Math.floor(totalMins / 60)
-      : Math.floor(totalMins / 60);
-  const m = totalMins % 60;
-  console.log(`${h} ${m}`);
+  function change(N, num, cnt = 1) {
+    const a = num % 10;
+    const b = num
+      .toString()
+      .split("")
+      .map(Number)
+      .reduce((acc, cur) => acc + cur);
+
+    const c = Number(`${a}${b % 10}`);
+
+    if (N === c) {
+      console.log(cnt);
+    } else {
+      change(N, c, (cnt += 1));
+    }
+  }
+  change(N, num);
 }
