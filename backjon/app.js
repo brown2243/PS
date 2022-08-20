@@ -22,3 +22,12 @@
     console.log(Math.max(a, b, c) * 100);
   }
 }
+
+function findOdd(A) {
+  return Object.entries(
+    A.reduce((acc, cur) => {
+      acc[cur] = acc[cur] ? acc[cur] + 1 : 1;
+      return acc;
+    }, {})
+  ).find((v) => v[1] % 2 === 1)[0];
+}
