@@ -1,32 +1,24 @@
-// 더하기 사이클
+// 주사위 세개
 {
   const fs = require("fs");
   const inputs = fs
     // .readFileSync("backjon/input.txt")
     .readFileSync("/dev/stdin")
     .toString()
-    .trim();
-  // .split("\n");
-  // .split(" ");
-
-  const N = Number(inputs);
-  let num = N;
-
-  function change(N, num, cnt = 1) {
-    const a = num % 10;
-    const b = num
-      .toString()
-      .split("")
-      .map(Number)
-      .reduce((acc, cur) => acc + cur);
-
-    const c = Number(`${a}${b % 10}`);
-
-    if (N === c) {
-      console.log(cnt);
-    } else {
-      change(N, c, (cnt += 1));
-    }
+    .trim()
+    // .split("\n")
+    .split(" ")
+    .map(Number);
+  const [a, b, c] = inputs;
+  if (a === b && b === c) {
+    console.log(10000 + a * 1000);
+  } else if (a === b) {
+    console.log(1000 + a * 100);
+  } else if (b === c) {
+    console.log(1000 + b * 100);
+  } else if (a === c) {
+    console.log(1000 + a * 100);
+  } else {
+    console.log(Math.max(a, b, c) * 100);
   }
-  change(N, num);
 }
