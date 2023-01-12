@@ -1,10 +1,25 @@
-function solution(a, b, n, ans = 0) {
-  const int = Math.floor(n / a);
-  if (int === 0) {
-    return ans;
-  }
-  return solution(a, b, n - int * a + int * b, ans + int * b);
-}
+function solution(X, Y) {
+  const x = X.split("").reduce((acc, cur) => {
+    acc[cur] = acc[cur] + 1 || 1;
+    return acc;
+  }, {});
+  const y = Y.split("").reduce((acc, cur) => {
+    acc[cur] = acc[cur] + 1 || 1;
+    return acc;
+  }, {});
 
-const ans = solution(3, 1, 20);
-console.log(ans);
+  let ans = "";
+  for (let i = 9; i > -1; i--) {
+    const nowX = x[i];
+    const nowY = y[i];
+    const min = Math.min(nowX, nowY);
+
+    if (!Number.isNaN(min)) {
+      ans += i.toString().repeat(min);
+    }
+  }
+
+  if (ans === "") return "-1";
+  if (Number(ans) === 0) return "0";
+  return ans;
+}

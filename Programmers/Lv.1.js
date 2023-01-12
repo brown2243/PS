@@ -128,3 +128,47 @@ function solution(a, b, n, ans = 0) {
 }
 solution = (a, b, n) => Math.floor(Math.max(n - b, 0) / (a - b)) * b;
 //
+
+// 삼총사
+// 재귀 푸는 방법이 생각이 안났음
+function solution(number) {
+  let ans = 0;
+
+  const combination = (arr, start) => {
+    if (arr.length === 3) {
+      ans += arr.reduce((acc, cur) => acc + cur) === 0 ? 1 : 0;
+    }
+    for (let i = start; i < number.length; i++) {
+      combination([...arr, number[i]], i + 1);
+    }
+  };
+  combination([], 0);
+  return ans;
+}
+
+// 숫자 짝궁
+function solution(X, Y) {
+  const x = X.split("").reduce((acc, cur) => {
+    acc[cur] = acc[cur] + 1 || 1;
+    return acc;
+  }, {});
+  const y = Y.split("").reduce((acc, cur) => {
+    acc[cur] = acc[cur] + 1 || 1;
+    return acc;
+  }, {});
+
+  let ans = "";
+  for (let i = 9; i > -1; i--) {
+    const nowX = x[i];
+    const nowY = y[i];
+    const min = Math.min(nowX, nowY);
+
+    if (!Number.isNaN(min)) {
+      ans += i.toString().repeat(min);
+    }
+  }
+
+  if (ans === "") return "-1";
+  if (Number(ans) === 0) return "0";
+  return ans;
+}
