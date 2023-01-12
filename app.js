@@ -1,25 +1,50 @@
-function solution(X, Y) {
-  const x = X.split("").reduce((acc, cur) => {
-    acc[cur] = acc[cur] + 1 || 1;
-    return acc;
-  }, {});
-  const y = Y.split("").reduce((acc, cur) => {
-    acc[cur] = acc[cur] + 1 || 1;
+function solution(survey, choices) {
+  const MIND = [
+    ["R", "T"],
+    ["C", "F"],
+    ["J", "M"],
+    ["A", "N"],
+  ];
+
+  const pointObj = MIND.reduce((acc, cur) => {
+    const [a, b] = cur;
+    acc[a] = 0;
+    acc[b] = 0;
     return acc;
   }, {});
 
-  let ans = "";
-  for (let i = 9; i > -1; i--) {
-    const nowX = x[i];
-    const nowY = y[i];
-    const min = Math.min(nowX, nowY);
+  for (let i = 0, N = survey.length; i < N; i++) {
+    const a = survey[i][0];
+    const b = survey[i][1];
 
-    if (!Number.isNaN(min)) {
-      ans += i.toString().repeat(min);
+    const choice = choices[i];
+    if (choice === 4) {
+      continue;
+    }
+    if (choice > 4) {
+      pointObj[b] += choice - 4;
+    } else {
+      pointObj[a] += 4 - choice;
     }
   }
 
-  if (ans === "") return "-1";
-  if (Number(ans) === 0) return "0";
+  let ans = "";
+  MIND.forEach((val) => {
+    const [a, b] = val;
+    const aPoint = pointObj[a];
+    const bPoint = pointObj[b];
+    console.log(a, aPoint, b, bPoint);
+    if (aPoint > bPoint) {
+      ans += a;
+    }
+    if (aPoint < bPoint) {
+      ans += b;
+    }
+    if (aPoint === bPoint) {
+      ans += a.charCodeAt() - b.charCodeAt() > 0 ? b : a;
+    }
+  });
+
   return ans;
 }
+solution(["AN", "CF", "MJ", "RT", "NA"], [5, 3, 2, 7, 5]);
