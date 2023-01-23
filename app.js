@@ -1,31 +1,18 @@
-function solution(storey) {
-  const arr = storey.toString().split("").map(Number);
-  let stone = 0;
-
-  for (let N = arr.length - 1, i = N; i >= 0; i--) {
-    const now = arr[i];
-    const next = arr[i - 1];
-    if (now > 5) {
-      stone += 10 - now;
-      if (next) {
-        arr[i - 1] += 1;
-      } else {
-        stone += 1;
-      }
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+const pivotIndex = (nums) => {
+  const N = nums.length;
+  for (let i = 0, left = 0; i < N; i++) {
+    left += nums[i - 1] || 0;
+    right = 0;
+    for (let j = i + 1; j < N; j++) {
+      right += nums[j];
     }
-    if (now < 5) {
-      stone += now;
-    }
-    if (now === 5) {
-      if (next && next >= 5) {
-        stone += 10 - now;
-        arr[i - 1] += 1;
-      } else {
-        stone += now;
-      }
+    if (left === right) {
+      return i;
     }
   }
-  return stone;
-}
-solution(16);
-solution(2554);
+  return -1;
+};
