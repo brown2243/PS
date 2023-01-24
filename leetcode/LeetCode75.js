@@ -92,3 +92,49 @@ const pivotIndex = (nums) => {
     return -1;
   };
 }
+
+// 205. Isomorphic Strings
+var isIsomorphic = (s, t) => {
+  if (s.length !== t.length) return false;
+  const map = new Map();
+  const set = new Set();
+  for (let i = 0; i < s.length; i++) {
+    if (map.has(s[i])) {
+      if (map.get(s[i]) !== t[i]) return false;
+    } else {
+      if (set.has(t[i])) return false;
+      map.set(s[i], t[i]);
+      set.add(t[i]);
+    }
+  }
+  return true;
+};
+
+var isIsomorphic = function (s, t) {
+  if (s.length !== t.length) return false;
+
+  for (let i = 0; i < s.length; i++) {
+    if (s.indexOf(s[i]) !== t.indexOf(t[i])) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+/**
+ * @param {string} s
+ * @param {string} t
+ * @return {boolean}
+ */
+var isSubsequence = (s, t) => {
+  let i = 0;
+  let j = 0;
+  while (i < s.length && j < t.length) {
+    if (s[i] === t[j]) {
+      i++;
+    }
+    j++;
+  }
+  return i === s.length;
+};

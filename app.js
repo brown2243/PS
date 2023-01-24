@@ -1,18 +1,17 @@
+// 205. Isomorphic Strings
 /**
- * @param {number[]} nums
- * @return {number}
+ * @param {string} s
+ * @param {string} t
+ * @return {boolean}
  */
-const pivotIndex = (nums) => {
-  const N = nums.length;
-  for (let i = 0, left = 0; i < N; i++) {
-    left += nums[i - 1] || 0;
-    right = 0;
-    for (let j = i + 1; j < N; j++) {
-      right += nums[j];
+const isSubsequence = (s, t) => {
+  let i = 0;
+  let j = 0;
+  while (i < s.length && j < t.length) {
+    if (s[i] === t[j]) {
+      i++;
     }
-    if (left === right) {
-      return i;
-    }
+    j++;
   }
-  return -1;
+  return i === s.length;
 };
