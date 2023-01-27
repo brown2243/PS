@@ -204,3 +204,17 @@ var reverseList = (head) => {
   }
   return prev;
 };
+
+/**
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+var middleNode = function (head) {
+  const pointers = [head];
+  while (head.next) {
+    head = head.next;
+    pointers.push(head);
+  }
+  const idx = Math.ceil(pointers.length / 2);
+  return pointers[pointers.length % 2 === 0 ? idx : idx - 1];
+};
