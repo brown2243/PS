@@ -1,47 +1,76 @@
 /**
- * @param {string} s
- * @return {number}
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
  */
-var longestPalindrome = function (s) {
-  const obj = s.split("").reduce((acc, cur) => {
-    acc[cur] = acc[cur] + 1 || 1;
-    return acc;
-  }, {});
-  let flag = false;
-  const ans = Object.keys(obj)
-    .map((v) => {
-      if (obj[v] % 2 === 0) {
-        return obj[v];
-      }
-      flag = true;
-      return obj[v] - 1;
-    })
-    .reduce((acc, cur) => acc + cur, 0);
-  return flag ? ans + 1 : ans;
-};
 /**
- * @param {string} s
- * @return {number}
+ * @param {TreeNode} root
+ * @return {number[][]}
  */
-
-// Idea is to leverage on the idea of a Set (an array that only contains unique elements)
-// This can be done by checking for each element in a string, if it doesn't exist in the set, it will be added to the set
-// Otherwise, we can increase a counter by the value of 2 (indicating we have 2 duplicate letters in our potential palindrom) and remove that character from the set
-// If the letter persist again, twice, we repeat what happened above and the counter will increase by another 2
-// In the end, if the set is empty, it indicates all values from the string are duplicates of each other and the string is even. Otherwise, there is a unique value from the string or the string consists of non-unique elements but is uneven in length.
-
-var longestPalindrome = function (s) {
-  const map = new Map();
-  let count = 0;
-
-  for (const char of s) {
-    if (map.has(char)) {
-      count += 2;
-      map.delete(char);
-    } else {
-      map.set(char);
+var levelOrder = function (root, arr = [], depth = 1) {
+  if (!root) return [];
+  if (arr.length === 0) {
+    arr.push([root.val]);
+  }
+  const tmp = [];
+  tmp.push(root.left);
+  tmp.push(root.right);
+  const filteredTmp = tmp.filter((v) => v);
+  if (filteredTmp.length > 0) {
+    if (!arr[depth]) {
+      arr[depth] = [];
     }
   }
+  for (const node of filteredTmp) {
+    arr[depth].push(node.val);
+  }
+  for (const node of filteredTmp) {
+    levelOrder(node, arr, depth + 1);
+  }
+  return arr;
+};
 
-  return count + (map.size > 0 ? 1 : 0);
+var levelOrder = function (root) {
+  const result = [];
+
+  const bfs = (tree, level) => {
+    if (result.length === level) result.push([]);
+
+    result[level].push(tree.val);
+    if (tree.left) bfs(tree.left, level + 1);
+    if (tree.right) bfs(tree.right, level + 1);
+  };
+
+  if (!root) return result;
+  bfs(root, 0);
+  return result;
+};
+var levelOrder = function (root) {
+  if (!root) return [];
+
+  const res = [];
+  const queue = [root];
+
+  while (queue.length) {
+    const levelSize = queue.length;
+    const currentLevel = [];
+
+    for (let i = 0; i < levelSize; i++) {
+      const currentNode = queue.shift();
+
+      if (currentNode.left) {
+        queue.push(currentNode.left);
+      }
+      if (currentNode.right) {
+        queue.push(currentNode.right);
+      }
+      currentLevel.push(currentNode.val);
+    }
+    res.push(currentLevel);
+  }
+
+  return res;
 };
