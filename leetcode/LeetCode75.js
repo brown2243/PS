@@ -218,3 +218,104 @@ var middleNode = function (head) {
   const idx = Math.ceil(pointers.length / 2);
   return pointers[pointers.length % 2 === 0 ? idx : idx - 1];
 };
+
+const middleNode = function (head) {
+  let fast = head.next;
+  while (fast) {
+    head = head.next;
+    fast = fast.next?.next;
+  }
+  return head;
+};
+
+// 실패 7/17 two pointer 를 써야함
+var detectCycle = function (head) {
+  let current = head;
+  if (!head) {
+    return null;
+  }
+  const values = [current.val];
+
+  while (current.next) {
+    current = current.next;
+    const now = current.val;
+    const idx = values.indexOf(now);
+    if (idx !== -1) {
+      return current;
+    }
+    values.push(now);
+  }
+  return null;
+};
+var detectCycle = function (head) {
+  let slow = head;
+  let fast = head;
+
+  while (fast !== null && fast.next !== null) {
+    slow = slow.next;
+    fast = fast.next.next;
+    if (slow === fast) {
+      slow = head;
+      while (slow !== fast) {
+        slow = slow.next;
+        fast = fast.next;
+      }
+      return slow;
+    }
+  }
+  return null;
+};
+
+// 이중반목 쓰면 시간 제한 걸림
+/**
+ * @param {number[]} prices
+ * @return {number}
+ */
+var maxProfit = function (prices) {
+  let max = 0;
+  for (let i = 0; i < prices.length; i++) {
+    const x = prices[i];
+    for (let j = i + 1; j < prices.length; j++) {
+      const y = prices[j];
+      max = Math.max(y - x, max);
+    }
+  }
+  return max;
+};
+
+/**
+ * @param {number[]} prices
+ * @return {number}
+ */
+var maxProfit = function (prices) {
+  let profit = 0;
+  let minPrice = prices[0];
+  for (let i = 0; i < prices.length; i++) {
+    const price = prices[i];
+    minPrice = Math.min(minPrice, price);
+    profit = Math.max(profit, price - minPrice);
+  }
+  return profit;
+};
+
+/**
+ * @param {string} s
+ * @return {number}
+ */
+var longestPalindrome = function (s) {
+  const obj = s.split("").reduce((acc, cur) => {
+    acc[cur] = acc[cur] + 1 || 1;
+    return acc;
+  }, {});
+  let flag = false;
+  const ans = Object.keys(obj)
+    .map((v) => {
+      if (obj[v] % 2 === 0) {
+        return obj[v];
+      }
+      flag = true;
+      return obj[v] - 1;
+    })
+    .reduce((acc, cur) => acc + cur, 0);
+  return flag ? ans + 1 : ans;
+};
