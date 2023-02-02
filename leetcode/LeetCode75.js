@@ -477,3 +477,123 @@ var solution = function (isBadVersion) {
     return lastBad;
   };
 };
+
+// 본인이 쓴 안되는 코드 ㅠㅠ
+var isValidBST = function (root) {
+  const ans = isValid(root, root.val);
+  console.log(ans);
+  return !ans;
+};
+var isValid = (node, rootVal) => {
+  if (Number.isInteger(node.val)) {
+    console.log(node.val, node.left?.val, node.right?.val);
+
+    if (Number.isInteger(node.left?.val)) {
+      if (node.left.val < node.val && node.left.val < rootVal) {
+        isValid(node.left, rootVal);
+      } else {
+        return true;
+      }
+    }
+    if (Number.isInteger(node.right?.val)) {
+      if (node.right.val > node.val && node.right.val > rootVal) {
+        isValid(node.right, rootVal);
+      } else {
+        return true;
+      }
+    }
+  }
+};
+
+var isValidBST = function (root) {
+  return validate(root, Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER);
+};
+var validate = function (node, min, max) {
+  if (!node) return true;
+  if (node.val <= min || node.val >= max) return false;
+  return (
+    validate(node.left, min, node.val) && validate(node.right, node.val, max)
+  );
+};
+
+var isValidBST = function (root, min, max) {
+  if (!root) return true;
+
+  if (root.val <= min || root.val >= max) return false;
+
+  return (
+    isValidBST(root.left, min, root.val) &&
+    isValidBST(root.right, root.val, max)
+  );
+};
+
+/**
+ * @param {TreeNode} root
+ * @param {TreeNode} p
+ * @param {TreeNode} q
+ * @return {TreeNode}
+ */
+var lowestCommonAncestor = function (root, p, q) {
+  if (!root) return null;
+  if (root?.left && root?.right) {
+    if (check(root.left, p, q) && check(root.right, p, q)) {
+      return root;
+    }
+  }
+  if (root?.left) {
+    if (check(root.left)) {
+      return root.left;
+    } else {
+      lowestCommonAncestor(root.left, p, q);
+    }
+  }
+  if (root?.right) {
+    if (check(root.right)) {
+      return root.right;
+    } else {
+      lowestCommonAncestor(root.right, p, q);
+    }
+  }
+};
+
+const check = (node, p, q) => node.val === p.val || node.val === q.val;
+
+var lowestCommonAncestor = function (root, p, q) {
+  if (!root) return null;
+  if (root.val > p.val && root.val > q.val) {
+    return lowestCommonAncestor(root.left, p, q);
+  }
+  if (root.val < p.val && root.val < q.val) {
+    return lowestCommonAncestor(root.right, p, q);
+  }
+  return root;
+};
+
+var lowestCommonAncestor = function (root, p, q) {
+  if (root === null) {
+    return null;
+  } else if (root === p || root === q) {
+    return root;
+  } else {
+    let leftResult = lowestCommonAncestor(root.left, p, q);
+    let rightResult = lowestCommonAncestor(root.right, p, q);
+    if (leftResult === null && rightResult === null) {
+      return null;
+    } else if (leftResult !== null && rightResult === null) {
+      return leftResult;
+    } else if (leftResult === null && rightResult !== null) {
+      return rightResult;
+    } else {
+      return root;
+    }
+  }
+};
+var lowestCommonAncestor = function (root, p, q) {
+  p = p.val;
+  q = q.val;
+  while (true) {
+    if (p > root.val && q > root.val) root = root.right;
+    else if (p < root.val && q < root.val) root = root.left;
+    else return root;
+  }
+};
