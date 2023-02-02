@@ -597,3 +597,137 @@ var lowestCommonAncestor = function (root, p, q) {
     else return root;
   }
 };
+
+/**
+ * @param {number[][]} image
+ * @param {number} sr
+ * @param {number} sc
+ * @param {number} color
+ * @return {number[][]}
+ */
+var floodFill = function (image, sr, sc, color) {
+  const checkBox = image.map((row) => row.map((_) => true));
+  flood(image, checkBox, sr, sc, color, image[sr][sc]);
+  return image;
+};
+
+var flood = (image, checkBox, x, y, color, init) => {
+  const point = image[x]?.[y];
+
+  if (!checkBox[x]?.[y] || point === undefined || point !== init) return;
+
+  checkBox[x][y] = false;
+  image[x][y] = color;
+  flood(image, checkBox, x - 1, y, color, init);
+  flood(image, checkBox, x + 1, y, color, init);
+  flood(image, checkBox, x, y - 1, color, init);
+  flood(image, checkBox, x, y + 1, color, init);
+};
+
+var floodFill = function (image, sr, sc, color) {
+  const currColor = image[sr][sc];
+  if (currColor === color) return image;
+
+  function fill(image, sr, sc) {
+    if (
+      sr < 0 ||
+      sr >= image.length ||
+      sc < 0 ||
+      sc >= image[sr].length ||
+      image[sr][sc] !== currColor
+    )
+      return image;
+    image[sr][sc] = color;
+    fill(image, sr + 1, sc);
+    fill(image, sr - 1, sc);
+    fill(image, sr, sc + 1);
+    fill(image, sr, sc - 1);
+    return image;
+  }
+  return fill(image, sr, sc);
+};
+
+/**
+ * @param {character[][]} grid
+ * @return {number}
+ */
+var numIslands = function (grid) {
+  let cnt = 0;
+  for (let i = 0; i < grid.length; i += 1) {
+    for (let j = 0; j < grid[0].length; j += 1) {
+      const point = grid[i][j];
+      if (point === "1") {
+        cnt += 1;
+        move(grid, i, j);
+      }
+    }
+  }
+  return cnt;
+};
+
+var move = (grid, x, y) => {
+  const point = grid[x]?.[y];
+
+  if (point === undefined || point === "0") return;
+  grid[x][y] = "0";
+  move(grid, x - 1, y);
+  move(grid, x + 1, y);
+  move(grid, x, y - 1);
+  move(grid, x, y + 1);
+};
+
+/**
+ * @param {character[][]} grid
+ * @return {number}
+ */
+//find first 1 -> using bfs to keep tracking the one
+var numIslands = function (grid) {
+  let count = 0;
+  if (grid.length === 0) {
+    return count;
+  }
+
+  const direction = [
+    [-1, 0],
+    [0, 1],
+    [1, 0],
+    [0, -1],
+  ];
+  let queue = [];
+
+  for (let row = 0; row < grid.length; row++) {
+    for (let col = 0; col < grid[0].length; col++) {
+      if (grid[row][col] === "1") {
+        count++;
+        queue.push([row, col]);
+        grid[row][col] = "0";
+
+        while (queue.length) {
+          let current = queue.shift();
+          const curRow = current[0];
+          const curCol = current[1];
+
+          for (let i = 0; i < direction.length; i++) {
+            const currentDir = direction[i];
+            const nextRow = curRow + currentDir[0];
+            const nextCol = curCol + currentDir[1];
+
+            if (
+              nextRow < 0 ||
+              nextCol < 0 ||
+              nextRow > grid.length - 1 ||
+              nextCol > grid[0].length - 1
+            )
+              continue;
+
+            if (grid[nextRow][nextCol] === "1") {
+              queue.push([nextRow, nextCol]);
+              grid[nextRow][nextCol] = "0";
+            }
+          }
+        }
+      }
+    }
+  }
+  return count;
+};
