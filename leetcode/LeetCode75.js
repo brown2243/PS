@@ -731,3 +731,97 @@ var numIslands = function (grid) {
   }
   return count;
 };
+
+/**
+ * @param {number} n
+ * @return {number}
+ */
+var fib = function (n) {
+  if (n === 2) {
+    return 1;
+  }
+  if (n <= 1) {
+    return n;
+  }
+  return fib(n - 1) + fib(n - 2);
+};
+
+/**
+ * @param {number} n
+ * @return {number}
+ */
+var climbStairs = function (n) {
+  const arr = [0, 1, 2];
+  for (let i = 3; i <= n; i++) {
+    arr.push(arr[i - 1] + arr[i - 2]);
+  }
+  return arr[n];
+};
+
+/**
+ * @param {number} n
+ * @return {number}
+ */
+var climbStairs = function (n) {
+  let a = 1,
+    b = 2,
+    c;
+  for (let i = 3; i <= n; i++) {
+    c = a + b;
+    a = b;
+    b = c;
+  }
+  return n === 1 ? a : b;
+};
+
+/**
+ * @param {number[]} cost
+ * @return {number}
+ */
+var minCostClimbingStairs = function (cost) {
+  const ans = [cost[0], cost[1]];
+
+  for (let i = 2; i < cost.length; i++) {
+    ans.push(Math.min(ans[i - 1], ans[i - 2]) + cost[i]);
+  }
+
+  return Math.min(ans.pop(), ans.pop());
+};
+
+/**
+ * @param {number} m
+ * @param {number} n
+ * @return {number}
+ */
+var uniquePaths = function (m, n) {
+  if (m === 0 && n === 0) {
+    return 0;
+  }
+  const map = Array.from({ length: m }, () => new Array(n).fill(1));
+  for (let i = 1; i < m; i++) {
+    for (let j = 1; j < n; j++) {
+      map[i][j] = map[i - 1][j] + map[i][j - 1];
+    }
+  }
+  return map[m - 1][n - 1];
+};
+var uniquePaths = function (m, n) {
+  let grid = new Array(m).fill(1).map(() => new Array(n).fill(1));
+  // walk through m and n (nested for)
+  // set curr tile to sum of prev m and prev n
+  // return sum in last row
+  for (let i = 1; i < m; i++) {
+    for (let j = 1; j < n; j++) {
+      grid[i][j] = grid[i - 1][j] + grid[i][j - 1];
+    }
+  }
+  return grid[m - 1][n - 1];
+};
+var uniquePaths = function (m, n) {
+  let factorials = [1];
+  for (let i = 1; i <= m + n - 2; i++) {
+    factorials[i] = factorials[i - 1] * i;
+  }
+
+  return factorials[m + n - 2] / (factorials[m - 1] * factorials[n - 1]);
+};
