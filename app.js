@@ -1,56 +1,40 @@
 /**
- * @param {string} s
- * @param {string} p
- * @return {number[]}
+ * @param {string} secret
+ * @param {string} guess
+ * @return {string}
  */
-var findAnagrams = function (s, p) {
-  const pObj = {};
-
-  for (const key of p) {
-    if (!(key in pObj)) {
-      pObj[key] = 0;
-    }
-    pObj[key]++;
-  }
-
-  let left = 0;
-  let right = 0;
-  let checkCount = p.length;
-  const result = [];
-  while (right < s.length) {
-    if (pObj[s[right]] > 0) checkCount--;
-
-    pObj[s[right]]--;
-    right++;
-
-    if (checkCount === 0) result.push(left);
-
-    if (right - left === p.length) {
-      if (pObj[s[left]] >= 0) checkCount++;
-      pObj[s[left]]++;
-      left++;
+var getHint = function (secret, guess) {
+  const s = new Array(10).fill(0);
+  const g = new Array(10).fill(0);
+  let bulls = 0,
+    cows = 0;
+  for (let i = 0; i < guess.length; i++) {
+    if (guess[i] === secret[i]) {
+      bulls += 1;
+    } else {
+      s[secret[i]] += 1;
+      g[guess[i]] += 1;
     }
   }
-  return result;
+  for (let i = 0; i < s.length; i++) {
+    cows += Math.min(s[i], g[i]);
+  }
+
+  return `${bulls}A${cows}B`;
 };
 
-var characterReplacement = function (s, k) {
-  let left = 0,
-    right = 0,
-    maxCount = 0,
-    maxLength = 0;
-  let counts = Array(26).fill(0);
-  for (right = 0; right < s.length; right++) {
-    counts[s.charCodeAt(right) - "A".charCodeAt(0)]++;
-    maxCount = Math.max(
-      maxCount,
-      counts[s.charCodeAt(right) - "A".charCodeAt(0)]
-    );
-    while (right - left + 1 - maxCount > k) {
-      counts[s.charCodeAt(left) - "A".charCodeAt(0)]--;
-      left++;
-    }
-    maxLength = Math.max(maxLength, right - left + 1);
+/**
+ * @param {number[]} cost
+ * @return {number}
+ */
+var minCostClimbingStairs = function (cost) {
+  const ans = [cost[0], cost[1]];
+
+  for (let i = 2; i < cost.length; i++) {
+    ans.push(Math.min(ans[i - 1], ans[i - 2]) + cost[i]);
   }
-  return maxLength;
+  console.log(ans);
+
+  return Math.min(ans.pop(), ans.pop());
 };
+minCostClimbingStairs([1, 100, 1, 1, 1, 100, 1, 1, 100, 1]);

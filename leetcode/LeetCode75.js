@@ -918,24 +918,68 @@ var findAnagrams = function (s, p) {
   }
   return ans;
 };
+/**
+ * @param {string} s
+ * @param {number} k
+ * @return {number}
+ */
 
 var characterReplacement = function (s, k) {
   let left = 0,
     right = 0,
     maxCount = 0,
     maxLength = 0;
-  let counts = Array(26).fill(0);
-  for (right = 0; right < s.length; right++) {
-    counts[s.charCodeAt(right) - "A".charCodeAt(0)]++;
-    maxCount = Math.max(
-      maxCount,
-      counts[s.charCodeAt(right) - "A".charCodeAt(0)]
-    );
+  const counts = Array(26).fill(0);
+  const codeA = "A".charCodeAt();
+  for (; right < s.length; right++) {
+    counts[s.charCodeAt(right) - codeA]++;
+    maxCount = Math.max(maxCount, counts[s.charCodeAt(right) - codeA]);
     while (right - left + 1 - maxCount > k) {
-      counts[s.charCodeAt(left) - "A".charCodeAt(0)]--;
+      counts[s.charCodeAt(left) - codeA]--;
       left++;
     }
     maxLength = Math.max(maxLength, right - left + 1);
   }
   return maxLength;
+};
+
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number[]}
+ */
+var twoSum = function (nums, target) {
+  const obj = {};
+  for (let i = 0; i < nums.length; i++) {
+    const val = target - nums[i];
+
+    if (obj[val] !== undefined) {
+      return [obj[val], i];
+    }
+    obj[nums[i]] = i;
+  }
+};
+
+/**
+ * @param {string} secret
+ * @param {string} guess
+ * @return {string}
+ */
+var getHint = function (secret, guess) {
+  const s = new Array(10).fill(0);
+  const g = new Array(10).fill(0);
+  let bulls = 0,
+    cows = 0;
+  for (let i = 0; i < guess.length; i++) {
+    if (guess[i] === secret[i]) {
+      bulls += 1;
+    } else {
+      s[secret[i]] += 1;
+      g[guess[i]] += 1;
+    }
+  }
+  for (let i = 0; i < s.length; i++) {
+    cows += Math.min(s[i], g[i]);
+  }
+  return `${bulls}A${cows}B`;
 };
