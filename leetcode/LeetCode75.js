@@ -983,3 +983,172 @@ var getHint = function (secret, guess) {
   }
   return `${bulls}A${cows}B`;
 };
+
+/**
+ * @param {number[]} nums
+ * @return {boolean}
+ */
+var containsDuplicate = function (nums) {
+  return !(nums.length === new Set(nums).size);
+};
+
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var maxSubArray = function (nums) {
+  let max = nums[0];
+  let current = 0;
+
+  for (let i = 0; i < nums.length; i++) {
+    current += nums[i];
+    max = Math.max(max, current);
+    current = Math.max(0, current);
+  }
+
+  return max;
+};
+
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number}
+ */
+var searchInsert = function (nums, target) {
+  let left = 0;
+  let right = nums.length - 1;
+
+  while (left <= right) {
+    let mid = Math.floor((left + right) / 2);
+
+    if (nums[mid] === target) {
+      return mid;
+    }
+    if (nums[mid] < target) {
+      left = mid + 1;
+    } else {
+      right = mid - 1;
+    }
+  }
+  return left;
+};
+
+/**
+ * @param {number} low
+ * @param {number} high
+ * @return {number}
+ */
+var countOdds = function (low, high) {
+  let cnt = Math.floor((high - low) / 2);
+  if (low % 2 !== 0) {
+    cnt += 1;
+  } else if (high % 2 !== 0) {
+    cnt += 1;
+  }
+  return cnt;
+};
+
+/**
+ * @param {number[]} salary
+ * @return {number}
+ */
+var average = function (salary) {
+  salary.sort((a, b) => a - b);
+  return (
+    salary.slice(1, salary.length - 1).reduce((acc, cur) => acc + cur, 0) /
+    (salary.length - 2)
+  );
+};
+
+/**
+ * @param {number} n
+ * @return {number}
+ */
+var tribonacci = function (n) {
+  const arr = [0, 1, 1];
+
+  for (let i = 3; i <= n; i++) {
+    arr.push(arr[i - 1] + arr[i - 2] + arr[i - 3]);
+  }
+
+  return arr[n];
+};
+
+/**
+ * Forward declaration of guess API.
+ * @param {number} num   your guess
+ * @return 	     -1 if num is higher than the picked number
+ *			      1 if num is lower than the picked number
+ *               otherwise return 0
+ * var guess = function(num) {}
+ */
+
+/**
+ * @param {number} n
+ * @return {number}
+ */
+var guessNumber = function (n) {
+  let left = 1;
+  let right = n;
+
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+    const res = guess(mid);
+
+    if (res === 0) {
+      return mid;
+    }
+    if (res !== 1) {
+      right = mid - 1;
+    } else {
+      left = mid + 1;
+    }
+  }
+};
+
+/**
+ * @param {number[]} nums
+ * @param {number} n
+ * @return {number[]}
+ */
+var shuffle = function (nums, n) {
+  const arr = [];
+  for (let i = 0; i < nums.length / 2; i++) {
+    arr.push(nums[i]);
+    arr.push(nums[i + n]);
+  }
+  return arr;
+};
+/**
+ * @param {number[]} nums
+ * @param {number} n
+ * @return {number[]}
+ */
+var shuffle = function (nums, n) {
+  const result = [];
+  for (let i = 0; i < n; i++) {
+    result.push(nums[i], nums[n + i]);
+  }
+  return result;
+};
+
+function totalFruit(fruits) {
+  let left = 0,
+    right = 0,
+    max_picked = 0;
+  const basket = new Map();
+
+  for (; right < fruits.length; right++) {
+    basket.set(fruits[right], (basket.get(fruits[right]) || 0) + 1);
+
+    if (basket.size > 2) {
+      basket.set(fruits[left], basket.get(fruits[left]) - 1);
+      if (basket.get(fruits[left]) === 0) {
+        basket.delete(fruits[left]);
+      }
+      left += 1;
+    }
+    max_picked = Math.max(max_picked, right - left + 1);
+  }
+  return max_picked;
+}
