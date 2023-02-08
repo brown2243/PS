@@ -1152,3 +1152,156 @@ function totalFruit(fruits) {
   }
   return max_picked;
 }
+
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var jump = function (nums) {
+  const arr = new Array(nums.length).fill(Infinity);
+  arr[0] = 0;
+
+  for (let i = 1; i < nums.length; i++) {
+    for (let j = 0; j < i; j++) {
+      if (nums[j] + j >= i) {
+        arr[i] = Math.min(arr[i], arr[j] + 1);
+      }
+    }
+  }
+  return arr.pop();
+};
+
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+//Time Complexity : O(n),   Space Complexity: O(1)**
+var jump = function (nums) {
+  let jump = 0;
+  let prev = 0;
+  let max = 0;
+  for (let i = 0; i < nums.length - 1; i++) {
+    // Keep track of the maximum jump
+    max = Math.max(max, i + nums[i]);
+    // When we get to the index where we had our previous maximum jump, we increase our jump...
+    if (i === prev) {
+      jump++;
+      prev = max;
+    }
+  }
+  return jump;
+};
+
+/**
+ * @param {number[]} nums1
+ * @param {number} m
+ * @param {number[]} nums2
+ * @param {number} n
+ * @return {void} Do not return anything, modify nums1 in-place instead.
+ */
+var merge = function (nums1, m, nums2, n) {
+  let cnt1 = 0,
+    flag1 = nums1.length - m;
+  while (cnt1 < flag1) {
+    nums1.pop();
+    cnt1++;
+  }
+  let cnt2 = 0,
+    flag2 = nums2.length - n;
+  while (cnt2 < flag2) {
+    nums1.pop();
+    cnt2++;
+  }
+  nums2.forEach((v) => {
+    nums1.push(v);
+  });
+  return nums1.sort((a, b) => a - b);
+};
+
+/**
+ * @param {number[]} nums1
+ * @param {number} m
+ * @param {number[]} nums2
+ * @param {number} n
+ * @return {void} Do not return anything, modify nums1 in-place instead.
+ */
+var merge = function (nums1, m, nums2, n) {
+  nums1.splice(m, n);
+  nums1.push(...nums2);
+  nums1.sort((a, b) => a - b);
+};
+
+/**
+ * @param {number[]} nums
+ * @return {number[]}
+ */
+var sortedSquares = function (nums) {
+  return nums.map((v) => Math.pow(v, 2)).sort((a, b) => a - b);
+};
+
+/**
+ * @param {number[]} nums
+ * @param {number} k
+ * @return {void} Do not return anything, modify nums in-place instead.
+ */
+var rotate = function (nums, k) {
+  if (k === 0) {
+    return nums;
+  }
+  const n = nums.length;
+  k = k % n;
+  const move = n - k;
+  const right = nums.splice(move, n);
+
+  nums.unshift(...right);
+  return nums;
+};
+
+/**
+ * @param {number[]} nums
+ * @param {number} k
+ * @return {void} Do not return anything, modify nums in-place instead.
+ */
+var rotate = function (nums, k) {
+  k = k % nums.length;
+  nums.unshift(...nums.splice(-k));
+};
+
+/**
+ * @param {number} n - a positive integer
+ * @return {number}
+ */
+var hammingWeight = function (n) {
+  const arr = n.toString(2).split("");
+  return arr.length - arr.filter((v) => v === "0").length;
+};
+
+/**
+ * @param {number} n
+ * @return {number}
+ */
+var subtractProductAndSum = function (n) {
+  const arr = n.toString().split("").map(Number);
+  return (
+    arr.reduce((acc, cur) => acc * cur, 1) -
+    arr.reduce((acc, cur) => acc + cur, 0)
+  );
+};
+
+/**
+ * @param {number[]} arr
+ * @return {number}
+ */
+var peakIndexInMountainArray = function (arr) {
+  let left = 0,
+    right = arr.length - 1;
+  while (left < right) {
+    let mid = Math.floor((left + right) / 2);
+    if (arr[mid] < arr[mid + 1]) {
+      left = mid + 1;
+    } else {
+      right = mid;
+    }
+  }
+  return left;
+};
