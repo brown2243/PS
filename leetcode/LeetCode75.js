@@ -1305,3 +1305,213 @@ var peakIndexInMountainArray = function (arr) {
   }
   return left;
 };
+
+/**
+ * @param {number[][]} grid
+ * @return {number}
+ */
+var maxDistance = function (grid) {
+  const n = grid.length,
+    q = [];
+
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < n; j++) {
+      if (grid[i][j] === 1) {
+        q.push([i, j]);
+      }
+    }
+  }
+  if (q.length === 0 || q.length === n ** 2) {
+    return -1;
+  }
+  let steps = 0;
+  const directions = [
+    [0, 1],
+    [0, -1],
+    [1, 0],
+    [-1, 0],
+  ];
+  while (q.length > 0) {
+    const size = q.length;
+    for (let i = 0; i < size; i++) {
+      const [x, y] = q.shift();
+      for (const [dx, dy] of directions) {
+        const a = x + dx;
+        const b = y + dy;
+        if (a >= 0 && a < n && b >= 0 && b < n && grid[a][b] === 0) {
+          grid[a][b] = 1;
+          q.push([a, b]);
+        }
+      }
+    }
+    steps++;
+  }
+  return steps - 1;
+};
+
+/**
+ * @param {number[]} nums1
+ * @param {number[]} nums2
+ * @return {number[]}
+ */
+var intersect = function (nums1, nums2) {
+  const obj1 = nums1.reduce((acc, cur) => {
+    acc[cur] = acc[cur] + 1 || 1;
+    return acc;
+  }, {});
+
+  const obj2 = nums2.reduce((acc, cur) => {
+    acc[cur] = acc[cur] + 1 || 1;
+    return acc;
+  }, {});
+
+  const arr = [];
+  Object.keys(obj1).forEach((key) => {
+    const num1 = obj1[key];
+    const num2 = obj2[key] || 0;
+    for (let i = 0; i < Math.min(num1, num2); i++) {
+      arr.push(key);
+    }
+  });
+  return arr;
+};
+
+/**
+ * @param {number[]} nums
+ * @return {void} Do not return anything, modify nums in-place instead.
+ */
+var moveZeroes = function (nums) {
+  nums.sort((a, b) => a - b);
+  const idx = nums.findIndex((v) => v > 0);
+  if (idx) {
+    nums.push(...nums.splice(0, idx));
+  }
+};
+
+/**
+ * @param {number[]} nums
+ * @return {void} Do not return anything, modify nums in-place instead.
+ */
+var moveZeroes = function (nums) {
+  let idx = 0;
+  let cnt = 0;
+  while (true) {
+    if (nums[idx] === undefined) {
+      break;
+    }
+    if (nums[idx] === 0) {
+      nums.splice(idx, 1);
+      cnt += 1;
+    } else {
+      idx += 1;
+    }
+  }
+  const zero = new Array(cnt).fill(0);
+  nums.push(...zero);
+};
+
+const moveZeroes = (nums) => {
+  let left = 0;
+  let right = 0;
+  while (right < nums.length) {
+    if (nums[right] !== 0) {
+      const temp = nums[right];
+      nums[right] = nums[left];
+      nums[left] = temp;
+      left++;
+    }
+    right++;
+  }
+  return nums;
+};
+
+/**
+ * @param {number[]} numbers
+ * @param {number} target
+ * @return {number[]}
+ */
+var twoSum = function (numbers, target) {
+  const obj = {};
+  for (let i = 0; i < numbers.length; i++) {
+    const now = numbers[i];
+    const val = target - now;
+    if (obj[val] !== undefined) {
+      return [obj[val] + 1, i + 1];
+    }
+    obj[now] = i;
+  }
+};
+
+/**
+ * @param {number[]} numbers
+ * @param {number} target
+ * @return {number[]}
+ */
+var twoSum = function (numbers, target) {
+  let left = 0,
+    right = numbers.length - 1;
+
+  while (left < right) {
+    let sum = numbers[left] + numbers[right];
+    if (sum < target) {
+      left++;
+    } else if (sum > target) {
+      right--;
+    } else {
+      return [left + 1, right + 1];
+    }
+  }
+};
+
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var largestPerimeter = function (nums) {
+  nums.sort((a, b) => b - a);
+
+  for (let i = 0; i < nums.length - 2; i++) {
+    const first = nums[i];
+    const two = nums[i + 1];
+    const three = nums[i + 2];
+    if (first < two + three) {
+      return first + two + three;
+    }
+  }
+  return 0;
+};
+
+/**
+ * @param {number} x
+ * @param {number} y
+ * @param {number[][]} points
+ * @return {number}
+ */
+var nearestValidPoint = function (x, y, points) {
+  const arr = points
+    .map((v) => (v[0] === x || v[1] === y ? v : [0, 0]))
+    .map((v) => {
+      if (v[0] === 0) {
+        return Infinity;
+      }
+      return Math.abs(x - v[0]) + Math.abs(y - v[1]);
+    });
+  const val = Math.min(...arr);
+  return val === Infinity ? -1 : arr.indexOf(val);
+};
+
+var nearestValidPoint = function (x, y, points) {
+  let idx = -1;
+  let min = Infinity;
+
+  points.forEach(([a, b], i) => {
+    if (a === x || b === y) {
+      const dist = Math.abs(a - x) + Math.abs(b - y);
+      if (dist < min) {
+        min = dist;
+        idx = i;
+      }
+    }
+  });
+  return idx;
+};
