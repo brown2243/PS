@@ -1515,3 +1515,281 @@ var nearestValidPoint = function (x, y, points) {
   });
   return idx;
 };
+
+/**
+ * @param {number} numRows
+ * @return {number[][]}
+ */
+var generate = function (numRows) {
+  const rows = [];
+
+  for (let i = 0; i < numRows; i++) {
+    const row = [];
+
+    for (let j = 0; j < i + 1; j++) {
+      if (rows?.[i - 1]?.[j - 1] && rows?.[i - 1]?.[j]) {
+        row.push(rows?.[i - 1]?.[j - 1] + rows?.[i - 1]?.[j]);
+      } else {
+        row.push(1);
+      }
+    }
+    rows.push(row);
+  }
+  return rows;
+};
+
+/**
+ * @param {number[][]} mat
+ * @param {number} r
+ * @param {number} c
+ * @return {number[][]}
+ */
+var matrixReshape = function (mat, r, c) {
+  const m = mat.length;
+  const n = mat[0].length;
+  if (m * n !== r * c) {
+    return mat;
+  }
+  const flat = mat.flat();
+  const ans = [];
+
+  let index = 0;
+  for (let i = 0; i < r; i++) {
+    let row = [];
+    for (let j = 0; j < c; j++) {
+      row.push(flat[index]);
+      index++;
+    }
+    ans.push(row);
+  }
+
+  return ans;
+};
+
+/**
+ * @param {number[][]} mat
+ * @param {number} r
+ * @param {number} c
+ * @return {number[][]}
+ */
+var matrixReshape = function (mat, r, c) {
+  const matRow = mat.length;
+  const matCol = mat[0].length;
+  const output = [];
+
+  let flatMat = null;
+
+  // return original if new dimension doesn't match
+  if (r * c !== matRow * matCol) return mat;
+
+  // deconstruct the original array and reconstruct new array
+  flatMat = mat.reduce((acc, curr) => acc.concat(curr), []);
+
+  for (let i = 0; i < r; i++) output.push(flatMat.splice(0, c));
+
+  return output;
+};
+
+/**
+ * @param {character[]} s
+ * @return {void} Do not return anything, modify s in-place instead.
+ */
+var reverseString = function (s) {
+  s.reverse();
+};
+/**
+ * @param {character[]} s
+ * @return {void} Do not return anything, modify s in-place instead.
+ */
+const reverseString = (s) => {
+  for (let i = 0; i < s.length - i; i += 1) {
+    const temp = s[i];
+    s[i] = s[s.length - i - 1];
+    s[s.length - i - 1] = temp;
+  }
+};
+
+/**
+ * @param {string} s
+ * @return {string}
+ */
+var reverseWords = function (s) {
+  const arr1 = s.split(" ");
+  for (let i = 0; i < arr1.length; i++) {
+    arr1[i] = arr1[i].split("").reverse().join("");
+  }
+  return arr1.join(" ");
+};
+
+/**
+ * @param {string} s
+ * @return {string}
+ */
+// var reverseWords = function(s) {
+//     const words = s.split(" ");
+
+//     return words.map(word => word.split("")).map(word => word.reverse().join("")).join(" ");
+// };
+
+var reverseWords = function (s) {
+  const result = [];
+  let left = 0,
+    right = 0;
+
+  while (left < s.length) {
+    while (right < s.length && s[right] !== " ") {
+      right++;
+    }
+
+    for (let i = right - 1; i >= left; i--) {
+      result.push(s[i]);
+    }
+
+    if (right < s.length) result.push(" ");
+    right++;
+    left = right;
+  }
+
+  return result.join("");
+};
+
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var arraySign = function (nums) {
+  let sign = 1;
+
+  for (const num of nums) {
+    if (num === 0) return 0;
+    if (num < 0) sign = -sign;
+  }
+  return sign;
+};
+
+/**
+ * @param {number[]} arr
+ * @return {boolean}
+ */
+var canMakeArithmeticProgression = function (arr) {
+  arr.sort((a, b) => a - b);
+  {
+    let gap = arr[1] - arr[0];
+    for (let i = 1; i < arr.length - 1; i++) {
+      if (arr[i + 1] - arr[i] !== gap) {
+        return false;
+      }
+    }
+  }
+  arr.sort((a, b) => b - a);
+  let gap = arr[1] - arr[0];
+  for (let i = 1; i < arr.length - 1; i++) {
+    if (arr[i + 1] - arr[i] !== gap) {
+      return false;
+    }
+  }
+  return true;
+};
+
+/**
+ * @param {number[]} arr
+ * @return {boolean}
+ */
+var canMakeArithmeticProgression = function (arr) {
+  arr.sort((a, b) => b - a);
+  let diff = arr[0] - arr[1];
+  for (let i = 1; i < arr.length - 1; i++) {
+    if (diff !== arr[i] - arr[i + 1]) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+/**
+ * @param {number} n
+ * @return {boolean}
+ */
+var isHappy = function (n, dp = []) {
+  const arr = n.toString().split("").map(Number);
+  const acc = arr.reduce((acc, cur) => acc + cur ** 2, 0);
+  if (acc === 1) {
+    return true;
+  } else {
+    if (dp.includes(acc)) {
+      return false;
+    }
+    dp.push(acc);
+    return isHappy(acc, dp);
+  }
+};
+
+/**
+ * @param {number} n
+ * @return {boolean}
+ */
+var isHappy = function (n) {
+  const checked = [];
+
+  while (n !== 1) {
+    if (checked.includes(n)) {
+      return false;
+    }
+    checked.push(n);
+
+    const arr = String(n)
+      .split("")
+      .map((x) => Math.pow(Number(x), 2));
+    n = arr.reduce((acc, iter) => acc + iter, 0);
+  }
+
+  return true;
+};
+
+/**
+ * @param {string} s1
+ * @param {string} s2
+ * @return {boolean}
+ */
+var areAlmostEqual = function (s1, s2) {
+  let count = 0;
+  let index1, index2;
+  let n = s1.length;
+
+  for (let i = 0; i < n; i++) {
+    if (s1[i] !== s2[i]) {
+      count++;
+      if (count === 1) {
+        index1 = i;
+      } else if (count === 2) {
+        index2 = i;
+      } else {
+        return false;
+      }
+    }
+  }
+  if (count === 0) {
+    return true;
+  }
+  return count === 2 && s1[index1] === s2[index2] && s1[index2] === s2[index1];
+};
+
+/**
+ * @param {string} s1
+ * @param {string} s2
+ * @return {boolean}
+ */
+var areAlmostEqual = function (s1, s2) {
+  if (s1 == s2) return true;
+
+  let counter = 0;
+  let arr1 = s1.split("").sort();
+  let arr2 = s2.split("").sort();
+
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i] !== arr2[i]) return false;
+    if (s1[i] !== s2[i]) counter++;
+  }
+  return counter <= 2 ? true : false;
+};
