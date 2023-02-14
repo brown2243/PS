@@ -36,29 +36,32 @@ var minimumFuelCost = function (roads, seats) {
 };
 
 /**
- * @param {string} s1
- * @param {string} s2
- * @return {boolean}
+ * @param {string} a
+ * @param {string} b
+ * @return {string}
  */
-var areAlmostEqual = function (s1, s2) {
-  let count = 0;
-  let index1, index2;
-  let n = s1.length;
+var addBinary = function (a, b) {
+  let result = "";
+  let carry = 0;
+  let i = a.length - 1;
+  let j = b.length - 1;
 
-  for (let i = 0; i < n; i++) {
-    if (s1[i] !== s2[i]) {
-      count++;
-      if (count === 1) {
-        index1 = i;
-      } else if (count === 2) {
-        index2 = i;
-      } else {
-        return false;
-      }
+  while (i >= 0 || j >= 0 || carry > 0) {
+    let sum = carry;
+
+    if (i >= 0) {
+      sum += parseInt(a[i]);
+      i--;
     }
+
+    if (j >= 0) {
+      sum += parseInt(b[j]);
+      j--;
+    }
+
+    result = (sum % 2) + result;
+    carry = Math.floor(sum / 2);
   }
-  if (count === 0) {
-    return true;
-  }
-  return count === 2 && s1[index1] === s2[index2] && s1[index2] === s2[index1];
+
+  return result;
 };
