@@ -1845,3 +1845,149 @@ var addBinary = function (a, b) {
   const total = num1 + num2;
   return total.toString(2);
 };
+
+/**
+ * @param {number[]} num
+ * @param {number} k
+ * @return {number[]}
+ */
+var addToArrayForm = function (num, k) {
+  return (BigInt(num.join("")) + BigInt(k)).toString().split("");
+};
+
+/**
+ * @param {number[][]} matrix
+ * @param {number} target
+ * @return {boolean}
+ */
+var searchMatrix = function (matrix, target) {
+  const arr = matrix.flat();
+
+  let left = 0;
+  let right = arr.length - 1;
+
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+    if (arr[mid] === target) {
+      return true;
+    }
+    if (arr[mid] < target) {
+      left = mid + 1;
+    } else {
+      right = mid - 1;
+    }
+  }
+  return false;
+};
+
+/**
+ * @param {number[][]} matrix
+ * @param {number} target
+ * @return {boolean}
+ */
+var searchMatrix = function (matrix, target) {
+  if (!matrix || matrix.length === 0 || matrix[0].length === 0) {
+    return false;
+  }
+
+  let m = matrix.length,
+    n = matrix[0].length;
+  let start = 0,
+    end = m * n - 1;
+
+  while (start <= end) {
+    let mid = Math.floor((start + end) / 2);
+    let row = Math.floor(mid / n),
+      col = mid % n;
+    if (matrix[row][col] === target) {
+      return true;
+    } else if (matrix[row][col] < target) {
+      start = mid + 1;
+    } else {
+      end = mid - 1;
+    }
+  }
+
+  return false;
+};
+
+/**
+ * @param {character[][]} board
+ * @return {boolean}
+ */
+var isValidSudoku = function (board) {
+  // Check rows
+  for (let i = 0; i < 9; i++) {
+    const row = new Set();
+    for (let j = 0; j < 9; j++) {
+      if (board[i][j] !== ".") {
+        if (row.has(board[i][j])) {
+          return false;
+        }
+        row.add(board[i][j]);
+      }
+    }
+  }
+
+  // Check columns
+  for (let j = 0; j < 9; j++) {
+    const col = new Set();
+    for (let i = 0; i < 9; i++) {
+      if (board[i][j] !== ".") {
+        if (col.has(board[i][j])) {
+          return false;
+        }
+        col.add(board[i][j]);
+      }
+    }
+  }
+
+  // Check 3x3 sub-boxes
+  for (let box = 0; box < 9; box++) {
+    const subBox = new Set();
+    const rowStart = Math.floor(box / 3) * 3;
+    const colStart = (box % 3) * 3;
+    for (let i = rowStart; i < rowStart + 3; i++) {
+      for (let j = colStart; j < colStart + 3; j++) {
+        if (board[i][j] !== ".") {
+          if (subBox.has(board[i][j])) {
+            return false;
+          }
+          subBox.add(board[i][j]);
+        }
+      }
+    }
+  }
+
+  return true;
+};
+
+/**
+ * @param {character[][]} board
+ * @return {boolean}
+ */
+var isValidSudoku = function (board) {
+  for (let i = 0; i < board.length; i++) {
+    let rowMap = {};
+    let colMap = {};
+    let boxMap = {};
+    for (let j = 0; j < board[i].length; j++) {
+      let box =
+        board[3 * Math.floor(i / 3) + Math.floor(j / 3)][3 * (i % 3) + (j % 3)];
+
+      if (board[i][j] != ".") {
+        if (rowMap[board[i][j]]) return false;
+        rowMap[board[i][j]] = 1;
+      }
+      if (board[j][i] != ".") {
+        if (colMap[board[j][i]]) return false;
+        colMap[board[j][i]] = 1;
+      }
+      if (box != ".") {
+        if (boxMap[box]) return false;
+        boxMap[box] = 1;
+      }
+    }
+  }
+  return true;
+};
