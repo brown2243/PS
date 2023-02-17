@@ -1991,3 +1991,276 @@ var isValidSudoku = function (board) {
   }
   return true;
 };
+
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {number}
+ */
+const digging = (current, depth, arr) => {
+  if (!current) {
+    arr.push(depth - 1);
+    return;
+  }
+  digging(current.left, depth + 1, arr);
+  digging(current.right, depth + 1, arr);
+};
+var maxDepth = function (root) {
+  const arr = [];
+  digging(root, 1, arr);
+  return Math.max(...arr);
+};
+
+/**
+ * @param {TreeNode} root
+ * @return {number}
+ */
+
+var maxDepth = function (root) {
+  if (!root) {
+    return 0;
+  }
+  const leftHeight = maxDepth(root.left);
+  const rightHeight = maxDepth(root.right);
+  return Math.max(leftHeight, rightHeight) + 1;
+};
+
+/**
+ * @param {string} s
+ * @return {number}
+ */
+var firstUniqChar = function (s) {
+  const obj = s.split("").reduce((acc, cur) => {
+    acc[cur] = acc[cur] + 1 || 1;
+    return acc;
+  }, {});
+  const arr = Object.keys(obj).filter((v) => obj[v] === 1);
+  if (arr.length === 0) {
+    return -1;
+  }
+  let ans = s.length;
+  arr.forEach((v) => {
+    ans = Math.min(ans, s.indexOf(v));
+  });
+  return ans;
+};
+
+/**
+ * @param {string} s
+ * @return {number}
+ */
+var firstUniqChar = function (s) {
+  const ref = new Array(26).fill(0);
+
+  for (let i = 0; i < s.length; i++) {
+    ref[s.charCodeAt(i) - 97]++;
+  }
+  for (let i = 0; i < s.length; i++) {
+    if (ref[s.charCodeAt(i) - 97] === 1) {
+      return i;
+    }
+  }
+  return -1;
+};
+
+/**
+ * @param {string} ransomNote
+ * @param {string} magazine
+ * @return {boolean}
+ */
+var canConstruct = function (ransomNote, magazine) {
+  const arr = new Array(26).fill(0);
+  const aCode = "a".charCodeAt(0);
+  for (let i = 0; i < magazine.length; i++) {
+    arr[magazine.charCodeAt(i) - aCode]++;
+  }
+  for (let i = 0; i < ransomNote.length; i++) {
+    if (!arr[ransomNote.charCodeAt(i) - aCode]) {
+      return false;
+    } else {
+      arr[ransomNote.charCodeAt(i) - aCode] -= 1;
+    }
+  }
+  return true;
+};
+
+/**
+ * @param {string} ransomNote
+ * @param {string} magazine
+ * @return {boolean}
+ */
+var canConstruct = function (ransomNote, magazine) {
+  return (
+    magazine.length >= ransomNote.length &&
+    [...ransomNote].every((c) => {
+      let i = magazine.indexOf(c);
+      if (i >= 0) {
+        magazine = magazine.slice(0, i) + magazine.slice(i + 1);
+        return true;
+      }
+      return false;
+    })
+  );
+};
+/**
+ * @param {string} ransomNote
+ * @param {string} magazine
+ * @return {boolean}
+ */
+let canConstruct = function (ransomNote, magazine) {
+  for (letter of ransomNote) {
+    if (magazine.includes(letter)) {
+      magazine = magazine.replace(letter, "");
+    } else return false;
+  }
+  return true;
+};
+
+/**
+ * @param {string} s
+ * @param {string} t
+ * @return {boolean}
+ */
+var isAnagram = function (s, t) {
+  return (
+    s.length === t.length &&
+    [...s].every((v) => {
+      const idx = t.indexOf(v);
+      if (idx === -1) {
+        return false;
+      }
+      t = t.substring(0, idx) + t.substring(idx + 1);
+      return true;
+    })
+  );
+};
+
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @param {number} n
+ * @return {ListNode}
+ */
+var removeNthFromEnd = function (head, n) {
+  const points = [];
+  let current = head;
+  while (current) {
+    points.push(current);
+    current = current.next;
+  }
+  const prevTargetNode = points[points.length - n - 1];
+  const nextTargetNode = points[points.length - n + 1];
+  if (prevTargetNode && nextTargetNode) {
+    prevTargetNode.next = nextTargetNode;
+  } else if (prevTargetNode) {
+    prevTargetNode.next = null;
+  } else {
+    points[0] = points[0].next;
+  }
+  return points[0];
+};
+
+/**
+ * @param {string} s
+ * @return {number}
+ */
+var lengthOfLongestSubstring = function (s) {
+  const N = s.length;
+  let max = 0;
+  for (let i = 0; i < N; i++) {
+    if (max >= N - i) {
+      break;
+    }
+    const obj = {};
+    for (let j = i; j < N; j++) {
+      if (obj[s[j]]) {
+        max = Math.max(max, j - i);
+        break;
+      } else {
+        obj[s[j]] = true;
+      }
+    }
+  }
+  return max;
+};
+
+/**
+ * @param {string} s
+ * @return {number}
+ */
+var lengthOfLongestSubstring = function (s) {
+  if (s.length === 1) return 1;
+  const N = s.length;
+  let max = 0;
+  for (let i = 0; i < N; i++) {
+    if (max >= N - i) {
+      break;
+    }
+    const obj = {};
+    let flag = true;
+    for (let j = i; j < N; j++) {
+      if (obj[s[j]]) {
+        max = Math.max(max, j - i);
+        flag = false;
+        break;
+      } else {
+        obj[s[j]] = true;
+      }
+    }
+    if (flag) {
+      max = Math.max(max, N - i);
+    }
+  }
+
+  return max;
+};
+
+/**
+ * @param {string} s
+ * @return {number}
+ */
+var lengthOfLongestSubstring = function (s) {
+  let pred = "";
+  let curr = "";
+  for (let a of s) {
+    index = curr.indexOf(a);
+    if (index !== -1) {
+      if (curr.length > pred.length) {
+        pred = curr;
+      }
+    }
+    curr = curr.slice(index + 1) + a;
+  }
+  return curr.length > pred.length ? curr.length : pred.length;
+};
+
+/**
+ * @param {string} s
+ * @return {number}
+ */
+var lengthOfLongestSubstring = function (s) {
+  let max = 0;
+  let cur = "";
+  for (let i = 0; i < s.length; i++) {
+    let pos = cur.indexOf(s[i]);
+    if (pos !== -1) {
+      cur = cur.slice(pos + 1);
+    }
+    cur += s[i];
+    max = Math.max(max, cur.length);
+  }
+  return max;
+};
