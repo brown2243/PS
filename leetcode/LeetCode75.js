@@ -2264,3 +2264,424 @@ var lengthOfLongestSubstring = function (s) {
   }
   return max;
 };
+
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val) {
+ *     this.val = val;
+ *     this.next = null;
+ * }
+ */
+
+/**
+ * @param {ListNode} head
+ * @return {boolean}
+ */
+var hasCycle = function (head) {
+  let fast = head;
+  let slow = head;
+
+  while (fast) {
+    fast = fast?.next?.next;
+    slow = slow.next;
+    if (fast === slow) {
+      return true;
+    }
+  }
+  return false;
+};
+/**
+ * @param {ListNode} head
+ * @return {boolean}
+ */
+var hasCycle = function (head) {
+  let fast = head;
+  let slow = head;
+
+  while (fast && slow) {
+    if (!fast || !fast.next) return false;
+    if (fast.next === slow) return true;
+
+    fast = fast.next.next;
+    slow = slow.next;
+  }
+  return false;
+};
+
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @param {number} val
+ * @return {ListNode}
+ */
+var removeElements = function (head, val) {
+  if (!head) {
+    return null;
+  }
+  const dummy = new ListNode(0, head);
+  let current = dummy;
+
+  while (current.next) {
+    if (current.next.val === val) {
+      current.next = current.next.next;
+    } else {
+      current = current.next;
+    }
+  }
+
+  return dummy.next;
+};
+var removeElements = function (head, val) {
+  if (head == null) return head;
+
+  if (head.val == val) {
+    return removeElements(head.next, val);
+  } else {
+    head.next = removeElements(head.next, val);
+    return head;
+  }
+};
+var removeElements = function (head, val) {
+  let curr = head;
+  let prev = null;
+
+  while (curr) {
+    if (curr.val === val && !prev) {
+      prev = curr;
+      curr = curr.next;
+      head = curr;
+      prev.next = null;
+      prev = null;
+      continue;
+    }
+
+    prev = curr;
+    curr = curr.next;
+
+    while (curr && curr.val === val && prev) {
+      prev.next = curr.next;
+      curr.next = null;
+      curr = prev.next;
+    }
+  }
+  return head;
+};
+
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var singleNonDuplicate = function (nums) {
+  let left = 0;
+  let right = nums.length - 1;
+
+  while (left < right) {
+    let mid = Math.floor((left + right) / 2);
+
+    if (mid % 2 === 1) {
+      mid--;
+    }
+
+    if (nums[mid] !== nums[mid + 1]) {
+      right = mid;
+    } else {
+      left = mid + 2;
+    }
+  }
+  return nums[left];
+};
+
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var singleNonDuplicate = function (nums) {
+  let left = 0;
+  let right = nums.length - 1;
+  while (left <= right) {
+    let mid = Math.floor((left + right) / 2);
+    if (
+      (mid % 2 == 0 && nums[mid] == nums[mid + 1]) ||
+      (mid % 2 == 1 && nums[mid] == nums[mid - 1])
+    )
+      left = mid + 1;
+    else {
+      right = mid - 1;
+    }
+  }
+  return nums[left];
+};
+
+/**
+ * @param {number[]} weights
+ * @param {number} days
+ * @return {number}
+ */
+var shipWithinDays = function (weights, days) {
+  let left = Math.max(...weights); // Minimum possible capacity
+  let right = weights.reduce((sum, w) => sum + w); // Maximum possible capacity
+  while (left < right) {
+    const mid = Math.floor((left + right) / 2); // Calculate the middle capacity
+    let total = 0;
+    let requiredDays = 1;
+    for (const w of weights) {
+      if (total + w > mid) {
+        requiredDays++; // Need another day to ship the remaining packages
+        total = w;
+      } else {
+        total += w; // Add the package to the current day's shipment
+      }
+    }
+    if (requiredDays <= days) {
+      // The current capacity can ship all packages in the given days or less
+      right = mid; // Check if a smaller capacity can also work
+    } else {
+      // The current capacity cannot ship all packages in the given days
+      left = mid + 1; // Try a larger capacity
+    }
+  }
+  return left; // The minimum capacity required to ship all packages within the given days
+};
+
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var rob1 = function (nums) {
+  if (nums.length === 0) {
+    return 0;
+  }
+
+  if (nums.length === 2) {
+    return Math.max(nums[0], nums[1]);
+  }
+
+  const dp = [];
+  dp[0] = nums[0];
+  dp[1] = Math.max(nums[0], nums[1]);
+
+  for (let i = 2; i < nums.length; i++) {
+    dp[i] = Math.max(dp[i - 2] + nums[i], dp[i - 1]);
+  }
+  return dp.pop();
+};
+
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var rob2 = function (nums) {
+  if (nums.length === 0) {
+    return 0;
+  }
+
+  if (nums.length < 2) {
+    return Math.max(nums[0], nums[1] || 0);
+  }
+  const dp1 = [];
+  dp1[0] = nums[0];
+  dp1[1] = Math.max(nums[0], nums[1]);
+  const dp2 = [];
+  dp2[0] = 0;
+  dp2[1] = nums[1];
+
+  for (let i = 2; i < nums.length; i++) {
+    if (i === nums.length - 1) {
+      dp1[i] = dp1[i - 1];
+    } else {
+      dp1[i] = Math.max(dp1[i - 2] + nums[i], dp1[i - 1]);
+    }
+    dp2[i] = Math.max(dp2[i - 2] + nums[i], dp2[i - 1]);
+  }
+
+  return Math.max(dp1[nums.length - 2], dp2[nums.length - 1]);
+};
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var rob2 = function (nums) {
+  let len = nums.length;
+
+  if (len < 4) return Math.max(...nums);
+
+  function rob(start, end) {
+    let prev = 0,
+      before_prev = 0;
+    for (let i = start; i < end; i++) {
+      let temp = prev;
+      prev = Math.max(nums[i] + before_prev, prev);
+      before_prev = temp;
+    }
+    return prev;
+  }
+
+  return Math.max(rob(0, len - 1), rob(1, len));
+};
+
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var deleteAndEarn = function (nums) {
+  // Create an array of length 10001 to store the frequency of each number.
+  const freq = new Array(10001).fill(0);
+  for (const num of nums) {
+    freq[num]++;
+  }
+
+  // Initialize two dynamic programming tables.
+  let dp1 = 0;
+  let dp2 = freq[1];
+
+  // Fill the dynamic programming tables using the recurrence relations.
+  for (let i = 2; i < freq.length; i++) {
+    const prev = Math.max(dp1, dp2);
+    dp2 = prev + i * freq[i];
+    dp1 = prev;
+  }
+
+  // Return the maximum number of points that can be earned.
+  return Math.max(dp1, dp2);
+};
+
+/**
+ * @param {number[][]} matrix
+ * @return {number[]}
+ */
+var spiralOrder = function (matrix) {
+  const check = Array.from({ length: matrix.length }, () =>
+    new Array(matrix[0].length).fill(true)
+  );
+  const ans = [matrix[0][0]];
+  check[0][0] = false;
+  const moves = [
+    [0, 1],
+    [1, 0],
+    [0, -1],
+    [-1, 0],
+  ];
+
+  let x = 0;
+  let y = 0;
+  let moveIdx = 0;
+  while (true) {
+    const nextMove = moves[moveIdx];
+    const nextX = x + nextMove[0];
+    const nextY = y + nextMove[1];
+
+    if (matrix?.[nextX]?.[nextY] !== undefined && check?.[nextX]?.[nextY]) {
+      ans.push(matrix[nextX][nextY]);
+      check[nextX][nextY] = false;
+      x = nextX;
+      y = nextY;
+    } else {
+      let flag = true;
+      for (let i = 0; i < 4; i++) {
+        moveIdx = moveIdx + 1 === moves.length ? 0 : moveIdx + 1;
+
+        const nextMove = moves[moveIdx];
+        const nextX = x + nextMove[0];
+        const nextY = y + nextMove[1];
+
+        if (matrix?.[nextX]?.[nextY] !== undefined && check?.[nextX]?.[nextY]) {
+          ans.push(matrix[nextX][nextY]);
+          check[nextX][nextY] = false;
+          x = nextX;
+          y = nextY;
+          flag = false;
+          break;
+        }
+      }
+      if (flag) {
+        break;
+      }
+    }
+  }
+  return ans;
+};
+
+/**
+ * @param {number[][]} grid
+ * @return {number[]}
+ */
+var findBall = function (grid) {
+  const rows = grid.length;
+  const cols = grid[0].length;
+  const result = new Array(cols).fill(-1); // Initialize result array with -1s
+
+  for (let col = 0; col < cols; col++) {
+    let row = 0;
+    let currCol = col;
+    while (row < rows) {
+      if (grid[row][currCol] === 1) {
+        // Board redirects ball to the right
+        if (currCol === cols - 1) {
+          // Ball hits right wall
+          break;
+        }
+        currCol++;
+        if (grid[row][currCol] !== 1) {
+          // Ball gets stuck between two boards
+          break;
+        }
+      } else if (grid[row][currCol] === -1) {
+        // Board redirects ball to the left
+        if (currCol === 0) {
+          // Ball hits left wall
+          break;
+        }
+        currCol--;
+        if (grid[row][currCol] !== -1) {
+          // Ball gets stuck between two boards
+          break;
+        }
+      }
+      row++;
+      if (row === rows) {
+        // Ball falls out of the bottom
+        result[col] = currCol;
+      }
+    }
+  }
+
+  return result;
+};
+
+/**
+ * @param {number[][]} grid
+ * @return {number[]}
+ */
+var findBall = function (grid) {
+  const result = new Array(grid[0].length);
+
+  function dfs(row, col, grid) {
+    if (row === grid.length) {
+      return col;
+    }
+
+    const nextColumn = col + grid[row][col];
+
+    if (
+      nextColumn < 0 ||
+      nextColumn > grid[0].length - 1 ||
+      grid[row][col] !== grid[row][nextColumn]
+    ) {
+      return -1;
+    }
+
+    return dfs(row + 1, nextColumn, grid);
+  }
+
+  for (let i = 0; i < grid[0].length; i++) {
+    result[i] = dfs(0, i, grid);
+  }
+
+  return result;
+};

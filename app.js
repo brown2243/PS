@@ -1,67 +1,46 @@
 /**
- * @param {string} s
- * @return {number}
+ * @param {number[][]} grid
+ * @return {number[]}
  */
-var lengthOfLongestSubstring = function (s) {
-  if (s.length === 1) return 1;
-  const N = s.length;
-  let max = 0;
-  for (let i = 0; i < N; i++) {
-    if (max >= N - i) {
-      break;
-    }
-    const obj = {};
-    let flag = true;
-    for (let j = i; j < N; j++) {
-      if (obj[s[j]]) {
-        max = Math.max(max, j - i);
-        flag = false;
-        break;
-      } else {
-        obj[s[j]] = true;
+var findBall = function (grid) {
+  const rows = grid.length;
+  const cols = grid[0].length;
+  const result = new Array(cols).fill(-1); // Initialize result array with -1s
+
+  for (let col = 0; col < cols; col++) {
+    let row = 0;
+    let currCol = col;
+    while (row < rows) {
+      if (grid[row][currCol] === 1) {
+        // Board redirects ball to the right
+        if (currCol === cols - 1) {
+          // Ball hits right wall
+          break;
+        }
+        currCol++;
+        if (grid[row][currCol] !== 1) {
+          // Ball gets stuck between two boards
+          break;
+        }
+      } else if (grid[row][currCol] === -1) {
+        // Board redirects ball to the left
+        if (currCol === 0) {
+          // Ball hits left wall
+          break;
+        }
+        currCol--;
+        if (grid[row][currCol] !== -1) {
+          // Ball gets stuck between two boards
+          break;
+        }
+      }
+      row++;
+      if (row === rows) {
+        // Ball falls out of the bottom
+        result[col] = currCol;
       }
     }
-    if (flag) {
-      max = Math.max(max, N - i);
-    }
   }
 
-  return max;
-};
-
-/**
- * @param {string} s
- * @return {number}
- */
-var lengthOfLongestSubstring = function (s) {
-  let pred = "";
-  let curr = "";
-  for (let a of s) {
-    index = curr.indexOf(a);
-    if (index !== -1) {
-      if (curr.length > pred.length) {
-        pred = curr;
-      }
-    }
-    curr = curr.slice(index + 1) + a;
-  }
-  return curr.length > pred.length ? curr.length : pred.length;
-};
-
-/**
- * @param {string} s
- * @return {number}
- */
-var lengthOfLongestSubstring = function (s) {
-  let max = 0;
-  let cur = "";
-  for (let i = 0; i < s.length; i++) {
-    let pos = cur.indexOf(s[i]);
-    if (pos !== -1) {
-      cur = cur.slice(pos + 1);
-    }
-    cur += s[i];
-    max = Math.max(max, cur.length);
-  }
-  return max;
+  return result;
 };
