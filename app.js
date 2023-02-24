@@ -1,46 +1,25 @@
 /**
- * @param {number[][]} grid
- * @return {number[]}
+ * @param {string} s
+ * @return {number}
  */
-var findBall = function (grid) {
-  const rows = grid.length;
-  const cols = grid[0].length;
-  const result = new Array(cols).fill(-1); // Initialize result array with -1s
-
-  for (let col = 0; col < cols; col++) {
-    let row = 0;
-    let currCol = col;
-    while (row < rows) {
-      if (grid[row][currCol] === 1) {
-        // Board redirects ball to the right
-        if (currCol === cols - 1) {
-          // Ball hits right wall
-          break;
-        }
-        currCol++;
-        if (grid[row][currCol] !== 1) {
-          // Ball gets stuck between two boards
-          break;
-        }
-      } else if (grid[row][currCol] === -1) {
-        // Board redirects ball to the left
-        if (currCol === 0) {
-          // Ball hits left wall
-          break;
-        }
-        currCol--;
-        if (grid[row][currCol] !== -1) {
-          // Ball gets stuck between two boards
-          break;
-        }
-      }
-      row++;
-      if (row === rows) {
-        // Ball falls out of the bottom
-        result[col] = currCol;
-      }
+var romanToInt = function (s) {
+  const values = {
+    I: 1,
+    V: 5,
+    X: 10,
+    L: 50,
+    C: 100,
+    D: 500,
+    M: 1000,
+  };
+  const n = s.length;
+  let total = values[s[n - 1]];
+  for (let i = n - 2; i >= 0; i--) {
+    if (values[s[i]] < values[s[i + 1]]) {
+      total -= values[s[i]];
+    } else {
+      total += values[s[i]];
     }
   }
-
-  return result;
+  return total;
 };
