@@ -1,25 +1,22 @@
 /**
- * @param {string} s
- * @return {number}
+ * @param {string[]} strs
+ * @return {string}
  */
-var romanToInt = function (s) {
-  const values = {
-    I: 1,
-    V: 5,
-    X: 10,
-    L: 50,
-    C: 100,
-    D: 500,
-    M: 1000,
-  };
-  const n = s.length;
-  let total = values[s[n - 1]];
-  for (let i = n - 2; i >= 0; i--) {
-    if (values[s[i]] < values[s[i + 1]]) {
-      total -= values[s[i]];
-    } else {
-      total += values[s[i]];
+var longestCommonPrefix = function (strs) {
+  let prefix = "";
+
+  outer: for (let i = 0; i < strs[0].length; i++) {
+    const nowChar = strs[0]?.[i];
+    if (!now) {
+      break;
     }
+    for (let j = 1; j < strs.length; j++) {
+      const char = strs[j]?.[i];
+      if (nowChar !== char) {
+        break outer;
+      }
+    }
+    prefix += nowChar;
   }
-  return total;
+  return prefix;
 };

@@ -2711,3 +2711,42 @@ var romanToInt = function (s) {
   }
   return total;
 };
+
+/**
+ * @param {string[]} strs
+ * @return {string}
+ */
+var longestCommonPrefix = function (strs) {
+  let prefix = "";
+
+  outer: for (let i = 0; i < strs[0].length; i++) {
+    const nowChar = strs[0]?.[i];
+    if (!now) {
+      break;
+    }
+    for (let j = 1; j < strs.length; j++) {
+      const char = strs[j]?.[i];
+      if (nowChar !== char) {
+        break outer;
+      }
+    }
+    prefix += nowChar;
+  }
+  return prefix;
+};
+/**
+ * @param {string[]} strs
+ * @return {string}
+ */
+var longestCommonPrefix = function (strs) {
+  if (strs.length === 0) {
+    return "";
+  }
+  let prefix = strs[0];
+  for (let i = 1; i < strs.length; i++) {
+    while (strs[i].indexOf(prefix) !== 0) {
+      prefix = prefix.substring(0, prefix.length - 1);
+    }
+  }
+  return prefix;
+};
