@@ -1,6 +1,36 @@
 // 주사위 세개
 {
   const fs = require("fs");
+  const input = fs
+    // .readFileSync("backjon/input.txt")
+    .readFileSync("/dev/stdin")
+    .toString()
+    .trim();
+
+  const N = Number(input);
+
+  const ans = [];
+  const solve = (arr = []) => {
+    if (arr.length == N) {
+      ans.push(arr.join(" "));
+      return;
+    }
+
+    for (let i = 1; i <= N; i++) {
+      if (!arr.includes(i)) {
+        arr.push(i);
+        solve(arr);
+        arr.pop();
+      }
+    }
+  };
+  solve();
+  console.log(ans.join("\n"));
+}
+
+// 주사위 세개
+{
+  const fs = require("fs");
   const inputs = fs
     // .readFileSync("backjon/input.txt")
     .readFileSync("/dev/stdin")
