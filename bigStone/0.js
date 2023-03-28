@@ -1,15 +1,16 @@
-// var permutation = (arr, r, depth = 0) => {
-//   if (r === depth) {
-//     console.log(arr.slice(0, r).join(" "));
-//     return;
-//   }
-//   for (let i = depth; i < arr.length; i++) {
-//     [arr[i], arr[depth]] = [arr[depth], arr[i]];
-//     permutation(arr, r, depth + 1);
-//     [arr[i], arr[depth]] = [arr[depth], arr[i]];
-//   }
-// };
-// //
+var permutation = (arr, r, depth = 0) => {
+  if (r === depth) {
+    console.log(arr.slice(0, r).join(" "));
+    return;
+  }
+  for (let i = depth; i < arr.length; i++) {
+    [arr[i], arr[depth]] = [arr[depth], arr[i]];
+    permutation(arr, r, depth + 1);
+    [arr[i], arr[depth]] = [arr[depth], arr[i]];
+  }
+};
+
+//
 const N = 5;
 const permutation = (arr = []) => {
   if (arr.length === 3) {
@@ -25,7 +26,7 @@ const permutation = (arr = []) => {
     }
   }
 };
-// permutation();
+permutation();
 
 const arr = [1, 2, 3, 4, 5];
 
@@ -42,4 +43,16 @@ const combination = (start = 0, ans = []) => {
   }
 };
 
-/combination();
+combination();
+
+const split = (str = "", delimiter = "") => {
+  const arr = [];
+  while (str.indexOf(delimiter) !== -1) {
+    const idx = str.indexOf(delimiter);
+    const token = str.substring(0, idx);
+    arr.push(token);
+    str = str.substring(idx + delimiter.length);
+  }
+  arr.push(str);
+  return arr;
+};
