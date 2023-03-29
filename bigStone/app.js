@@ -1,16 +1,19 @@
-// 2309
+// 2559
 {
   const fs = require("fs");
   const inputs = fs
     // .readFileSync("./bigStone/input.txt")
     .readFileSync("/dev/stdin")
     .toString()
-    .trim();
+    .trim()
+    .split("\n");
 
-  const arr = new Array(26).fill(0);
-
-  inputs.split("").forEach((char) => {
-    arr[char.charCodeAt() - 97] += 1;
-  });
-  console.log(arr.join(" "));
+  const [[N, K], arr] = inputs.map((str) => str.split(" ").map(Number));
+  let max = arr.slice(0, K).reduce((acc, cur) => acc + cur, 0);
+  let sum = max;
+  for (let i = K; i < N; i++) {
+    sum += arr[i] - arr[i - K];
+    max = Math.max(max, sum);
+  }
+  console.log(max);
 }
