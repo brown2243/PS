@@ -1,19 +1,35 @@
-// 2559
+// 4375
 {
   const fs = require("fs");
+
   const inputs = fs
-    // .readFileSync("./bigStone/input.txt")
-    .readFileSync("/dev/stdin")
+    .readFileSync(
+      process.platform === "linux" ? "/dev/stdin" : "./bigStone/input.txt"
+    )
     .toString()
     .trim()
     .split("\n");
 
-  const [[N, K], arr] = inputs.map((str) => str.split(" ").map(Number));
-  let max = arr.slice(0, K).reduce((acc, cur) => acc + cur, 0);
-  let sum = max;
-  for (let i = K; i < N; i++) {
-    sum += arr[i] - arr[i - K];
-    max = Math.max(max, sum);
+  let ans = "";
+
+  for (let i = 0; i < inputs.length; i += 1) {
+    const input = inputs[i];
+    const bint = BigInt(input);
+
+    if (bint === 1n) {
+      ans += `1\n`;
+      continue;
+    }
+
+    let target = BigInt("".padStart(input.length + 1, "1"));
+
+    while (true) {
+      if (target % bint === 0n) {
+        ans += `${target.toString().length}\n`;
+        break;
+      }
+      target = target * 10n + 1n;
+    }
   }
-  console.log(max);
+  console.log(ans);
 }
