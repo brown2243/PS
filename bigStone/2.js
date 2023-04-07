@@ -158,3 +158,85 @@
   }
   console.log(ans);
 }
+
+// 2583
+{
+  const os = process.platform;
+  const fs = require("fs");
+  const input =
+    os === "linux"
+      ? fs.readFileSync("/dev/stdin").toString().trim()
+      : fs.readFileSync("bigStone/input.txt").toString().trim();
+
+  const [[M, N, K], ...rects] = input
+    .split("\n")
+    .map((s) => s.split(" ").map(Number));
+
+  const dx = [1, 0, -1, 0];
+  const dy = [0, 1, 0, -1];
+
+  const dfs = (graph, x, y, map, key) => {
+    graph[x][y] = 1;
+    map.set(key, (map.get(key) || 0) + 1);
+    for (let k = 0; k < 4; k += 1) {
+      const nx = x + dx[k];
+      const ny = y + dy[k];
+      if (0 <= nx && nx < M && 0 <= ny && ny < N && graph[nx][ny] === 0) {
+        dfs(graph, nx, ny, map, key);
+      }
+    }
+  };
+
+  const graph = Array.from({ length: M }, () => new Array(N).fill(0));
+  rects.forEach((rect) => {
+    const [x1, y1, x2, y2] = rect;
+    for (let x = x1; x < x2; x += 1) {
+      for (let y = y1; y < y2; y += 1) {
+        graph[y][x] = 1;
+      }
+    }
+  });
+  const ansMap = new Map();
+  for (let i = 0; i < M; i++) {
+    for (let j = 0; j < N; j++) {
+      if (!graph[i][j]) {
+        const key = `${i}${j}`;
+        dfs(graph, i, j, ansMap, key);
+      }
+    }
+  }
+  const ans = Array.from(ansMap.values()).sort((a, b) => a - b);
+  console.log(`${ans.length}\n` + ans.join(" "));
+}
+
+// 1992
+{
+  const fs = require("fs");
+  const input =
+    process.platform === "linux"
+      ? fs.readFileSync("/dev/stdin").toString().trim()
+      : fs.readFileSync("bigStone/input.txt").toString().trim();
+
+  const [N, ...graph] = input.split("\n").map((s) => s.split(""));
+  let ans = "";
+  const quadTree = (x, y, n) => {
+    const init = graph[x][y];
+    for (let i = x; i < x + n; i += 1) {
+      for (let j = y; j < y + n; j += 1) {
+        if (init !== graph[i][j]) {
+          ans += "(";
+          const half = n / 2;
+          quadTree(x, y, half);
+          quadTree(x, y + half, half);
+          quadTree(x + half, y, half);
+          quadTree(x + half, y + half, half);
+          ans += ")";
+          return;
+        }
+      }
+    }
+    ans += init;
+  };
+  quadTree(0, 0, Number(N.join("")));
+  console.log(ans);
+}
