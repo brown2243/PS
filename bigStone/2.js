@@ -240,3 +240,271 @@
   quadTree(0, 0, Number(N.join("")));
   console.log(ans);
 }
+// 2828
+{
+  const fs = require("fs");
+  const input =
+    process.platform === "linux"
+      ? fs.readFileSync("/dev/stdin").toString().trim()
+      : fs.readFileSync("bigStone/input.txt").toString().trim();
+
+  const [[N, M], [J], ...apples] = input
+    .split("\n")
+    .map((s) => s.split(" ").map(Number));
+
+  let ans = 0,
+    l = 1;
+  for (let i = 0; i < J; i += 1) {
+    const tmp = apples[i][0];
+    const r = l + M - 1;
+    if (tmp >= l && tmp <= r) {
+      continue;
+    }
+    if (tmp < l) {
+      ans += l - tmp;
+      l = tmp;
+    } else {
+      l += tmp - r;
+      ans += tmp - r;
+    }
+  }
+  console.log(ans);
+}
+
+// 2910
+{
+  const fs = require("fs");
+  const input =
+    process.platform === "linux"
+      ? fs.readFileSync("/dev/stdin").toString().trim()
+      : fs.readFileSync("bigStone/input.txt").toString().trim();
+
+  const [[N, C], arr] = input.split("\n").map((s) => s.split(" ").map(Number));
+
+  const map = arr.reduce((acc, cur) => {
+    acc.set(cur, (acc.get(cur) || 0) + 1);
+    return acc;
+  }, new Map());
+
+  const ans = [];
+
+  for (const [key, value] of map.entries()) {
+    ans.push(new Array(value).fill(Number(key)));
+  }
+
+  console.log(
+    ans
+      .sort((a, b) => b.length - a.length)
+      .flat()
+      .join(" ")
+  );
+}
+
+// 4659
+{
+  const fs = require("fs");
+  const input =
+    process.platform === "linux"
+      ? fs.readFileSync("/dev/stdin").toString().trim()
+      : fs.readFileSync("bigStone/input.txt").toString().trim();
+
+  const arr = input.split("\n");
+
+  const vowels = ["A", "E", "I", "O", "U"].map((v) => v.toLowerCase());
+
+  let ans = "";
+
+  for (let i = 0; i < arr.length - 1; i += 1) {
+    const str = arr[i];
+    let flag1 = false;
+    let flag2 = true;
+    let flag3 = true;
+
+    let vCnt = 0,
+      cCnt = 0;
+
+    let last = "";
+
+    for (let j = 0; j < str.length; j += 1) {
+      const char = str[j];
+      const isVowels = vowels.includes(char);
+      if (!flag1 && isVowels) {
+        flag1 = true;
+      }
+      if (isVowels) {
+        vCnt += 1;
+        cCnt = 0;
+      } else {
+        vCnt = 0;
+        cCnt += 1;
+      }
+      if (vCnt === 3 || cCnt === 3) {
+        flag2 = false;
+      }
+      if (last === char) {
+        if (last === "e" || last === "o") {
+          continue;
+        } else {
+          flag3 = false;
+        }
+      }
+      last = char;
+    }
+
+    if (flag1 && flag2 && flag3) {
+      ans += `<${str}> is acceptable.\n`;
+    } else {
+      ans += `<${str}> is not acceptable.\n`;
+    }
+  }
+  console.log(ans);
+}
+
+// 2870
+{
+  const fs = require("fs");
+  const input =
+    process.platform === "linux"
+      ? fs.readFileSync("/dev/stdin").toString().trim()
+      : fs.readFileSync("bigStone/input.txt").toString().trim();
+
+  const [N, ...arr] = input.split("\n");
+
+  const ans = [];
+  arr.forEach((str) => {
+    ans.push(...str.replace(/[a-z]/g, " ").split(" ").filter(Boolean));
+  });
+
+  ans.sort((a, b) => a - b);
+  console.log(ans.map(BigInt).join("\n"));
+
+  // console.log(
+  //   ans
+  //     .sort((a, b) => {
+  //       if (a.length === b.length) {
+  //         for (let i = 0; i < a.length; i += 1) {
+  //           const code1 = a[i].charCodeAt();
+  //           const code2 = b[i].charCodeAt();
+  //           if (code1 === code2) {
+  //             continue;
+  //           }
+  //           return code1 - code2;
+  //         }
+  //       }
+  //       return a.length - b.length;
+  //     })
+  //     .map(Number)
+  //     .join("\n")
+  // );
+}
+
+// 10709
+{
+  const fs = require("fs");
+  const input =
+    process.platform === "linux"
+      ? fs.readFileSync("/dev/stdin").toString().trim()
+      : fs.readFileSync("bigStone/input.txt").toString().trim();
+
+  const [N, ...arr] = input.split("\n");
+
+  const ans = arr
+    .map((str) => {
+      const sky = str.split("");
+      let last = -1;
+      return sky
+        .map((cloud, idx) => {
+          if (cloud === ".") {
+            return last === -1 ? -1 : idx - last;
+          }
+          last = idx;
+          return 0;
+        })
+        .join(" ");
+    })
+    .join("\n");
+  console.log(ans);
+}
+
+// 3474
+{
+  const fs = require("fs");
+  const input =
+    process.platform === "linux"
+      ? fs.readFileSync("/dev/stdin").toString().trim()
+      : fs.readFileSync("bigStone/input.txt").toString().trim();
+
+  const [N, ...arr] = input.split("\n").map(Number);
+  console.log(
+    arr
+      .map((v) => {
+        let tCnt = 0,
+          fCnt = 0;
+        for (let i = 2; i <= v; i *= 2) {
+          tCnt += Math.floor(v / i);
+        }
+        for (let i = 5; i <= v; i *= 5) {
+          fCnt += Math.floor(v / i);
+        }
+        return Math.min(tCnt, fCnt);
+      })
+      .join("\n")
+  );
+}
+
+// 2852
+{
+  const fs = require("fs");
+  const input =
+    process.platform === "linux"
+      ? fs.readFileSync("/dev/stdin").toString().trim()
+      : fs.readFileSync("bigStone/input.txt").toString().trim();
+
+  const [N, ...arr] = input.split("\n");
+
+  let point1 = 0,
+    point2 = 0;
+
+  const playTime = 48 * 60;
+
+  let aSum = 0,
+    bSum = 0;
+  let lastTime = 0;
+
+  for (let i = 0; i < N; i += 1) {
+    const [team, time] = arr[i].split(" ");
+    const [m, s] = time.split(":").map(Number);
+    const second = m * 60 + s;
+
+    if (point1 > point2) {
+      aSum += second - lastTime;
+    }
+
+    if (point2 > point1) {
+      bSum += second - lastTime;
+    }
+
+    team === "1" ? (point1 += 1) : (point2 += 1);
+    lastTime = second;
+  }
+
+  if (point1 > point2) {
+    aSum += playTime - lastTime;
+  }
+
+  if (point2 > point1) {
+    bSum += playTime - lastTime;
+  }
+
+  console.log(
+    [aSum, bSum]
+      .map((v) => {
+        const mins = Math.floor(v / 60)
+          .toString()
+          .padStart(2, "0");
+        const ss = (v % 60).toString().padStart(2, "0");
+        return `${mins}:${ss}`;
+      })
+      .join("\n")
+  );
+}
