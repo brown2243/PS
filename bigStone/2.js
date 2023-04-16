@@ -693,3 +693,128 @@ const checker = (N, M, virusArr) => (graph) => {
   }
   console.log(ans);
 }
+
+// 1068
+const search = (tree, target) => {
+  const dfs = (now) => {
+    let leafs = 0,
+      children = 0;
+
+    for (let child of tree[now]) {
+      if (child === target) continue;
+      leafs += dfs(child);
+      children += 1;
+    }
+    if (children === 0) {
+      return 1;
+    }
+    return leafs;
+  };
+
+  return dfs;
+};
+
+{
+  const fs = require("fs");
+  const input =
+    process.platform === "linux"
+      ? fs.readFileSync("/dev/stdin").toString().trim()
+      : fs.readFileSync("bigStone/input.txt").toString().trim();
+
+  const [[N], nodes, [target]] = input
+    .split("\n")
+    .map((v) => v.split(" ").map(Number));
+
+  let root = 0;
+  const tree = Array.from({ length: N }, () => new Array());
+
+  nodes.forEach((node, idx) => {
+    if (node === -1) {
+      root = idx;
+    } else {
+      tree[node].push(idx);
+    }
+  });
+
+  if (root === target) {
+    console.log(`${0}\n`);
+  } else {
+    const dfs = search(tree, target);
+    const ans = dfs(root);
+    console.log(`${ans}\n`);
+  }
+}
+// 1325
+// 강의와 로직을 동일하게 가져가도 시간초과 난 문제 ㅅㅂ...
+// https://velog.io/@jooyong-boo/javascript-%EB%B0%B1%EC%A4%80-1325%EB%B2%88-%ED%9A%A8%EC%9C%A8%EC%A0%81%EC%9D%B8-%ED%95%B4%ED%82%B9-qux42o4r
+// 위 사이트 코드로 문제 통과는 했다.
+// 주요 차이점은 재귀 대신 stack으로 구현
+// BFS 문제 풀때, Queue 돌릴 때는 시간 초과 나던 로직이 재귀 DFS로는 통과해서 배열의 값을 넣고 빼고 하는 과정보다
+// 재귀 로직 타는게 더 빠르겠다고 생각 했었는데 여기서는 반대
+{
+  const fs = require("fs");
+  const input =
+    process.platform === "linux"
+      ? fs.readFileSync("/dev/stdin").toString().trim()
+      : fs.readFileSync("bigStone/input.txt").toString().trim();
+
+  const [[N, M], ...arr] = input
+    .split("\n")
+    .map((v) => v.split(" ").map(Number));
+
+  const adj = Array.from({ length: N + 1 }, () => new Array());
+  arr.forEach(([a, b]) => {
+    adj[b].push(a);
+  });
+
+  const dfs = (here, visited) => {
+    visited[here] = 1;
+    let ret = 1;
+    for (let there of adj[here]) {
+      if (visited[there]) continue;
+      ret += dfs(there, visited);
+    }
+    return ret;
+  };
+
+  const dp = new Array(N + 1).fill(0);
+  let max = 0;
+
+  for (let i = 1; i <= N; i += 1) {
+    const visited = new Array(N + 1).fill(0);
+    dp[i] = dfs(i, visited);
+    max = Math.max(max, dp[i]);
+  }
+
+  let str = "";
+  dp.forEach((v, idx) => {
+    if (v === max) {
+      str += `${idx} `;
+    }
+  });
+  console.log(str.trim());
+}
+
+// 17298
+{
+  const fs = require("fs");
+  const input =
+    process.platform === "linux"
+      ? fs.readFileSync("/dev/stdin").toString().trim()
+      : fs.readFileSync("bigStone/input.txt").toString().trim();
+
+  const [[N], arr] = input.split("\n").map((v) => v.split(" ").map(Number));
+
+  const ret = new Array(N).fill(-1),
+    stack = [];
+
+  for (let i = 0; i < N; i++) {
+    while (stack.length > 0 && arr[stack[stack.length - 1]] < arr[i]) {
+      ret[stack[stack.length - 1]] = arr[i];
+      stack.pop();
+    }
+    stack.push(i);
+  }
+
+  console.log(ret.join(" "));
+}
