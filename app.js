@@ -1,59 +1,34 @@
-// /**
-//  * @param {string[]} strs
-//  * @return {string}
-//  */
-// var longestCommonPrefix = function (strs) {
-//   let prefix = "";
+const HOUR_TS = 60 * 60 * 1000;
+const DAY_TS = 24 * HOUR_TS;
+const f = (ts = Date.now(), cycle = 0) => {
+  console.log("----");
+  const now = new Date(ts);
 
-//   outer: for (let i = 0; i < strs[0].length; i++) {
-//     const nowChar = strs[0]?.[i];
-//     if (!now) {
-//       break;
-//     }
-//     for (let j = 1; j < strs.length; j++) {
-//       const char = strs[j]?.[i];
-//       if (nowChar !== char) {
-//         break outer;
-//       }
-//     }
-//     prefix += nowChar;
-//   }
-//   return prefix;
-// };
+  const days = now.getUTCDay(); // 5 금
+  console.log(days);
+  const hours = now.getUTCHours(); // UTC 8 === K 17
 
-// queueMicrotask(() => {
-//   console.log("test");
-// });
-
-const makeOne = (N, K) => {
-  let cnt = 0;
-  while (N !== 1) {
-    const remain = N % K;
-    if (remain === 0) {
-      N /= K;
-      cnt += 1;
-    } else {
-      N -= remain;
-      cnt += remain;
-    }
+  let leftDays = 0;
+  if (days === 5 && hours >= 8) {
+    leftDays = 7;
+  } else {
+    leftDays = days > 5 ? 12 - days : 5 - days;
+    console.log("dwqdqwdqw", leftDays, 7 - ((days + 2) % 7));
   }
-  return cnt;
+
+  console.log(now);
+  console.log(
+    new Date(
+      Math.floor(now.getTime() / DAY_TS) * DAY_TS +
+        leftDays * DAY_TS +
+        HOUR_TS * 8
+    )
+  );
+  console.log("----");
 };
-makeOne(25, 5);
-```typescript
-// 예제 3-4 1이 될 때 까지
-// N, K
-const makeOne = (N, K) => {
-  let cnt = 0;
-  while (N !== 1) {
-    if (N % K === 0) {
-      N /= K;
-    } else {
-      N -= 1;
-    }
-    cnt += 1;
-  }
-  return cnt;
-};
-makeOne(25, 5);
-```;
+
+f();
+f(Date.now() + DAY_TS * 1 - 1000 * 60 * 60 * 1);
+f(Date.now() + DAY_TS * 1 - 1000 * 60 * 60 * 2);
+f(Date.now() + DAY_TS * 1);
+f(Date.now() + DAY_TS * 2);

@@ -185,3 +185,273 @@ const setting = (N, L, R, graph) => {
   }
   console.log(cycle);
 }
+
+// 4179
+// 시간초과 코드
+{
+  const fs = require("fs");
+  const input =
+    process.platform === "linux"
+      ? fs.readFileSync("/dev/stdin").toString().trim()
+      : fs.readFileSync("bigStone/input.txt").toString().trim();
+
+  const [info, ...arr] = input.split("\n");
+
+  const [R, C] = info.split(" ").map(Number);
+  const maze = arr.map((v) => v.split(""));
+
+  const dx = [0, 1, 0, -1],
+    dy = [1, 0, -1, 0],
+    q = [],
+    firePoints = [];
+  let tmp = 0,
+    lastFireIdx = 0;
+  let cycle = 1;
+  for (let y = 0; y < C; y++) {
+    for (let x = 0; x < R; x++) {
+      const val = maze[y][x];
+      if (val === "J") {
+        q.push([y, x]);
+      }
+      if (val === "F") {
+        firePoints.push([y, x]);
+      }
+    }
+  }
+
+  while (q.length > 0) {
+    const [y, x] = q.shift();
+
+    for (let i = 0; i < 4; i++) {
+      const ny = y + dy[i];
+      const nx = x + dx[i];
+
+      if (nx < 0 || nx >= R || ny < 0 || ny >= C) {
+        console.log(cycle);
+        return;
+      }
+      if (maze[ny][nx] !== ".") continue;
+      q.push([ny, nx]);
+    }
+
+    tmp = firePoints.length;
+    for (let i = lastFireIdx; i < firePoints.length; i++) {
+      for (let i = 0; i < 4; i++) {
+        const ny = y + dy[i];
+        const nx = x + dx[i];
+
+        if (nx >= 0 && nx < R && ny >= 0 && ny < C && maze[ny][nx] === ".") {
+          maze[ny][nx] = "F";
+          firePoints.push([ny, nx]);
+        }
+      }
+    }
+    lastFireIdx = tmp;
+    cycle += 1;
+  }
+
+  console.log("IMPOSSIBLE");
+}
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs.readFileSync(filePath).toString().trim();
+
+  const [info, ...arr] = input.split("\n");
+
+  const [R, C] = info.split(" ").map(Number);
+  const maze = arr.map((v) => v.split(""));
+
+  const fireCheck = Array.from({ length: R }, () =>
+    new Array(C).fill(Number.MAX_SAFE_INTEGER)
+  );
+  const visited = Array.from({ length: R }, () => new Array(C).fill(0));
+
+  const dx = [0, 1, 0, -1],
+    dy = [1, 0, -1, 0],
+    q = [],
+    firePoints = [];
+
+  for (let y = 0; y < R; y++) {
+    for (let x = 0; x < C; x++) {
+      const val = maze[y][x];
+      if (val === "J") {
+        q.push([y, x]);
+        visited[y][x] = 1;
+      }
+      if (val === "F") {
+        firePoints.push([y, x]);
+        fireCheck[y][x] = 1;
+      }
+    }
+  }
+
+  while (firePoints.length > 0) {
+    const [y, x] = firePoints.shift();
+
+    for (let i = 0; i < 4; i++) {
+      const ny = y + dy[i];
+      const nx = x + dx[i];
+
+      if (nx < 0 || nx >= C || ny < 0 || ny >= R) continue;
+      if (fireCheck[ny][nx] !== Number.MAX_SAFE_INTEGER || maze[ny][nx] === "#")
+        continue;
+      firePoints.push([ny, nx]);
+      fireCheck[ny][nx] = fireCheck[y][x] + 1;
+    }
+  }
+
+  let ans = 0;
+  while (q.length > 0) {
+    const [y, x] = q.shift();
+    if (x === 0 || x === C - 1 || y === 0 || y === R - 1) {
+      ans = visited[y][x];
+      break;
+    }
+
+    for (let i = 0; i < 4; i++) {
+      const ny = y + dy[i];
+      const nx = x + dx[i];
+
+      if (nx < 0 || nx >= C || ny < 0 || ny >= R) continue;
+      if (visited[ny][nx] || maze[ny][nx] === "#") continue;
+      if (fireCheck[ny][nx] <= visited[y][x] + 1) continue;
+      visited[ny][nx] = visited[y][x] + 1;
+      q.push([ny, nx]);
+    }
+  }
+  console.log(ans !== 0 ? ans : "IMPOSSIBLE");
+}
+
+// 12869
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs.readFileSync(filePath).toString().trim();
+
+  const [info, arr] = input.split("\n");
+
+  const [N] = info.split(" ").map(Number);
+  const scvs = arr.split(" ").map(Number);
+
+  const hp = 61;
+  const visited = [...new Array(hp)].map((_) =>
+    [...new Array(hp)].map((_) => [...new Array(hp)].fill(0))
+  );
+  const attacks = [
+    [9, 3, 1],
+    [9, 1, 3],
+    [3, 1, 9],
+    [3, 9, 1],
+    [1, 3, 9],
+    [1, 9, 3],
+  ];
+
+  const q = [[scvs[0] || 0, scvs[1] || 0, scvs[2] || 0]];
+  while (q.length > 0) {
+    const [a, b, c] = q.shift();
+    // console.log(a, b, c);
+
+    if (visited[0][0][0]) break;
+    for (let i = 0; i < 6; i++) {
+      const na = Math.max(0, a - attacks[i][0]);
+      const nb = Math.max(0, b - attacks[i][1]);
+      const nc = Math.max(0, c - attacks[i][2]);
+
+      if (visited[na][nb][nc]) continue;
+      visited[na][nb][nc] = visited[a][b][c] + 1;
+      q.push([na, nb, nc]);
+    }
+  }
+  console.log(visited[0][0][0]);
+}
+
+// 12851
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs.readFileSync(filePath).toString().trim();
+
+  const [N, K] = input.split(" ").map(Number);
+  if (N === K) {
+    console.log(`${0}\n${1}`);
+    return;
+  }
+
+  const max = 100001;
+
+  const visited = new Array(max).fill(0);
+  const cnt = new Array(max).fill(0);
+  const q = [N];
+
+  visited[N] = 1;
+  cnt[N] = 1;
+  while (q.length > 0) {
+    const now = q.shift();
+    for (let i = 1; i < 4; i++) {
+      let next = now;
+      if (i === 1) next += 1;
+      if (i === 2) next -= 1;
+      if (i === 3) next *= 2;
+
+      if (0 <= next && next < max) {
+        if (!visited[next]) {
+          q.push(next);
+          visited[next] = visited[now] + 1;
+          cnt[next] += cnt[now];
+        } else if (visited[next] === visited[now] + 1) {
+          cnt[next] += cnt[now];
+        }
+      }
+    }
+  }
+  console.log(`${visited[K] - 1}\n${cnt[K]}`);
+}
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs.readFileSync(filePath).toString().trim();
+
+  const [N, K] = input.split(" ").map(Number);
+  if (N === K) {
+    console.log(`0\n${K}`);
+    return;
+  }
+
+  const max = 100001;
+
+  const prev = new Array(max).fill(0);
+  const visited = new Array(max).fill(0);
+  const q = [N];
+
+  visited[N] = 1;
+
+  while (q.length > 0) {
+    const now = q.shift();
+    for (let i = 1; i < 4; i++) {
+      let next = now;
+      if (i === 1) next += 1;
+      if (i === 2) next -= 1;
+      if (i === 3) next *= 2;
+
+      if (0 <= next && next < max && !visited[next]) {
+        visited[next] = visited[now] + 1;
+        prev[next] = now;
+        if (next === K) {
+          const path = [];
+          for (let i = K; i !== N; i = prev[i]) {
+            path.push(i);
+          }
+          path.push(N);
+          console.log(`${visited[now]}\n${path.reverse().join(" ")}`);
+          return;
+        }
+        q.push(next);
+      }
+    }
+  }
+}

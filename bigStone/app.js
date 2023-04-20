@@ -1,69 +1,46 @@
-// 16234
-const setting = (N, L, R, graph) => {
-  const dx = [0, 1, 0, -1],
-    dy = [1, 0, -1, 0];
-
-  const dfs = (visited, y, x) => {
-    const points = [];
-    let total = 0;
-
-    const recur = (y, x) => {
-      visited[y][x] = true;
-      total += graph[y][x];
-      points.push([y, x]);
-
-      for (let i = 0; i < 4; i++) {
-        const ny = y + dy[i];
-        const nx = x + dx[i];
-        if (nx < 0 || nx >= N || ny < 0 || ny >= N || visited[ny][nx]) continue;
-        const sub = Math.abs(graph[y][x] - graph[ny][nx]);
-        if (L <= sub && sub <= R) {
-          recur(ny, nx);
-        }
-      }
-    };
-    recur(y, x);
-    return { total, points };
-  };
-
-  return dfs;
-};
-
+// 12851
 {
   const fs = require("fs");
-  const input =
-    process.platform === "linux"
-      ? fs.readFileSync("/dev/stdin").toString().trim()
-      : fs.readFileSync("bigStone/input.txt").toString().trim();
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs.readFileSync(filePath).toString().trim();
 
-  const [[N, L, R], ...arr] = input
-    .split("\n")
-    .map((v) => v.split(" ").map(Number));
+  const [N, K] = input.split(" ").map(Number);
+  if (N === K) {
+    console.log(`0\n${K}`);
+    return;
+  }
 
-  let cycle = 0;
-  const dfs = setting(N, L, R, arr);
+  const max = 100001;
 
-  while (true) {
-    let flag = false;
-    const visited = Array.from({ length: N }, () => new Array(N).fill(false));
-    for (let y = 0; y < N; y++) {
-      for (let x = 0; x < N; x++) {
-        if (!visited[y][x]) {
-          const { total, points } = dfs(visited, y, x);
-          if (points.length > 1) {
-            flag = true;
-            const div = Math.floor(total / points.length);
-            points.forEach(([y, x]) => {
-              arr[y][x] = div;
-            });
+  const prev = new Array(max).fill(0);
+  const visited = new Array(max).fill(0);
+  const q = [N];
+
+  visited[N] = 1;
+
+  while (q.length > 0) {
+    const now = q.shift();
+    for (let i = 1; i < 4; i++) {
+      let next = now;
+      if (i === 1) next += 1;
+      if (i === 2) next -= 1;
+      if (i === 3) next *= 2;
+
+      if (0 <= next && next < max && !visited[next]) {
+        visited[next] = visited[now] + 1;
+        prev[next] = now;
+        if (next === K) {
+          const path = [];
+          for (let i = K; i !== N; i = prev[i]) {
+            path.push(i);
           }
+          path.push(N);
+          console.log(`${visited[now]}\n${path.reverse().join(" ")}`);
+          return;
         }
+        q.push(next);
       }
     }
-    if (!flag) {
-      break;
-    }
-    cycle++;
   }
-  console.log(cycle);
 }
