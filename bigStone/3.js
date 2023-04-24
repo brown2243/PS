@@ -455,3 +455,324 @@ const setting = (N, L, R, graph) => {
     }
   }
 }
+// 17071 플 5 skip
+
+// 14497
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs.readFileSync(filePath).toString().trim();
+
+  const [info, points, ...arr] = input.split("\n");
+  const [N, M] = info.split(" ").map(Number);
+  const [y1, x1] = points.split(" ").map((v) => Number(v) - 1);
+  const matrix = arr.map((v) => v.split(""));
+
+  const dx = [0, 1, 0, -1],
+    dy = [1, 0, -1, 0];
+
+  let cnt = 0;
+  let flag = true;
+
+  while (flag) {
+    const q = [[y1, x1]];
+    const visited = Array.from({ length: N }, () => new Array(M).fill(false));
+    visited[y1][x1] = true;
+
+    while (q.length > 0) {
+      const [y, x] = q.shift();
+
+      for (let i = 0; i < 4; i++) {
+        const ny = y + dy[i];
+        const nx = x + dx[i];
+
+        if (nx >= 0 && nx < M && ny >= 0 && ny < N && !visited[ny][nx]) {
+          visited[ny][nx] = true;
+          if (matrix[ny][nx] === "#") {
+            flag = false;
+            break;
+          } else if (matrix[ny][nx] === "1") {
+            matrix[ny][nx] = "0";
+          } else {
+            q.push([ny, nx]);
+          }
+        }
+      }
+    }
+    cnt++;
+  }
+  console.log(cnt);
+}
+// 3197
+// 시간초과
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs.readFileSync(filePath).toString().trim();
+
+  let [info, ...matrix] = input.split("\n");
+
+  const [N, M] = info.split(" ").map(Number);
+  matrix = matrix.map((v) => v.split(""));
+
+  let airs = [];
+  let bird = [];
+
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < M; j++) {
+      if (matrix[i][j] !== "X") airs.push([i, j]);
+      if (matrix[i][j] === "L") bird.push([i, j]);
+    }
+  }
+
+  const dx = [0, 1, 0, -1],
+    dy = [1, 0, -1, 0];
+
+  let flag = true;
+  let days = 0;
+
+  while (flag) {
+    const nextAirs = [];
+    for (let i = 0; i < airs.length; i++) {
+      const [y, x] = airs[i];
+      for (let i = 0; i < 4; i++) {
+        const ny = y + dy[i];
+        const nx = x + dx[i];
+        if (nx < 0 || nx >= M || ny < 0 || ny >= N) continue;
+        if (matrix[ny][nx] === "X") {
+          nextAirs.push([ny, nx]);
+          matrix[ny][nx] = ".";
+        }
+      }
+    }
+
+    airs = nextAirs;
+    const q = [bird[0]];
+    const visited = Array.from({ length: N }, () => new Array(M).fill(0));
+
+    while (q.length > 0) {
+      const [y, x] = q.shift();
+      visited[y][x] = 1;
+
+      for (let i = 0; i < 4; i++) {
+        const ny = y + dy[i];
+        const nx = x + dx[i];
+        if (
+          nx < 0 ||
+          nx >= M ||
+          ny < 0 ||
+          ny >= N ||
+          visited[ny][nx] ||
+          matrix[ny][nx] === "X"
+        )
+          continue;
+        if (ny === bird[1][0] && nx === bird[1][1]) {
+          flag = false;
+          break;
+        } else {
+          q.push([ny, nx]);
+        }
+      }
+    }
+    days++;
+  }
+  console.log(days);
+}
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs.readFileSync(filePath).toString().trim();
+
+  let [info, ...matrix] = input.split("\n");
+
+  const [N, M] = info.split(" ").map(Number);
+  matrix = matrix.map((v) => v.split(""));
+
+  let waterQ = [];
+  let swanQ = [];
+
+  const visited = Array.from({ length: N }, () => new Array(M).fill(false));
+  const visitedSwan = Array.from({ length: N }, () => new Array(M).fill(false));
+
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < M; j++) {
+      if (matrix[i][j] !== "X") {
+        visited[i][j] = 1;
+        waterQ.push([i, j]);
+      }
+      if (matrix[i][j] === "L") swanQ.push([i, j]);
+    }
+  }
+
+  const dx = [0, 1, 0, -1],
+    dy = [1, 0, -1, 0];
+
+  let days = 1;
+
+  swanQ.pop();
+  visitedSwan[swanQ[0][0]][swanQ[0][1]] = true;
+
+  while (true) {
+    let flag = false;
+    const swanTmp = [];
+    const waterTmp = [];
+
+    while (waterQ.length > 0) {
+      // shift -> pop으로 바꾸니 시간초과 나던게 통과 ㄷㄷ
+      const [y, x] = waterQ.pop();
+
+      for (let i = 0; i < 4; i++) {
+        const ny = y + dy[i];
+        const nx = x + dx[i];
+        if (nx < 0 || nx >= M || ny < 0 || ny >= N || visited[ny][nx]) continue;
+        if (matrix[ny][nx] === "X") {
+          visited[ny][nx] = 1;
+          waterTmp.push([ny, nx]);
+          matrix[ny][nx] = ".";
+        }
+      }
+    }
+
+    while (swanQ.length > 0) {
+      // shift -> pop으로 바꾸니 시간초과 나던게 통과 ㄷㄷ
+      const [y, x] = swanQ.pop();
+
+      for (let i = 0; i < 4; i++) {
+        const ny = y + dy[i];
+        const nx = x + dx[i];
+        if (nx < 0 || nx >= M || ny < 0 || ny >= N || visitedSwan[ny][nx])
+          continue;
+        visitedSwan[ny][nx] = true;
+        if (matrix[ny][nx] == ".") swanQ.push([ny, nx]);
+        else if (matrix[ny][nx] == "X") swanTmp.push([ny, nx]);
+        else if (matrix[ny][nx] == "L") {
+          flag = true;
+          break;
+        }
+      }
+    }
+    if (flag) {
+      break;
+    }
+
+    swanQ = swanTmp;
+    waterQ = waterTmp;
+    days++;
+  }
+  console.log(days);
+}
+
+// 1987
+
+const solve = (N, M, matrix) => {
+  const codeA = "A".charCodeAt();
+  const dx = [0, 1, 0, -1],
+    dy = [1, 0, -1, 0];
+
+  let ans = 1;
+  const alpabet = new Array(26).fill(false);
+  const code = matrix[0][0].charCodeAt() - codeA;
+  alpabet[code] = true;
+
+  const dfs = (y, x, depth) => {
+    ans = Math.max(ans, depth);
+    for (let i = 0; i < 4; i++) {
+      const ny = y + dy[i];
+      const nx = x + dx[i];
+      if (nx < 0 || nx >= M || ny < 0 || ny >= N) continue;
+
+      const code = matrix[ny][nx].charCodeAt() - codeA;
+      if (!alpabet[code]) {
+        alpabet[code] = true;
+        dfs(ny, nx, depth + 1);
+        alpabet[code] = false;
+      }
+    }
+  };
+  dfs(0, 0, 1);
+  return ans;
+};
+
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs.readFileSync(filePath).toString().trim();
+
+  let [info, ...matrix] = input.split("\n");
+
+  const [N, M] = info.split(" ").map(Number);
+  matrix = matrix.map((v) => v.split(""));
+
+  const ans = solve(N, M, matrix);
+  console.log(ans);
+}
+
+// 2529
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs.readFileSync(filePath).toString().trim();
+
+  let [N, operators] = input.split("\n");
+  N = Number(N);
+  operators = operators.split(" ");
+
+  const checked = new Array(10).fill(false);
+  const box = [];
+
+  const isValid = (x, y, oper) =>
+    (x < y && oper === "<") || (x > y && oper === ">");
+
+  const dfs = (str, idx) => {
+    if (idx === N + 1) {
+      box.push(str);
+      return;
+    }
+    for (let i = 0; i < 10; i++) {
+      if (checked[i]) continue;
+      if (idx === 0 || isValid(Number(str[idx - 1]), i, operators[idx - 1])) {
+        checked[i] = true;
+        dfs(str + i, idx + 1);
+        checked[i] = false;
+      }
+    }
+  };
+  dfs("", 0);
+  box.sort();
+  console.log(box[box.length - 1]);
+  console.log(box[0]);
+}
+
+// 9934
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs.readFileSync(filePath).toString().trim();
+
+  let [N, arr] = input.split("\n");
+  N = Number(N);
+  if (N === 1) {
+    console.log(1);
+  }
+  arr = arr.split(" ");
+  const ans = Array.from({ length: N }, () => []);
+
+  const recur = (start, end, depth) => {
+    if (depth === N) {
+      return;
+    }
+    const mid = Math.floor((start + end) / 2);
+    ans[depth].push(arr[mid]);
+    recur(start, mid - 1, depth + 1);
+    recur(mid + 1, end, depth + 1);
+  };
+
+  recur(0, arr.length - 1, 0);
+  console.log(ans.map((v) => v.join(" ")).join("\n"));
+}

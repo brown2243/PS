@@ -1,46 +1,28 @@
-// 12851
+// 9934
 {
   const fs = require("fs");
   const filePath =
     process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
   const input = fs.readFileSync(filePath).toString().trim();
 
-  const [N, K] = input.split(" ").map(Number);
-  if (N === K) {
-    console.log(`0\n${K}`);
-    return;
+  let [N, arr] = input.split("\n");
+  N = Number(N);
+  if (N === 1) {
+    console.log(1);
   }
+  arr = arr.split(" ");
+  const ans = Array.from({ length: N }, () => []);
 
-  const max = 100001;
-
-  const prev = new Array(max).fill(0);
-  const visited = new Array(max).fill(0);
-  const q = [N];
-
-  visited[N] = 1;
-
-  while (q.length > 0) {
-    const now = q.shift();
-    for (let i = 1; i < 4; i++) {
-      let next = now;
-      if (i === 1) next += 1;
-      if (i === 2) next -= 1;
-      if (i === 3) next *= 2;
-
-      if (0 <= next && next < max && !visited[next]) {
-        visited[next] = visited[now] + 1;
-        prev[next] = now;
-        if (next === K) {
-          const path = [];
-          for (let i = K; i !== N; i = prev[i]) {
-            path.push(i);
-          }
-          path.push(N);
-          console.log(`${visited[now]}\n${path.reverse().join(" ")}`);
-          return;
-        }
-        q.push(next);
-      }
+  const recur = (start, end, depth) => {
+    if (depth === N) {
+      return;
     }
-  }
+    const mid = Math.floor((start + end) / 2);
+    ans[depth].push(arr[mid]);
+    recur(start, mid - 1, depth + 1);
+    recur(mid + 1, end, depth + 1);
+  };
+
+  recur(0, arr.length - 1, 0);
+  console.log(ans.map((v) => v.join(" ")).join("\n"));
 }
