@@ -1,28 +1,51 @@
-// 9934
+// 1189
 {
   const fs = require("fs");
   const filePath =
     process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
   const input = fs.readFileSync(filePath).toString().trim();
 
-  let [N, arr] = input.split("\n");
-  N = Number(N);
-  if (N === 1) {
-    console.log(1);
-  }
-  arr = arr.split(" ");
-  const ans = Array.from({ length: N }, () => []);
+  const [info, ...arr] = input.split("\n");
 
-  const recur = (start, end, depth) => {
-    if (depth === N) {
+  const [N, M, K] = info.split(" ").map(Number);
+  const matrix = arr.map((str) => str.split(""));
+
+  const visited = Array.from({ length: N }, () => new Array(M).fill(0));
+
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < M; j++) {
+      if (matrix[i][j] === "T") visited[i][j] = 1;
+    }
+  }
+
+  const dx = [0, 1, 0, -1];
+  const dy = [1, 0, -1, 0];
+  const start = [N - 1, 0];
+  const end = [0, M - 1];
+
+  let cnt = 0;
+  const dfs = (depth, point) => {
+    const [y, x] = point;
+    if (end[0] === y && end[1] === x) {
+      if (depth === K) {
+        cnt++;
+      } else {
+        return;
+      }
+    } else if (depth >= K) {
       return;
     }
-    const mid = Math.floor((start + end) / 2);
-    ans[depth].push(arr[mid]);
-    recur(start, mid - 1, depth + 1);
-    recur(mid + 1, end, depth + 1);
+    for (let i = 0; i < 4; i++) {
+      const ny = y + dy[i];
+      const nx = x + dx[i];
+      if (ny < 0 || ny >= N || nx < 0 || nx >= M || visited[ny][nx]) continue;
+      visited[ny][nx] = 1;
+      dfs(depth + 1, [ny, nx]);
+      visited[ny][nx] = 0;
+    }
   };
 
-  recur(0, arr.length - 1, 0);
-  console.log(ans.map((v) => v.join(" ")).join("\n"));
+  visited[start[0]][start[1]] = 1;
+  dfs(1, start);
+  console.log(cnt);
 }

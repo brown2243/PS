@@ -776,3 +776,164 @@ const solve = (N, M, matrix) => {
   recur(0, arr.length - 1, 0);
   console.log(ans.map((v) => v.join(" ")).join("\n"));
 }
+
+// 15684
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs.readFileSync(filePath).toString().trim();
+
+  const [[N, M, H], ...lines] = input
+    .split("\n")
+    .map((str) => str.split(" ").map(Number));
+
+  const visited = Array.from({ length: H + 1 }, () => new Array(N + 1).fill(0));
+
+  lines.forEach(([a, b]) => {
+    visited[a][b] = 1;
+  });
+
+  const check = () => {
+    for (let i = 1; i <= N; i++) {
+      let start = i;
+      for (let j = 1; j <= H; j++) {
+        if (visited[j][start]) start++;
+        else if (visited[j][start - 1]) start--;
+      }
+      if (start !== i) return false;
+    }
+    return true;
+  };
+
+  let min = Number.MAX_SAFE_INTEGER;
+
+  const dfs = (now, depth) => {
+    if (depth > 3 || depth >= min) return;
+    if (check()) {
+      min = Math.min(min, depth);
+      return;
+    }
+    for (let i = now; i <= H; i += 1) {
+      for (let j = 1; j <= N; j++) {
+        if (visited[i][j] || visited[i][j - 1] || visited[i][j + 1]) continue;
+        visited[i][j] = 1;
+        dfs(i, depth + 1);
+        visited[i][j] = 0;
+      }
+    }
+  };
+  dfs(1, 0);
+
+  console.log(min === Number.MAX_SAFE_INTEGER ? -1 : min);
+}
+
+// 14620
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs.readFileSync(filePath).toString().trim();
+
+  const [[N], ...matrix] = input
+    .split("\n")
+    .map((str) => str.split(" ").map(Number));
+
+  const visited = Array.from({ length: N }, () => new Array(N).fill(0));
+  const flowerCnt = 3;
+
+  let min = Number.MAX_SAFE_INTEGER;
+
+  const dfs = (depth, price) => {
+    if (depth === flowerCnt) {
+      min = Math.min(min, price);
+      return;
+    }
+
+    for (let i = 1; i < N - 1; i += 1) {
+      for (let j = 1; j < N - 1; j += 1) {
+        if (
+          visited[i][j] ||
+          visited[i][j - 1] ||
+          visited[i][j + 1] ||
+          visited[i + 1][j] ||
+          visited[i - 1][j]
+        )
+          continue;
+        visited[i][j] = 1;
+        visited[i][j - 1] = 1;
+        visited[i][j + 1] = 1;
+        visited[i + 1][j] = 1;
+        visited[i - 1][j] = 1;
+        dfs(
+          depth + 1,
+          price +
+            matrix[i][j] +
+            matrix[i][j - 1] +
+            matrix[i][j + 1] +
+            matrix[i + 1][j] +
+            matrix[i - 1][j]
+        );
+        visited[i][j] = 0;
+        visited[i][j - 1] = 0;
+        visited[i][j + 1] = 0;
+        visited[i + 1][j] = 0;
+        visited[i - 1][j] = 0;
+      }
+    }
+  };
+  dfs(0, 0);
+  console.log(min === Number.MAX_SAFE_INTEGER ? -1 : min);
+}
+
+// 1189
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs.readFileSync(filePath).toString().trim();
+
+  const [info, ...arr] = input.split("\n");
+
+  const [N, M, K] = info.split(" ").map(Number);
+  const matrix = arr.map((str) => str.split(""));
+
+  const visited = Array.from({ length: N }, () => new Array(M).fill(0));
+
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < M; j++) {
+      if (matrix[i][j] === "T") visited[i][j] = 1;
+    }
+  }
+
+  const dx = [0, 1, 0, -1];
+  const dy = [1, 0, -1, 0];
+  const start = [N - 1, 0];
+  const end = [0, M - 1];
+
+  let cnt = 0;
+  const dfs = (depth, point) => {
+    const [y, x] = point;
+    if (end[0] === y && end[1] === x) {
+      if (depth === K) {
+        cnt++;
+      } else {
+        return;
+      }
+    } else if (depth >= K) {
+      return;
+    }
+    for (let i = 0; i < 4; i++) {
+      const ny = y + dy[i];
+      const nx = x + dx[i];
+      if (ny < 0 || ny >= N || nx < 0 || nx >= M || visited[ny][nx]) continue;
+      visited[ny][nx] = 1;
+      dfs(depth + 1, [ny, nx]);
+      visited[ny][nx] = 0;
+    }
+  };
+
+  visited[start[0]][start[1]] = 1;
+  dfs(1, start);
+  console.log(cnt);
+}

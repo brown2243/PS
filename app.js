@@ -1,34 +1,37 @@
-const HOUR_TS = 60 * 60 * 1000;
-const DAY_TS = 24 * HOUR_TS;
-const f = (ts = Date.now(), cycle = 0) => {
-  console.log("----");
-  const now = new Date(ts);
+const HOUR_MS = 60 * 60 * 1000;
+const DAY_MS = 24 * HOUR_MS;
+const WEEK_MS = 7 * DAY_MS;
 
-  const days = now.getUTCDay(); // 5 금
-  console.log(days);
+const getCycleTS = (ts) => {
+  const cycle = 0;
+  const now = new Date(ts);
+  console.log("now", now);
+  const days = now.getUTCDay(); // 3 수
   const hours = now.getUTCHours(); // UTC 8 === K 17
 
   let leftDays = 0;
-  if (days === 5 && hours >= 8) {
+  if (days === 3 && hours >= 8) {
     leftDays = 7;
   } else {
-    leftDays = days > 5 ? 12 - days : 5 - days;
-    console.log("dwqdqwdqw", leftDays, 7 - ((days + 2) % 7));
+    leftDays = days > 3 ? 12 - days : 3 - days;
   }
+  const nextWed =
+    Math.floor(now.getTime() / DAY_MS) * DAY_MS +
+    leftDays * DAY_MS +
+    HOUR_MS * 8;
 
-  console.log(now);
-  console.log(
-    new Date(
-      Math.floor(now.getTime() / DAY_TS) * DAY_TS +
-        leftDays * DAY_TS +
-        HOUR_TS * 8
-    )
-  );
-  console.log("----");
+  const startTime = nextWed - WEEK_MS * (cycle + 1);
+  const endTime = nextWed - WEEK_MS * cycle;
+  console.log(new Date(startTime), new Date(endTime));
+  return { startTime, endTime };
 };
 
-f();
-f(Date.now() + DAY_TS * 1 - 1000 * 60 * 60 * 1);
-f(Date.now() + DAY_TS * 1 - 1000 * 60 * 60 * 2);
-f(Date.now() + DAY_TS * 1);
-f(Date.now() + DAY_TS * 2);
+console.log("==================");
+getCycleTS(Date.now() + DAY_MS * 0);
+getCycleTS(Date.now() + DAY_MS * 1 + HOUR_MS * 2);
+getCycleTS(Date.now() + DAY_MS * 1 + HOUR_MS * 3);
+getCycleTS(Date.now() + DAY_MS * 1 + HOUR_MS * 4);
+// f(Date.now() + DAY_TS * 5);
+// f(Date.now() + DAY_TS * 6);
+// f(Date.now() + DAY_TS * 7);
+console.log("==================");
