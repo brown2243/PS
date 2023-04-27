@@ -13,7 +13,7 @@ const getCycleTS = (ts) => {
   if (days === 3 && hours >= 8) {
     leftDays = 7;
   } else {
-    leftDays = days > 3 ? 12 - days : 3 - days;
+    leftDays = days > 3 ? 10 - days : 3 - days;
   }
   const nextWed =
     Math.floor(now.getTime() / DAY_MS) * DAY_MS +
@@ -28,10 +28,10 @@ const getCycleTS = (ts) => {
 
 console.log("==================");
 getCycleTS(Date.now() + DAY_MS * 0);
-getCycleTS(Date.now() + DAY_MS * 1 + HOUR_MS * 2);
-getCycleTS(Date.now() + DAY_MS * 1 + HOUR_MS * 3);
-getCycleTS(Date.now() + DAY_MS * 1 + HOUR_MS * 4);
-// f(Date.now() + DAY_TS * 5);
-// f(Date.now() + DAY_TS * 6);
-// f(Date.now() + DAY_TS * 7);
+// getCycleTS(Date.now() + DAY_MS * 1 + HOUR_MS * 2);
+// getCycleTS(Date.now() + DAY_MS * 1 + HOUR_MS * 3);
+// getCycleTS(Date.now() + DAY_MS * 1 + HOUR_MS * 4);
+getCycleTS(Date.now() + DAY_MS * 5);
+getCycleTS(Date.now() + DAY_MS * 6);
+getCycleTS(Date.now() + DAY_MS * 7);
 console.log("==================");

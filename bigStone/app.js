@@ -1,51 +1,54 @@
-// 1189
+// 19942
 {
   const fs = require("fs");
   const filePath =
     process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
   const input = fs.readFileSync(filePath).toString().trim();
 
-  const [info, ...arr] = input.split("\n");
+  const [[N], mins, ...arr] = input
+    .split("\n")
+    .map((v) => v.split(" ").map(Number));
 
-  const [N, M, K] = info.split(" ").map(Number);
-  const matrix = arr.map((str) => str.split(""));
+  // p, f, s, v
+  const [mp, mf, ms, mv] = mins;
+  let ans = Number.MAX_SAFE_INTEGER;
+  let ansArr = [];
 
-  const visited = Array.from({ length: N }, () => new Array(M).fill(0));
+  for (let i = 1; i < 1 << N; i++) {
+    let b = 0,
+      c = 0,
+      d = 0,
+      e = 0,
+      sum = 0;
 
-  for (let i = 0; i < N; i++) {
-    for (let j = 0; j < M; j++) {
-      if (matrix[i][j] === "T") visited[i][j] = 1;
+    const tmp = [];
+
+    for (let j = 0; j < N; j++) {
+      if (i & (1 << j)) {
+        tmp.push(j + 1);
+        b += arr[j][0];
+        c += arr[j][1];
+        d += arr[j][2];
+        e += arr[j][3];
+        sum += arr[j][4];
+      }
+    }
+
+    if (b >= mp && c >= mf && d >= ms && e >= mv) {
+      if (ans >= sum) {
+        ans = sum;
+        if (!ansArr?.[ans]) {
+          ansArr[ans] = [];
+        }
+        ansArr[ans].push(tmp);
+      }
     }
   }
 
-  const dx = [0, 1, 0, -1];
-  const dy = [1, 0, -1, 0];
-  const start = [N - 1, 0];
-  const end = [0, M - 1];
-
-  let cnt = 0;
-  const dfs = (depth, point) => {
-    const [y, x] = point;
-    if (end[0] === y && end[1] === x) {
-      if (depth === K) {
-        cnt++;
-      } else {
-        return;
-      }
-    } else if (depth >= K) {
-      return;
-    }
-    for (let i = 0; i < 4; i++) {
-      const ny = y + dy[i];
-      const nx = x + dx[i];
-      if (ny < 0 || ny >= N || nx < 0 || nx >= M || visited[ny][nx]) continue;
-      visited[ny][nx] = 1;
-      dfs(depth + 1, [ny, nx]);
-      visited[ny][nx] = 0;
-    }
-  };
-
-  visited[start[0]][start[1]] = 1;
-  dfs(1, start);
-  console.log(cnt);
+  if (ans === Number.MAX_SAFE_INTEGER) {
+    console.log(-1);
+  } else {
+    ansArr[ans].sort();
+    console.log(`${ans}\n${ansArr[ans][0].join(" ")}`);
+  }
 }
