@@ -1,5 +1,27 @@
-7 4
-11 6 11 6 3 10 6
-7 9 6 13 5 15 5
-1 10 12 7 13 7 5
-13 11 10 8 10 12 13
+26
+add 1
+add 2
+check 1
+check 2
+check 3
+remove 2
+check 1
+check 2
+toggle 3
+check 1
+check 2
+check 3
+check 4
+all
+check 10
+check 20
+toggle 10
+remove 20
+check 10
+check 20
+empty
+check 1
+toggle 1
+check 1
+toggle 1
+check 1
