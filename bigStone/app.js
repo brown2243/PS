@@ -1,39 +1,45 @@
-// 11723
+// 14391
 {
   const fs = require("fs");
   const filePath =
     process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
   const input = fs.readFileSync(filePath).toString().trim();
 
-  const [N, ...arr] = input.split("\n");
+  const [info, ...arr] = input.split("\n");
+  const [N, M] = info.split(" ").map(Number);
+  const matrix = arr.map((v) => v.split("").map(Number));
 
-  let ans = "";
-  let bits = 0;
-  for (let row of arr) {
-    let [cmd, val] = row.split(" ");
-    val = Number(val);
+  let ret = 0;
 
-    switch (cmd) {
-      case "add":
-        bits |= 1 << val;
-        break;
-      case "remove":
-        bits &= ~(1 << val);
-        break;
-      case "check":
-        if (bits & (1 << val)) ans += "1\n";
-        else ans += "0\n";
-        break;
-      case "toggle":
-        bits ^= 1 << val;
-        break;
-      case "all":
-        bits = (1 << 20) - 1;
-        break;
-      case "empty":
-        bits = 0;
-        break;
+  for (let s = 0; s < 1 << (N * M); s++) {
+    let sum = 0;
+    for (let i = 0; i < N; i++) {
+      let cur = 0;
+      for (let j = 0; j < M; j++) {
+        let k = i * M + j;
+        if ((s & (1 << k)) == 0) {
+          cur = cur * 10 + matrix[i][j];
+        } else {
+          sum += cur;
+          cur = 0;
+        }
+      }
+      sum += cur;
     }
+    for (let j = 0; j < M; j++) {
+      let cur = 0;
+      for (let i = 0; i < N; i++) {
+        let k = i * M + j;
+        if ((s & (1 << k)) != 0) {
+          cur = cur * 10 + matrix[i][j];
+        } else {
+          sum += cur;
+          cur = 0;
+        }
+      }
+      sum += cur;
+    }
+    ret = Math.max(ret, sum);
   }
-  console.log(ans);
+  console.log(ret);
 }
