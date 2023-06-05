@@ -644,3 +644,240 @@ const solve = (N, M, matrix) => {
   }
   console.log(ret);
 }
+
+// 13244 - 런타임 에러 (EACCES)
+{
+  const dfs = (graph, visited, here) => {
+    visited[here] = true;
+    for (let there of graph[here]) {
+      if (!visited[there]) dfs(graph, visited, there);
+    }
+  };
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs.readFileSync(filePath).toString().trim();
+
+  let [T, ...arr] = input.split("\n");
+  T = Number(T);
+
+  let ans = "";
+  let idx = 0;
+
+  for (let i = 0; i < T; i++) {
+    const N = Number(arr[idx]);
+    const M = Number(arr[idx + 1]);
+    idx += 2;
+
+    const visited = new Array(N + 1).fill(false);
+    const graph = Array.from({ length: N + 1 }, () => []);
+    let cnt = 0;
+
+    for (let j = idx; j < idx + M; j++) {
+      const [a, b] = arr[j].split(" ").map(Number);
+      graph[b].push(a);
+      graph[a].push(b);
+    }
+    for (let k = 1; k <= N; k++) {
+      if (!visited[k]) {
+        dfs(graph, visited, k);
+        cnt++;
+      }
+    }
+    if (M === N - 1 && cnt == 1) ans += "tree\n";
+    else ans += "graph\n";
+    idx += M;
+  }
+  console.log(ans);
+}
+// 13244
+{
+  const dfs = (graph, visited, here) => {
+    visited[here] = true;
+    for (let there of graph[here]) {
+      if (!visited[there]) dfs(graph, visited, there);
+    }
+  };
+  const readline = require("readline");
+
+  const input = [];
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+  rl.on("line", function (line) {
+    input.push(line);
+  }).on("close", function () {
+    let [T, ...arr] = input;
+    T = Number(T);
+
+    let ans = "";
+    let idx = 0;
+
+    for (let i = 0; i < T; i++) {
+      const N = Number(arr[idx]);
+      const M = Number(arr[idx + 1]);
+      idx += 2;
+
+      const visited = new Array(N + 1).fill(false);
+      const graph = Array.from({ length: N + 1 }, () => []);
+      let cnt = 0;
+
+      for (let j = idx; j < idx + M; j++) {
+        const [a, b] = arr[j].split(" ").map(Number);
+        graph[b].push(a);
+        graph[a].push(b);
+      }
+      for (let k = 1; k <= N; k++) {
+        if (!visited[k]) {
+          dfs(graph, visited, k);
+          cnt++;
+        }
+      }
+      if (M === N - 1 && cnt == 1) ans += "tree\n";
+      else ans += "graph\n";
+      idx += M;
+    }
+    console.log(ans);
+    process.exit();
+  });
+}
+
+// 5430
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs.readFileSync(filePath).toString().trim();
+
+  let [T, ...arr] = input.split("\n");
+  T = Number(T);
+
+  let ans = "";
+
+  for (let i = 0; i < T; i++) {
+    let idx = i * 3;
+    const orders = arr[idx].split("");
+    const n = Number(arr[idx + 1]);
+    const row = arr[idx + 2]
+      .substring(1, arr[idx + 2].length - 1)
+      .split(",")
+      .map(Number);
+
+    let left = 0,
+      right = n,
+      isRev = false;
+
+    orders.forEach((order) => {
+      if (order === "R") {
+        isRev = !isRev;
+      } else {
+        if (isRev) {
+          right -= 1;
+        } else {
+          left += 1;
+        }
+      }
+    });
+    if (left <= right) {
+      if (isRev) {
+        ans += `[${row.slice(left, right).reverse().join(",")}]\n`;
+      } else {
+        ans += `[${row.slice(left, right).join(",")}]\n`;
+      }
+    } else {
+      ans += "error\n";
+    }
+  }
+  console.log(ans);
+}
+
+// 14405
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  let input = fs.readFileSync(filePath).toString().trim();
+  let flag = true;
+
+  while (flag && input.length > 0) {
+    let cnt = 0;
+    if (input.startsWith("pi")) {
+      input = input.substring(2);
+    } else {
+      cnt++;
+    }
+    if (input.startsWith("ka")) {
+      input = input.substring(2);
+    } else {
+      cnt++;
+    }
+    if (input.startsWith("chu")) {
+      input = input.substring(3);
+    } else {
+      cnt++;
+    }
+    if (cnt === 3) {
+      flag = false;
+    }
+  }
+  input.length === 0 ? console.log("YES") : console.log("NO");
+  // .replace(/(pi|ka|chu)+/g,'').length&&"NO"||"YES")
+}
+
+// 15353
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs.readFileSync(filePath).toString().trim();
+
+  let [n, str] = input.split("\n");
+  n = Number(n);
+
+  const dp = new Array(n).fill(0);
+  const stack = [];
+
+  for (let i = 0; i < str.length; i++) {
+    if (str[i] === "(") stack.push(i);
+    else {
+      if (stack.length !== 0) {
+        const top = stack.pop();
+        dp[i] = dp[top] = 1;
+      }
+    }
+  }
+  const ans = Math.max(
+    ...dp
+      .join("")
+      .split("0")
+      .map((v) => v.length)
+  );
+  console.log(ans);
+}
+// 15353
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs.readFileSync(filePath).toString().trim();
+
+  let [n, str] = input.split("\n");
+  n = Number(n);
+
+  const stack = [-1];
+  let ans = 0;
+
+  for (let i = 0; i < str.length; i++) {
+    if (str[i] === "(") stack.push(i);
+    else {
+      stack.pop();
+      if (stack.length !== 0) {
+        ans = Math.max(ans, i - stack[stack.length - 1]);
+      } else {
+        stack.push(i);
+      }
+    }
+  }
+  console.log(ans);
+}
