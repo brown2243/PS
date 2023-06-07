@@ -82,45 +82,39 @@
 // 알람 시계
 {
   const fs = require("fs");
-  const inputs = fs
-    // .readFileSync("backjon/input.txt")
-    .readFileSync("/dev/stdin")
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs
+    .readFileSync(filePath)
     .toString()
     .trim()
-    .split(" ");
-  // .split("\n");
+    .split(" ")
+    .map(Number);
 
-  let [hours, mins] = inputs.map(Number);
-
-  if (mins >= 45) {
-    console.log(hours, mins - 45);
-  } else {
-    mins = mins + 15;
-    if (hours === 0) hours = 23;
-    else hours = hours - 1;
-
-    console.log(hours, mins);
+  const [h, m] = input;
+  let t = h * 60 + m - 45;
+  if (t < 0) {
+    t += 1440;
   }
+  console.log(Math.floor(t / 60), t % 60);
 }
 
 // 오븐 시계
 {
   const fs = require("fs");
-  const inputs = fs
-    // .readFileSync("backjon/input.txt")
-    .readFileSync("/dev/stdin")
-    .toString()
-    .trim()
-    .split("\n");
-  // .split(" ");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs.readFileSync(filePath).toString().trim().split("\n");
 
-  const [h, m] = inputs[0].split(" ").map(Number);
-  const cookMins = Number(inputs[1]);
-  const totalMins = h * 60 + m + cookMins;
+  const now = input[0].split(" ").map(Number);
+  const cookingTime = Number(input[1]);
 
-  const hours = Math.floor(totalMins / 60);
-  const mins = totalMins % 60;
-  console.log(`${hours > 23 ? hours - 24 : hours} ${mins}`);
+  const [h, m] = now;
+  let t = h * 60 + m + cookingTime;
+  if (t >= 1440) {
+    t -= 1440;
+  }
+  console.log(Math.floor(t / 60), t % 60);
 }
 
 // 주사위 세개

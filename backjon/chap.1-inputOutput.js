@@ -89,3 +89,18 @@ console.log('|\\_/|\n|q p|   /}\n( 0 )"""\\\n|"^"`    |\n||_/=\\\\__|\n');
   console.log("      |");
   console.log("      |");
 }
+
+// 꼬마 정민
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs.readFileSync(filePath).toString().trim();
+
+  const ans = input
+    .split(" ")
+    .map(Number)
+    .reduce((acc, cur) => acc + cur, 0);
+
+  console.log(ans);
+}

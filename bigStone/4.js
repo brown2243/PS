@@ -881,3 +881,31 @@ const solve = (N, M, matrix) => {
   }
   console.log(ans);
 }
+
+// 3015
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs.readFileSync(filePath).toString().trim();
+
+  const [n, ...arr] = input.split("\n").map(Number);
+
+  const stack = [];
+  let ans = 0;
+  for (let i = 0; i < n; i++) {
+    let cnt = 1;
+    while (stack.length !== 0 && stack[stack.length - 1][0] <= arr[i]) {
+      ans += stack[stack.length - 1][1];
+      if (stack[stack.length - 1][0] === arr[i]) {
+        cnt = stack[stack.length - 1][1] + 1;
+      } else {
+        cnt = 1;
+      }
+      stack.pop();
+    }
+    if (stack.length !== 0) ans++;
+    stack.push([arr[i], cnt]);
+  }
+  console.log(ans);
+}
