@@ -1,37 +1,17 @@
-const HOUR_MS = 60 * 60 * 1000;
-const DAY_MS = 24 * HOUR_MS;
-const WEEK_MS = 7 * DAY_MS;
+function solution(gems) {
+  const cnt = new Set(gems).size;
+  const gemMap = new Map();
+  let answer = [1, gems.length];
 
-const getCycleTS = (ts) => {
-  const cycle = 0;
-  const now = new Date(ts);
-  console.log("now", now);
-  const days = now.getUTCDay(); // 3 수
-  const hours = now.getUTCHours(); // UTC 8 === K 17
+  gems.forEach((gem, i) => {
+    gemMap.delete(gem);
+    gemMap.set(gem, i);
+    if (gemMap.size === cnt) {
+      const cand = [gemMap.values().next().value + 1, i + 1];
+      answer = answer[1] - answer[0] > cand[1] - cand[0] ? cand : answer;
+    }
+  });
 
-  let leftDays = 0;
-  if (days === 3 && hours >= 8) {
-    leftDays = 7;
-  } else {
-    leftDays = days > 3 ? 10 - days : 3 - days;
-  }
-  const nextWed =
-    Math.floor(now.getTime() / DAY_MS) * DAY_MS +
-    leftDays * DAY_MS +
-    HOUR_MS * 8;
-
-  const startTime = nextWed - WEEK_MS * (cycle + 1);
-  const endTime = nextWed - WEEK_MS * cycle;
-  console.log(new Date(startTime), new Date(endTime));
-  return { startTime, endTime };
-};
-
-console.log("==================");
-getCycleTS(Date.now() + DAY_MS * 0);
-// getCycleTS(Date.now() + DAY_MS * 1 + HOUR_MS * 2);
-// getCycleTS(Date.now() + DAY_MS * 1 + HOUR_MS * 3);
-// getCycleTS(Date.now() + DAY_MS * 1 + HOUR_MS * 4);
-getCycleTS(Date.now() + DAY_MS * 5);
-getCycleTS(Date.now() + DAY_MS * 6);
-getCycleTS(Date.now() + DAY_MS * 7);
-console.log("==================");
+  return answer;
+}
+solution(["DIA", "RUBY", "RUBY", "DIA", "DIA", "EMERALD", "SAPPHIRE", "DIA"]);

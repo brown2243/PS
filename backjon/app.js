@@ -1,63 +1,21 @@
-// 주사위 세개
+// 바구니 뒤집기
 {
   const fs = require("fs");
-  const input = fs
-    // .readFileSync("backjon/input.txt")
-    .readFileSync("/dev/stdin")
-    .toString()
-    .trim();
-
-  const N = Number(input);
-
-  const ans = [];
-  const solve = (arr = []) => {
-    if (arr.length == N) {
-      ans.push(arr.join(" "));
-      return;
-    }
-
-    for (let i = 1; i <= N; i++) {
-      if (!arr.includes(i)) {
-        arr.push(i);
-        solve(arr);
-        arr.pop();
-      }
-    }
-  };
-  solve();
-  console.log(ans.join("\n"));
-}
-
-// 주사위 세개
-{
-  const fs = require("fs");
-  const inputs = fs
-    // .readFileSync("backjon/input.txt")
-    .readFileSync("/dev/stdin")
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "backjon/input.txt";
+  const [info, ...arr] = fs
+    .readFileSync(filePath)
     .toString()
     .trim()
-    // .split("\n")
-    .split(" ")
-    .map(Number);
-  const [a, b, c] = inputs;
-  if (a === b && b === c) {
-    console.log(10000 + a * 1000);
-  } else if (a === b) {
-    console.log(1000 + a * 100);
-  } else if (b === c) {
-    console.log(1000 + b * 100);
-  } else if (a === c) {
-    console.log(1000 + a * 100);
-  } else {
-    console.log(Math.max(a, b, c) * 100);
-  }
-}
+    .split("\n");
 
-function findOdd(A) {
-  return Object.entries(
-    A.reduce((acc, cur) => {
-      acc[cur] = acc[cur] ? acc[cur] + 1 : 1;
-      return acc;
-    }, {})
-  ).find((v) => v[1] % 2 === 1)[0];
+  const [n, m] = info.split(" ").map(Number);
+  const ans = new Array(n).fill(0).map((_, idx) => idx + 1);
+
+  for (let i = 0; i < m; i++) {
+    const [x, y] = arr[i].split(" ").map((v) => Number(v) - 1);
+    const tmp = ans.slice(x, y + 1).reverse();
+    ans.splice(x, tmp.length, ...tmp);
+  }
+  console.log(ans.join(" "));
 }
