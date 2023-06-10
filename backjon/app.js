@@ -1,21 +1,21 @@
-// 바구니 뒤집기
+// 별 찍기 - 7
 {
   const fs = require("fs");
   const filePath =
     process.platform === "linux" ? "/dev/stdin" : "backjon/input.txt";
-  const [info, ...arr] = fs
-    .readFileSync(filePath)
-    .toString()
-    .trim()
-    .split("\n");
+  const input = fs.readFileSync(filePath).toString().trim();
+  const N = Number(input);
 
-  const [n, m] = info.split(" ").map(Number);
-  const ans = new Array(n).fill(0).map((_, idx) => idx + 1);
+  const star = "*";
+  const gap = " ";
+  let ans = "";
 
-  for (let i = 0; i < m; i++) {
-    const [x, y] = arr[i].split(" ").map((v) => Number(v) - 1);
-    const tmp = ans.slice(x, y + 1).reverse();
-    ans.splice(x, tmp.length, ...tmp);
+  for (let i = 0; i < N; i++) {
+    ans += `${gap.repeat(N - i - 1)}${star.repeat(1 + i * 2)}\n`;
   }
-  console.log(ans.join(" "));
+  for (let i = N - 2; i >= 0; i--) {
+    ans += `${gap.repeat(N - i - 1)}${star.repeat(1 + i * 2)}\n`;
+  }
+
+  console.log(ans);
 }
