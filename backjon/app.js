@@ -1,21 +1,27 @@
-// 별 찍기 - 7
+// 색종이
 {
   const fs = require("fs");
   const filePath =
     process.platform === "linux" ? "/dev/stdin" : "backjon/input.txt";
-  const input = fs.readFileSync(filePath).toString().trim();
-  const N = Number(input);
 
-  const star = "*";
-  const gap = " ";
-  let ans = "";
+  const [n, ...arr] = fs
+    .readFileSync(filePath)
+    .toString()
+    .trim()
+    .split("\n")
+    .map((v) => v.split(" ").map(Number));
 
-  for (let i = 0; i < N; i++) {
-    ans += `${gap.repeat(N - i - 1)}${star.repeat(1 + i * 2)}\n`;
-  }
-  for (let i = N - 2; i >= 0; i--) {
-    ans += `${gap.repeat(N - i - 1)}${star.repeat(1 + i * 2)}\n`;
-  }
+  const matrix = Array.from({ length: 100 }, () => new Array(100).fill(0));
 
-  console.log(ans);
+  arr.forEach(([x, y]) => {
+    for (let i = y; i < y + 10; i++) {
+      for (let j = x; j < x + 10; j++) {
+        matrix[i][j] = 1;
+      }
+    }
+  });
+
+  console.log(
+    matrix.reduce((acc, cur) => acc + cur.reduce((acc, cur) => acc + cur, 0), 0)
+  );
 }
