@@ -768,3 +768,264 @@
   }
   console.log(ans.length === 0 ? "FRULA" : ans.join(""));
 }
+
+// 1781
+{
+  class MinHeap {
+    constructor() {
+      this.heap = [];
+    }
+
+    get size() {
+      return this.heap.length;
+    }
+
+    isEmpty() {
+      return this.size === 0;
+    }
+
+    push(value) {
+      this.heap.push(value);
+      this._heapifyUp();
+    }
+
+    pop() {
+      if (this.isEmpty()) {
+        return null;
+      }
+
+      const min = this.heap[0];
+      const last = this.heap.pop();
+
+      if (!this.isEmpty()) {
+        this.heap[0] = last;
+        this._heapifyDown();
+      }
+
+      return min;
+    }
+
+    _heapifyUp() {
+      let currentIndex = this.size - 1;
+
+      while (currentIndex > 0) {
+        const parentIndex = Math.floor((currentIndex - 1) / 2);
+
+        if (this.heap[currentIndex] >= this.heap[parentIndex]) {
+          break;
+        }
+
+        [this.heap[currentIndex], this.heap[parentIndex]] = [
+          this.heap[parentIndex],
+          this.heap[currentIndex],
+        ];
+
+        currentIndex = parentIndex;
+      }
+    }
+
+    _heapifyDown() {
+      let currentIndex = 0;
+
+      while (true) {
+        const leftChildIndex = 2 * currentIndex + 1;
+        const rightChildIndex = 2 * currentIndex + 2;
+        let minIndex = currentIndex;
+
+        //
+        if (
+          leftChildIndex < this.size &&
+          this.heap[leftChildIndex] < this.heap[minIndex]
+        ) {
+          minIndex = leftChildIndex;
+        }
+
+        if (
+          rightChildIndex < this.size &&
+          this.heap[rightChildIndex] < this.heap[minIndex]
+        ) {
+          minIndex = rightChildIndex;
+        }
+
+        if (minIndex === currentIndex) {
+          break;
+        }
+
+        [this.heap[currentIndex], this.heap[minIndex]] = [
+          this.heap[minIndex],
+          this.heap[currentIndex],
+        ];
+
+        currentIndex = minIndex;
+      }
+    }
+  }
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs.readFileSync(filePath).toString().trim();
+
+  const [n, ...arr] = input.split("\n");
+  const N = Number(n);
+
+  const numArr = arr.map((v) => v.split(" ").map(Number));
+  numArr.sort((a, b) => a[0] - b[0]);
+
+  const pq = new MinHeap();
+  for (let i = 0; i < numArr.length; i++) {
+    pq.push(numArr[i][1]);
+    if (pq.size > numArr[i][0]) {
+      pq.pop();
+    }
+  }
+  let ans = 0;
+  while (pq.size) {
+    ans += pq.pop();
+  }
+  console.log(ans);
+}
+
+// 14469
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs.readFileSync(filePath).toString().trim();
+
+  const [n, ...arr] = input.split("\n");
+  const N = Number(n);
+
+  const numArr = arr.map((v) => v.split(" ").map(Number));
+  numArr.sort((a, b) => {
+    if (a[0] === b[0]) {
+      return b[1] - a[1];
+    }
+    return a[0] - b[0];
+  });
+
+  let time = numArr[0][0] + numArr[0][1];
+  for (let i = 1; i < numArr.length; i++) {
+    const [arrived, waiting] = numArr[i];
+
+    time = Math.max(time, arrived);
+    time += waiting;
+  }
+  console.log(time);
+}
+
+// 1931
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs.readFileSync(filePath).toString().trim();
+
+  const [n, ...arr] = input.split("\n");
+  const N = Number(n);
+
+  const numArr = arr.map((v) => v.split(" ").map(Number));
+  numArr.sort((a, b) => {
+    if (a[1] === b[1]) {
+      return a[0] - b[0];
+    }
+    return a[1] - b[1];
+  });
+
+  let cnt = 1;
+  let endTime = numArr[0][1];
+
+  for (let i = 1; i < numArr.length; i++) {
+    const [start, end] = numArr[i];
+    if (start >= endTime) {
+      endTime = end;
+      cnt++;
+    }
+  }
+  console.log(cnt);
+}
+
+// 1644
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs.readFileSync(filePath).toString().trim();
+
+  const N = Number(input);
+  const dp = new Array(N + 1).fill(true);
+  dp[0] = false;
+  dp[1] = false;
+
+  const primes = [];
+  for (let i = 2; i < N + 1; i++) {
+    if (dp[i]) {
+      primes.push(i);
+      for (let j = i * 2; j < N + 1; j += i) {
+        dp[j] = false;
+      }
+    }
+  }
+
+  if (primes.length === 1) {
+    console.log(1);
+    return;
+  }
+
+  let cnt = 0;
+  let left = 0;
+  let right = 1;
+  let sum = primes[left] + primes[right];
+  while (left <= right) {
+    if (sum === N) {
+      cnt++;
+      sum -= primes[left++];
+    } else if (sum < N) {
+      sum += primes[++right];
+    } else {
+      sum -= primes[left++];
+    }
+  }
+  console.log(cnt);
+}
+
+// 1644
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs.readFileSync(filePath).toString().trim();
+  const N = Number(input);
+
+  const isPrime = new Array(N + 1).fill(true);
+  isPrime[0] = false;
+  isPrime[1] = false;
+
+  for (let i = 2; i <= Math.sqrt(N); i++) {
+    if (isPrime[i]) {
+      for (let j = i * i; j <= N; j += i) {
+        isPrime[j] = false;
+      }
+    }
+  }
+  const primes = isPrime.map((v, i) => (v ? i : 0)).filter(Boolean);
+  if (primes.length === 1) {
+    console.log(1);
+    return;
+  }
+
+  let cnt = 0;
+  let start = 0;
+  let end = 1;
+  let sum = primes[start] + primes[end];
+  while (start <= end) {
+    if (sum === N) {
+      cnt++;
+      sum -= primes[start++];
+    } else if (sum < N) {
+      sum += primes[++end];
+    } else {
+      sum -= primes[start++];
+    }
+  }
+  console.log(cnt);
+}

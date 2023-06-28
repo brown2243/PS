@@ -1,119 +1,41 @@
-// 2109 max hq
+// 1644
 {
-  class MinHeap {
-    constructor() {
-      this.heap = [];
-    }
-
-    get size() {
-      return this.heap.length;
-    }
-
-    isEmpty() {
-      return this.size === 0;
-    }
-
-    push(value) {
-      this.heap.push(value);
-      this._heapifyUp();
-    }
-
-    pop() {
-      if (this.isEmpty()) {
-        return null;
-      }
-
-      const min = this.heap[0];
-      const last = this.heap.pop();
-
-      if (!this.isEmpty()) {
-        this.heap[0] = last;
-        this._heapifyDown();
-      }
-
-      return min;
-    }
-
-    _heapifyUp() {
-      let currentIndex = this.size - 1;
-
-      while (currentIndex > 0) {
-        const parentIndex = Math.floor((currentIndex - 1) / 2);
-
-        if (this.heap[currentIndex] >= this.heap[parentIndex]) {
-          break;
-        }
-
-        [this.heap[currentIndex], this.heap[parentIndex]] = [
-          this.heap[parentIndex],
-          this.heap[currentIndex],
-        ];
-
-        currentIndex = parentIndex;
-      }
-    }
-
-    _heapifyDown() {
-      let currentIndex = 0;
-
-      while (true) {
-        const leftChildIndex = 2 * currentIndex + 1;
-        const rightChildIndex = 2 * currentIndex + 2;
-        let minIndex = currentIndex;
-
-        //
-        if (
-          leftChildIndex < this.size &&
-          this.heap[leftChildIndex] < this.heap[minIndex]
-        ) {
-          minIndex = leftChildIndex;
-        }
-
-        if (
-          rightChildIndex < this.size &&
-          this.heap[rightChildIndex] < this.heap[minIndex]
-        ) {
-          minIndex = rightChildIndex;
-        }
-
-        if (minIndex === currentIndex) {
-          break;
-        }
-
-        [this.heap[currentIndex], this.heap[minIndex]] = [
-          this.heap[minIndex],
-          this.heap[currentIndex],
-        ];
-
-        currentIndex = minIndex;
-      }
-    }
-  }
   const fs = require("fs");
   const filePath =
     process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
   const input = fs.readFileSync(filePath).toString().trim();
+  const N = Number(input);
 
-  const [n, ...arr] = input.split("\n");
-  const N = Number(n);
-  if (N === 0) {
-    console.log(0);
+  const isPrime = new Array(N + 1).fill(true);
+  isPrime[0] = false;
+  isPrime[1] = false;
+
+  for (let i = 2; i <= Math.sqrt(N); i++) {
+    if (isPrime[i]) {
+      for (let j = i * i; j <= N; j += i) {
+        isPrime[j] = false;
+      }
+    }
+  }
+  const primes = isPrime.map((v, i) => (v ? i : 0)).filter(Boolean);
+  if (primes.length === 1) {
+    console.log(1);
     return;
   }
 
-  const numArr = arr.map((v) => v.split(" ").map(Number));
-  numArr.sort((a, b) => a[1] - b[1]);
-
-  const pq = new MinHeap();
-  for (let i = 0; i < numArr.length; i++) {
-    pq.push(numArr[i][0]);
-    if (pq.size > numArr[i][1]) {
-      pq.pop();
+  let cnt = 0;
+  let start = 0;
+  let end = 1;
+  let sum = primes[start] + primes[end];
+  while (start <= end) {
+    if (sum === N) {
+      cnt++;
+      sum -= primes[start++];
+    } else if (sum < N) {
+      sum += primes[++end];
+    } else {
+      sum -= primes[start++];
     }
   }
-  let ans = 0;
-  while (pq.size) {
-    ans += pq.pop();
-  }
-  console.log(ans);
+  console.log(cnt);
 }
