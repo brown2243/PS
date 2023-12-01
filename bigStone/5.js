@@ -1029,3 +1029,202 @@
   }
   console.log(cnt);
 }
+
+// 13144
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs.readFileSync(filePath).toString().trim().split("\n");
+  const N = Number(input[0]);
+  const arr = input[1].split(" ").map(Number);
+
+  const nums = new Array(100001).fill(false);
+
+  let ans = 0;
+
+  let start = 0;
+  let end = 0;
+
+  while (end < N) {
+    if (!nums[arr[end]]) {
+      nums[arr[end++]] = true;
+    } else {
+      ans += end - start;
+      nums[arr[start++]] = false;
+    }
+  }
+
+  ans += ((end - start) * (end - start + 1)) / 2;
+  console.log(ans);
+}
+// 3273
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs.readFileSync(filePath).toString().trim();
+
+  const arr = input.split("\n");
+
+  const n = Number(arr[0]);
+  const nums = arr[1].split(" ").map(Number);
+  const x = Number(arr[2]);
+
+  nums.sort((a, b) => a - b);
+  let cnt = 0;
+  let left = 0;
+  let right = nums.length - 1;
+
+  while (left < right) {
+    const sum = nums[left] + nums[right];
+    if (sum === x) {
+      cnt++;
+      left++;
+    } else if (sum > x) {
+      right--;
+    } else {
+      left++;
+    }
+  }
+  console.log(cnt);
+}
+
+// 1700
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const input = fs.readFileSync(filePath).toString().trim().split("\n");
+  const [N, K] = input[0].split(" ").map(Number);
+  const arr = input[1].split(" ").map(Number);
+
+  let cnt = 0;
+  if (N >= K) {
+    console.log(cnt);
+    return;
+  }
+
+  const set = new Set();
+
+  for (let i = 0; i < K; i++) {
+    set.add(arr[i]);
+    if (set.size > N) {
+      cnt++;
+
+      const slicedArr = arr.slice(i);
+      let removeIdx = -1,
+        removeValue = 0;
+
+      for (let num of set) {
+        const idx = slicedArr.indexOf(num);
+        if (idx === -1) {
+          removeValue = num;
+          break;
+        } else {
+          if (removeIdx < idx) {
+            removeIdx = idx;
+            removeValue = num;
+          }
+        }
+      }
+      set.delete(removeValue);
+    }
+  }
+  console.log(cnt);
+}
+// 17144
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
+  const [[C, R, T], ...matrix] = fs
+    .readFileSync(filePath)
+    .toString()
+    .trim()
+    .split("\n")
+    .map((v) => v.split(" ").map(Number));
+
+  let cleaner = [0, 0];
+
+  for (let i = 0; i < R; i++) {
+    if (matrix[i][0] === -1) {
+      cleaner = [i, i + 1];
+      break;
+    }
+  }
+  const dy = [1, 0, -1, 0];
+  const dx = [0, 1, 0, -1];
+
+  const getDustPoint = () => {
+    const points = [];
+    for (let y = 0; y < C; y++) {
+      for (let x = 0; x < R; x++) {
+        if (matrix[y][x] > 0) {
+          value = Math.floor(matrix[y][x] / 5);
+          points.push([y, x, value]);
+        }
+      }
+    }
+    return points;
+  };
+
+  const extendDust = (y, x, value) => {
+    for (let i = 0; i < 4; i++) {
+      const ny = y + dy[i];
+      const nx = x + dx[i];
+
+      if (0 <= ny && ny < C && 0 <= nx && nx < R && matrix[ny][nx] !== -1) {
+        matrix[ny][nx] += value;
+        matrix[y][x] = Math.max(matrix[y][x] - value, 0);
+      }
+    }
+  };
+
+  const moveDust = () => {
+    for (let i = cleaner[0] - 2; i > -1; i--) {
+      matrix[i + 1][0] = matrix[i][0];
+    }
+
+    for (let i = cleaner[1] + 1; i < C - 1; i++) {
+      matrix[i][0] = matrix[i + 1][0];
+    }
+
+    matrix[0].shift();
+    matrix[0].push(0);
+    //
+    matrix[C - 1].shift();
+    matrix[C - 1].push(0);
+    //
+    for (let i = 0; i < cleaner[0]; i++) {
+      matrix[i][R - 1] = matrix[i + 1][R - 1];
+    }
+    for (let i = C - 1; i > cleaner[1]; i--) {
+      matrix[i][R - 1] = matrix[i - 1][R - 1];
+    }
+
+    for (let i = R - 1; i > 1; i--) {
+      matrix[cleaner[0]][i] = matrix[cleaner[0]][i - 1];
+      matrix[cleaner[1]][i] = matrix[cleaner[1]][i - 1];
+    }
+    matrix[cleaner[0]][1] = 0;
+    matrix[cleaner[1]][1] = 0;
+  };
+
+  let time = 0;
+  while (time < T) {
+    const points = getDustPoint();
+    points.forEach(([y, x, value]) => {
+      extendDust(y, x, value);
+    });
+    moveDust();
+    time++;
+  }
+
+  matrix[cleaner[0]][0] = 0;
+  matrix[cleaner[1]][0] = 0;
+
+  console.log(
+    matrix.reduce((acc, cur) => acc + cur.reduce((acc, cur) => acc + cur, 0), 0)
+  );
+}

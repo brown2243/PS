@@ -115,34 +115,6 @@ function solution(weights, head2head) {
       if (a.idx > b.idx) return 1;
     })
     .map(({ idx }) => idx + 1);
-
-  return ans
-    .sort((a, b) => {
-      if (a.win / a.battle > b.win / b.battle) {
-        return -1;
-      } else if (a.win / a.battle < b.win / b.battle) {
-        return 1;
-      } else {
-        if (a.winToBig > b.winToBig) {
-          return -1;
-        } else if (a.winToBig < b.winToBig) {
-          return 1;
-        } else {
-          if (a.weight > b.weight) {
-            return -1;
-          } else if (a.weight < b.weight) {
-            return 1;
-          } else {
-            if (a.idx < b.idx) {
-              return -1;
-            } else if (a.idx > b.idx) {
-              return 1;
-            }
-          }
-        }
-      }
-    })
-    .map(({ idx }) => idx + 1);
 }
 
 // 다른사람 풀이
@@ -220,4 +192,182 @@ function solution(storey) {
     }
   }
   return stone;
+}
+
+function solution(topping) {
+  let ans = 0;
+  let leftCnt = 0;
+  let rightCnt = 0;
+  const left = {};
+  const right = topping.reduce((acc, cur) => {
+    if (!acc[cur]) {
+      rightCnt += 1;
+      acc[cur] = 1;
+    } else {
+      acc[cur] += 1;
+    }
+    return acc;
+  }, {});
+
+  for (let i = 0; i < topping.length; i++) {
+    if (!left[topping[i]]) {
+      left[topping[i]] = 1;
+      leftCnt += 1;
+    }
+    right[topping[i]] -= 1;
+    if (right[topping[i]] === 0) {
+      rightCnt -= 1;
+    }
+    if (leftCnt === rightCnt) {
+      ans += 1;
+    }
+  }
+  return ans;
+}
+
+function solution(numbers) {
+  const ans = new Array(numbers.length).fill(-1);
+
+  let stack = [numbers[numbers.length - 1]];
+  let maxNum = numbers[numbers.length - 1];
+  for (let i = numbers.length - 2; i >= 0; i--) {
+    if (numbers[i] >= maxNum) {
+      maxNum = numbers[i];
+      stack = [maxNum];
+    } else {
+      while (stack.length > 0) {
+        const last = stack.pop();
+        if (numbers[i] < last) {
+          ans[i] = last;
+          stack.push(last, numbers[i]);
+          break;
+        }
+      }
+    }
+  }
+  return ans;
+}
+
+// 연속된 부분 수열의 합
+function solution(sequence, k) {
+  const n = sequence.length;
+  const res = [];
+  let sum = 0,
+    end = 0;
+
+  for (let i = 0; i < n; i++) {
+    while (sum < k && end < n) {
+      sum += sequence[end];
+      end += 1;
+    }
+
+    if (sum === k) {
+      res.push([i, end - 1, end - 1 - i]);
+    }
+    sum -= sequence[i];
+  }
+
+  res.sort((a, b) => a[2] - b[2]);
+  return res[0].slice(0, 2);
+}
+
+// 두 큐 합 같게 만들기 [https://blog.encrypted.gg/1076]
+// 그리디 풀이 js 시간초과
+function solution(queue1, queue2) {
+  const n = queue1.length;
+  let tot1 = queue1.reduce((acc, val) => acc + val, 0);
+  let tot2 = queue2.reduce((acc, val) => acc + val, 0);
+
+  for (let i = 0; i < 4 * n + 1; i++) {
+    if (tot1 === tot2) {
+      return i;
+    }
+    if (tot1 < tot2) {
+      const x = queue2.shift();
+      tot1 += x;
+      tot2 -= x;
+      queue1.push(x);
+    } else {
+      const x = queue1.shift();
+      tot2 += x;
+      tot1 -= x;
+      queue2.push(x);
+    }
+  }
+  return -1;
+}
+
+// two pointer
+function solution(queue1, queue2) {
+  const q = queue1.concat(queue2);
+  let total1 = queue1.reduce((acc, val) => acc + val, 0);
+  let total2 = queue2.reduce((acc, val) => acc + val, 0);
+  const total = total1 + total2;
+  if (total1 === total2) {
+    return 0;
+  }
+  if (total % 2 !== 0) {
+    return -1;
+  }
+  const target = total / 2;
+
+  let start = 0;
+  let end = queue1.length;
+  let cnt = 0;
+
+  while (cnt <= q.length * 3) {
+    if (target === total1) {
+      return cnt;
+    }
+    if (target > total1) {
+      total1 += q[end];
+      end++;
+    } else {
+      total1 -= q[start];
+      start++;
+    }
+    cnt++;
+  }
+  return -1;
+}
+
+// 무인도 여행
+function solution(maps) {
+  const n = maps.length,
+    m = maps[0].length;
+  const visited = Array.from({ length: n }, () => new Array(m).fill(0));
+  const answer = [];
+
+  const dfs = (i, j) => {
+    let days = 0;
+
+    const move = (i, j) => {
+      if (0 <= i && i < n && 0 <= j && j < m) {
+        if (visited[i][j] || maps[i][j] === "X") {
+          return;
+        }
+        visited[i][j] = 1;
+        days += Number(maps[i][j]);
+
+        move(i + 1, j);
+        move(i - 1, j);
+        move(i, j + 1);
+        move(i, j - 1);
+      }
+    };
+
+    move(i, j);
+    if (days > 0) {
+      answer.push(days);
+    }
+
+    return days;
+  };
+
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < m; j++) {
+      dfs(i, j);
+    }
+  }
+  return answer.length === 0 ? [-1] : answer.sort((a, b) => a - b);
 }

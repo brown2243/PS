@@ -1,41 +1,40 @@
-// 1644
-{
-  const fs = require("fs");
-  const filePath =
-    process.platform === "linux" ? "/dev/stdin" : "bigStone/input.txt";
-  const input = fs.readFileSync(filePath).toString().trim();
-  const N = Number(input);
+// 무인도 여행
+function solution(maps) {
+  const n = maps.length,
+    m = maps[0].length;
+  const visited = Array.from({ length: n }, () => new Array(m).fill(0));
+  const answer = [];
 
-  const isPrime = new Array(N + 1).fill(true);
-  isPrime[0] = false;
-  isPrime[1] = false;
+  const dfs = (i, j) => {
+    let days = 0;
 
-  for (let i = 2; i <= Math.sqrt(N); i++) {
-    if (isPrime[i]) {
-      for (let j = i * i; j <= N; j += i) {
-        isPrime[j] = false;
+    const move = (i, j) => {
+      if (0 <= i && i < n && 0 <= j && j < m) {
+        if (visited[i][j] || maps[i][j] === "X") {
+          return;
+        }
+        visited[i][j] = 1;
+        days += Number(maps[i][j]);
+
+        move(i + 1, j);
+        move(i - 1, j);
+        move(i, j + 1);
+        move(i, j - 1);
       }
-    }
-  }
-  const primes = isPrime.map((v, i) => (v ? i : 0)).filter(Boolean);
-  if (primes.length === 1) {
-    console.log(1);
-    return;
-  }
+    };
 
-  let cnt = 0;
-  let start = 0;
-  let end = 1;
-  let sum = primes[start] + primes[end];
-  while (start <= end) {
-    if (sum === N) {
-      cnt++;
-      sum -= primes[start++];
-    } else if (sum < N) {
-      sum += primes[++end];
-    } else {
-      sum -= primes[start++];
+    move(i, j);
+    if (days > 0) {
+      answer.push(days);
+    }
+
+    return days;
+  };
+
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < m; j++) {
+      dfs(i, j);
     }
   }
-  console.log(cnt);
+  return answer.length === 0 ? [-1] : answer.sort((a, b) => a - b);
 }
