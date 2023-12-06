@@ -371,3 +371,338 @@ function solution(maps) {
   }
   return answer.length === 0 ? [-1] : answer.sort((a, b) => a - b);
 }
+// 전력망을 둘로 나누기
+function solution(n, wires) {
+  let ans = n,
+    cnt = 0;
+
+  const dfs = (visited, map, now) => {
+    if (!visited[now]) {
+      visited[now] = 1;
+      for (let i = 0; i < map[now].length; i++) {
+        dfs(visited, map, map[now][i]);
+      }
+    }
+  };
+
+  while (cnt < n) {
+    const first = wires.shift();
+    const visited = new Array(n + 1).fill(0);
+    visited[0] = 1;
+    const map = Array.from({ length: n + 1 }, () => []);
+
+    wires.forEach((wire) => {
+      map[wire[0]].push(wire[1]);
+      map[wire[1]].push(wire[0]);
+    });
+    const start = wires[0][0];
+    dfs(visited, map, start);
+    const leftCnt = visited.reduce((acc, cur) => acc + cur, 0) - 1;
+    const rightCnt = n - leftCnt;
+
+    ans = Math.min(ans, Math.abs(rightCnt - leftCnt));
+    cnt++;
+    wires.push(first);
+  }
+
+  return ans;
+}
+// 호텔 대실
+const timeToMin = (str) =>
+  str
+    .split(":")
+    .map(Number)
+    .reduce((acc, cur, idx) => {
+      if (idx === 0) {
+        cur *= 60;
+      }
+      return acc + cur;
+    }, 0);
+
+function solution(book_time) {
+  const arr = new Array(1440).fill(0);
+
+  for (let i = 0; i < book_time.length; i++) {
+    const [arriveTime, leaveTime] = book_time[i].map(timeToMin);
+    for (let j = arriveTime; j < leaveTime + 10; j++) {
+      arr[j] += 1;
+    }
+  }
+  return Math.max(...arr.slice(0, 1440));
+}
+
+// 씨바...
+// 줄 서는 방법
+// 시간 초과
+function solution(n, k) {
+  const answer = [];
+
+  const permutation = (arr = []) => {
+    if (arr.length === n) {
+      answer.push([...arr]);
+      return;
+    }
+    for (let i = 1; i <= n; i++) {
+      if (!arr.includes(i)) {
+        arr.push(i);
+        permutation(arr);
+        if (answer.length === k) {
+          return;
+        }
+        arr.pop();
+      }
+    }
+  };
+  permutation();
+
+  return answer[k - 1];
+}
+
+function solution(n, k) {
+  const answer = [];
+  const arr = new Array(n).fill(1).map((v, i) => v + i);
+
+  let nth = k - 1;
+
+  while (true) {
+    if (nth === 0) {
+      answer.push(...arr);
+      break;
+    }
+
+    const fact = factorial(arr.length - 1);
+    const index = Math.floor(nth / fact);
+    nth = nth % fact;
+
+    answer.push(arr[index]);
+    arr.splice(index, 1);
+  }
+  return answer;
+}
+
+const factorial = (n) => {
+  let res = 1;
+  for (let i = 2; i <= n; i++) res *= i;
+  return res;
+};
+
+// 시소 짝꿍
+// 실패 코드
+function solution(weights) {
+  const n = weights.length;
+  let ans = 0;
+
+  const permutation = (arr = []) => {
+    if (arr.length === 2) {
+      const [left, right] = arr;
+      const min = Math.min(weights[left], weights[right]);
+      const max = Math.max(weights[left], weights[right]);
+      if (min === max) {
+        ans += 1;
+      } else if (min * 4 === max * 2) {
+        ans += 1;
+      } else if (min * 3 === max * 2) {
+        ans += 1;
+      } else if (min * 4 === max * 3) {
+        ans += 1;
+      }
+      return;
+    }
+    for (let i = 0; i < n; i++) {
+      if (!arr.includes(i)) {
+        arr.push(i);
+        permutation(arr);
+        arr.pop();
+      }
+    }
+  };
+  permutation();
+  return ans / 2;
+}
+function solution(weights) {
+  let ans = 0;
+  const store = {};
+  const cals = [1, 3 / 2, 2, 4 / 3];
+
+  weights
+    .sort((a, b) => b - a)
+    .forEach((weight) => {
+      cals.forEach((cal) => {
+        const s = weight * cal;
+        if (store[s]) {
+          ans += store[s];
+        }
+      });
+      store[weight] = store[weight] + 1 || 1;
+    });
+  return ans;
+}
+
+// 숫자 카드 나누기
+const gcd = (a, b) => {
+  if (b === 0) return a;
+  return gcd(b, a % b);
+};
+
+function solution(arrayA, arrayB) {
+  arrayA.sort((a, b) => b - a);
+  arrayB.sort((a, b) => b - a);
+
+  let ans = 0;
+  const a = arrayA.reduce((acc, cur) => gcd(acc, cur));
+  const b = arrayB.reduce((acc, cur) => gcd(acc, cur));
+
+  if (a !== 1 && arrayB.every((v) => v % a !== 0)) {
+    ans = Math.max(ans, a);
+  }
+  if (b !== 1 && arrayA.every((v) => v % b !== 0)) {
+    ans = Math.max(ans, b);
+  }
+  return ans;
+}
+
+// 미로 탈출
+function solution(maps) {
+  const n = maps.length;
+  const m = maps[0].length;
+
+  const dy = [1, -1, 0, 0];
+  const dx = [0, 0, 1, -1];
+  let start, lever, end;
+  for (let y = 0; y < n; y++) {
+    for (let x = 0; x < m; x++) {
+      if (maps[y][x] === "S") {
+        start = [y, x];
+      }
+      if (maps[y][x] === "L") {
+        lever = [y, x];
+      }
+      if (maps[y][x] === "E") {
+        end = [y, x];
+      }
+    }
+  }
+
+  const bfs = (start, end) => {
+    const q = [start];
+    const visited = Array.from({ length: n }, () => new Array(m).fill(0));
+
+    while (q.length) {
+      let [y, x] = q.shift();
+      if (end[0] === y && end[1] === x) {
+        break;
+      }
+      for (let i = 0; i < 4; i++) {
+        const ny = y + dy[i];
+        const nx = x + dx[i];
+        if (0 <= ny && ny < n && 0 <= nx && nx < m) {
+          if (!visited[ny][nx] && maps[ny][nx] !== "X") {
+            q.push([ny, nx]);
+            visited[ny][nx] = visited[y][x] + 1;
+          }
+        }
+      }
+    }
+    return visited[end[0]][end[1]];
+  };
+  const a1 = bfs(start, lever);
+  const a2 = bfs(lever, end);
+  if (!a1 || !a2) {
+    return -1;
+  }
+  return a1 + a2;
+}
+
+// 테이블 해시 함수
+function solution(data, col, row_begin, row_end) {
+  col -= 1;
+  row_begin -= 1;
+  row_end -= 1;
+  data.sort((a, b) => {
+    if (a[col] === b[col]) {
+      return b[0] - a[0];
+    }
+    return a[col] - b[col];
+  });
+
+  let ans = 0;
+  for (let i = row_begin; i <= row_end; i++) {
+    ans ^= data[i].reduce((acc, cur) => acc + (cur % (i + 1)), 0);
+  }
+  return ans;
+}
+
+// 하노이의 탑
+function solution(n) {
+  const answer = [];
+  const hanoi = (N, start, mid, end) => {
+    if (N === 1) {
+      answer.push([start, end]);
+    } else {
+      hanoi(N - 1, start, end, mid);
+      answer.push([start, end]);
+      hanoi(N - 1, mid, start, end);
+    }
+  };
+
+  hanoi(n, 1, 2, 3);
+  return answer;
+}
+
+// 리코쳇 로봇
+function solution(board) {
+  let start, end;
+  for (let i = 0; i < board.length; i++) {
+    for (let j = 0; j < board[0].length; j++) {
+      if (board[i][j] === "R") {
+        start = [i, j, 0];
+      }
+      if (board[i][j] === "G") {
+        end = [i, j, 0];
+      }
+    }
+  }
+
+  const bfs = (matrix, start, end, block) => {
+    const n = matrix.length;
+    const m = matrix[0].length;
+
+    const dy = [1, -1, 0, 0];
+    const dx = [0, 0, 1, -1];
+    const q = [start];
+    const visited = Array.from({ length: n }, () => new Array(m).fill(false));
+
+    while (q.length) {
+      let [y, x, distance] = q.shift();
+      if (visited[y][x]) continue;
+      visited[y][x] = true;
+      for (let i = 0; i < 4; i++) {
+        let ny = y + dy[i];
+        let nx = x + dx[i];
+        while (true) {
+          if (
+            0 <= ny &&
+            ny < n &&
+            0 <= nx &&
+            nx < m &&
+            matrix[ny][nx] !== block
+          ) {
+            ny += dy[i];
+            nx += dx[i];
+            if (end[0] === y && end[1] === x) {
+              return distance;
+            }
+          } else {
+            ny -= dy[i];
+            nx -= dx[i];
+            break;
+          }
+        }
+        q.push([ny, nx, distance + 1]);
+      }
+    }
+    return -1;
+  };
+  const ans = bfs(board, start, end, "D");
+  return ans ? ans : -1;
+}
