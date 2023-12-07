@@ -706,3 +706,248 @@ function solution(board) {
   const ans = bfs(board, start, end, "D");
   return ans ? ans : -1;
 }
+
+// 양궁대회
+function solution(n, info) {
+  let max = 0;
+  let result;
+
+  const dfs = (idx, arrows, lionInfo) => {
+    if (idx >= 10) {
+      lionInfo[10] = arrows;
+      arrows = 0;
+      if (arrows > 0) {
+        lionInfo[10] = arrows;
+      }
+      let lScore = 0;
+      let AScore = 0;
+      for (let i = 0; i < 11; i++) {
+        if (!lionInfo[i] && !info[i]) continue;
+        if (lionInfo[i] > info[i]) {
+          lScore += 10 - i;
+        } else {
+          AScore += 10 - i;
+        }
+      }
+      const gap = lScore - AScore;
+      if (gap > max) {
+        result = [...lionInfo];
+        max = gap;
+      }
+      if (result && gap === max) {
+        for (let i = 10; i >= 0; i--) {
+          if (result[i] === lionInfo[i]) continue;
+          if (result[i] < lionInfo[i]) {
+            result = [...lionInfo];
+          }
+          break;
+        }
+      }
+      lionInfo[10] = 0;
+      return;
+    }
+    // 라이언이 이길 때
+    const needArrowCnt = info[idx] + 1;
+    if (needArrowCnt <= arrows) {
+      lionInfo[idx] = needArrowCnt;
+      dfs(idx + 1, arrows - needArrowCnt, lionInfo);
+    }
+    lionInfo[idx] = 0;
+    // 어피치가 이길 때
+    dfs(idx + 1, arrows, lionInfo);
+  };
+  dfs(0, n, new Array(11).fill(0));
+  return max ? result : [-1];
+}
+
+// 광물 캐기
+function solution(picks, minerals) {
+  let answer = Number.MAX_SAFE_INTEGER;
+  const info = {
+    0: {
+      diamond: 1,
+      iron: 1,
+      stone: 1,
+    },
+    1: {
+      diamond: 5,
+      iron: 1,
+      stone: 1,
+    },
+    2: {
+      diamond: 25,
+      iron: 5,
+      stone: 1,
+    },
+  };
+  let n = picks.reduce((acc, cur) => acc + cur, 0);
+  const dfs = (idx, tired) => {
+    if (idx >= minerals.length || n === 0) {
+      answer = Math.min(answer, tired);
+      return;
+    }
+    for (let pick = 0; pick < picks.length; pick++) {
+      let work = tired;
+      if (picks[pick] > 0) {
+        picks[pick] -= 1;
+        n -= 1;
+        for (let i = idx; i < idx + 5; i++) {
+          if (minerals[i]) {
+            work += info[pick][minerals[i]];
+          } else {
+            break;
+          }
+        }
+        dfs(idx + 5, work);
+        picks[pick] += 1;
+        n += 1;
+      }
+    }
+  };
+  dfs(0, 0);
+  return answer;
+}
+
+// 우박수열 정적분
+function solution(k, ranges) {
+  const answer = [];
+  const areas = [];
+  while (true) {
+    nextK = collatz(k);
+    areas.push((k + nextK) / 2);
+    k = nextK;
+    if (k === 1) {
+      break;
+    }
+  }
+  const n = areas.length;
+  for (let [a, b] of ranges) {
+    b += n;
+    const v = a > b ? -1 : areas.slice(a, b).reduce((acc, cur) => acc + cur, 0);
+    answer.push(v);
+  }
+  return answer;
+}
+
+const collatz = (x) => {
+  if (x % 2 === 0) {
+    return x / 2;
+  }
+  return x * 3 + 1;
+};
+
+// 혼자 놀기의 달인
+function solution(cards) {
+  var answer = 0;
+  const n = cards.length;
+  const visited = new Array(n + 1);
+
+  for (let i = 0; i < n; i++) {
+    visited.fill(0);
+    let firstCnt = 0;
+    let step = cards[i] - 1;
+    while (true) {
+      if (visited[step]) {
+        break;
+      }
+      visited[step] = 1;
+      step = cards[step] - 1;
+      firstCnt++;
+    }
+    if (n === firstCnt) continue;
+
+    let secondVisited = [...visited];
+    let secondIdx = 1;
+    while (secondIdx < n) {
+      if (!secondVisited[secondIdx]) {
+        let secondCnt = 0;
+        let step = cards[secondIdx] - 1;
+        while (true) {
+          if (secondVisited[step]) {
+            break;
+          }
+          secondVisited[step] = 1;
+          step = cards[step] - 1;
+          secondCnt++;
+        }
+        answer = Math.max(answer, firstCnt * secondCnt);
+        secondVisited = [...visited];
+      }
+      secondIdx++;
+    }
+  }
+  return answer;
+}
+
+// 과제 진행하기
+function solution(plans) {
+  plans = plans
+    .map((v) => {
+      const [h, m] = v[1].split(":").map(Number);
+      v[1] = h * 60 + m;
+      v[2] = Number(v[2]);
+      return v;
+    })
+    .sort((a, b) => a[1] - b[1]);
+
+  const answer = [];
+  const stack = [];
+  let min = plans[0][1];
+
+  while (plans.length > 0 || stack.length > 0) {
+    if (stack.length > 0) {
+      const last = stack[stack.length - 1];
+      last[1] -= 1;
+      if (last[1] === 0) {
+        answer.push(stack.pop()[0]);
+      }
+    }
+    if (plans.length > 0 && min === plans[0][1]) {
+      const quest = plans.shift();
+      stack.push([quest[0], quest[2]]);
+    }
+    min++;
+  }
+  return answer;
+}
+
+// N-Queen
+function solution(n) {
+  let ans = 0;
+
+  const nQueens = (cnt, col) => {
+    const n = col.length - 1;
+    if (isPromising(cnt, col)) {
+      if (cnt === n) {
+        ans++;
+        return;
+      }
+      for (let next = 1; next <= n; next++) {
+        col[cnt + 1] = next;
+        nQueens(cnt + 1, col);
+        col[cnt + 1] -= next;
+      }
+    }
+  };
+
+  const isPromising = (now, col) => {
+    let next = 1;
+    let flag = true;
+    while (flag && next < now) {
+      // 1.같은 행에 배치
+      // 2.행 번호 차이가 다른 퀸의 열 번호의 절대값 차이와 같다면 대각선상에 위치
+      if (
+        col[now] === col[next] ||
+        now - next === Math.abs(col[now] - col[next])
+      ) {
+        flag = false;
+      }
+      next++;
+    }
+    return flag;
+  };
+
+  const col = new Array(n + 1).fill(0);
+  nQueens(0, col);
+  return ans;
+}
