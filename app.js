@@ -38,3 +38,40 @@ function solution(n) {
   nQueens(0, col);
   return ans;
 }
+
+const solution = (n) => {
+  let ans = 0;
+
+  const queen = (cnt) => {
+    console.log(cnt, col);
+    if (promising(cnt)) {
+      if (n === cnt) {
+        ans++;
+        return;
+      }
+
+      for (let next = 0; next < n; next++) {
+        col[cnt] += next;
+        queen(cnt + 1);
+        col[cnt] -= next;
+      }
+    }
+  };
+  const promising = (cnt) => {
+    let next = 0,
+      flag = true;
+    while (flag && next < cnt) {
+      if (
+        col[cnt] === col[next] ||
+        cnt - next === Math.abs(col[cnt] - col[next])
+      ) {
+        flag = false;
+      }
+      next++;
+    }
+    return flag;
+  };
+  const col = new Array(n).fill(0);
+  queen(0);
+  return ans;
+};
