@@ -1,77 +1,47 @@
-// N-Queen
-function solution(n) {
-  let ans = 0;
+// 이모티콘 할인행사
+function solution(users, emoticons) {
+  const salesRatio = [40, 30, 20, 10];
+  const n = emoticons.length;
+  const sales = new Array(n).fill(0);
+  let answer = [0, 0];
 
-  const nQueens = (cnt, col) => {
-    const n = col.length - 1;
-    if (isPromising(cnt, col)) {
-      if (cnt === n) {
-        ans++;
-        return;
+  const dfs = (depth) => {
+    if (depth === n) {
+      let plusCnt = 0,
+        totalProfit = 0;
+
+      for (let i = 0; i < users.length; i++) {
+        const [acceptableRatio, maximumBudget] = users[i];
+        let paid = 0;
+        let isBuyPlus = false;
+        for (let j = 0; j < sales.length; j++) {
+          if (acceptableRatio > sales[j]) continue;
+          paid += emoticons[j] * ((100 - sales[j]) / 100);
+          if (paid >= maximumBudget) {
+            isBuyPlus = true;
+            paid = 0;
+            break;
+          }
+        }
+
+        if (isBuyPlus) {
+          plusCnt += 1;
+        }
+        totalProfit += paid;
       }
-      for (let next = 1; next <= n; next++) {
-        col[cnt + 1] = next;
-        nQueens(cnt + 1, col);
-        col[cnt + 1] -= next;
+      if (plusCnt > answer[0]) {
+        answer = [plusCnt, totalProfit];
+      } else if (plusCnt === answer[0]) {
+        answer[1] = Math.max(answer[1], totalProfit);
       }
+      return;
+    }
+    for (let i = 0; i < 4; i++) {
+      sales[depth] = salesRatio[i];
+      dfs(depth + 1);
+      sales[depth] = 0;
     }
   };
-
-  const isPromising = (now, col) => {
-    let next = 1;
-    let flag = true;
-    while (flag && next < now) {
-      // 1.같은 행에 배치
-      // 2.행 번호 차이가 다른 퀸의 열 번호의 절대값 차이와 같다면 대각선상에 위치
-      if (
-        col[now] === col[next] ||
-        now - next === Math.abs(col[now] - col[next])
-      ) {
-        flag = false;
-      }
-      next++;
-    }
-    return flag;
-  };
-
-  const col = new Array(n + 1).fill(0);
-  nQueens(0, col);
-  return ans;
+  dfs(0);
+  return answer;
 }
-
-const solution = (n) => {
-  let ans = 0;
-
-  const queen = (cnt) => {
-    console.log(cnt, col);
-    if (promising(cnt)) {
-      if (n === cnt) {
-        ans++;
-        return;
-      }
-
-      for (let next = 0; next < n; next++) {
-        col[cnt] += next;
-        queen(cnt + 1);
-        col[cnt] -= next;
-      }
-    }
-  };
-  const promising = (cnt) => {
-    let next = 0,
-      flag = true;
-    while (flag && next < cnt) {
-      if (
-        col[cnt] === col[next] ||
-        cnt - next === Math.abs(col[cnt] - col[next])
-      ) {
-        flag = false;
-      }
-      next++;
-    }
-    return flag;
-  };
-  const col = new Array(n).fill(0);
-  queen(0);
-  return ans;
-};

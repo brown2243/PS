@@ -77,7 +77,6 @@ function solution(words) {
     );
 }
 //////////////////////////////
-
 // 위클리 챌린지 6주차
 // 복서 정렬하기
 // 정렬이 짜증나는 문제
@@ -296,8 +295,7 @@ function solution(queue1, queue2) {
   }
   return -1;
 }
-
-// two pointer
+//// two pointer
 function solution(queue1, queue2) {
   const q = queue1.concat(queue2);
   let total1 = queue1.reduce((acc, val) => acc + val, 0);
@@ -360,7 +358,6 @@ function solution(maps) {
     if (days > 0) {
       answer.push(days);
     }
-
     return days;
   };
 
@@ -371,6 +368,7 @@ function solution(maps) {
   }
   return answer.length === 0 ? [-1] : answer.sort((a, b) => a - b);
 }
+
 // 전력망을 둘로 나누기
 function solution(n, wires) {
   let ans = n,
@@ -633,6 +631,9 @@ function solution(data, col, row_begin, row_end) {
 }
 
 // 하노이의 탑
+// 1번 기둥에 남은 N개 중 N-1개를 2번 기둥에 옮긴다. (3번 기둥을 보조 기둥으로 사용)
+// 1번 기둥에 남은 가장 큰 원판을 3번 기둥에 옮긴다.
+// 2번 기둥에 남은 N-1개의 원판들을 3번 기둥에 옮긴다. (1번 기둥을 보조 기둥으로 사용)
 function solution(n) {
   const answer = [];
   const hanoi = (N, start, mid, end) => {
@@ -953,6 +954,18 @@ function solution(n) {
   return ans;
 }
 
+// 두 원 사이의 정수 쌍
+function solution(r1, r2) {
+  let ans = 0;
+
+  for (let x = 1; x <= r2; x++) {
+    const y2 = Math.floor(Math.sqrt(r2 ** 2 - x ** 2));
+    const y1 = Math.ceil(Math.sqrt(r1 ** 2 - x ** 2)) || 0;
+    ans += y2 - y1 + 1;
+  }
+  return ans * 4;
+}
+
 // KAKAO
 // 거리 두기 확인하기
 function solution(places) {
@@ -1067,7 +1080,7 @@ function solution(lines) {
       box.add(point);
     }
   }
-  //   중복 제거 및 정수 아닌 포인트 제거
+  // 중복 제거 및 정수 아닌 포인트 제거
   const arr = Array.from(box);
   if (arr.length === 1) {
     return ["*"];
@@ -1138,4 +1151,51 @@ function solution(lines) {
   });
   return sheet.map((row) => row.join(""));
 }
-//
+
+// 이모티콘 할인행사
+function solution(users, emoticons) {
+  const n = emoticons.length;
+  const sales = new Array(n).fill(0);
+  const salesRatio = [40, 30, 20, 10];
+  let answer = [0, 0];
+
+  const dfs = (depth) => {
+    if (depth === n) {
+      let plusCnt = 0,
+        totalProfit = 0;
+
+      for (let i = 0; i < users.length; i++) {
+        const [acceptableRatio, maximumBudget] = users[i];
+        let paid = 0;
+        let isBuyPlus = false;
+        for (let j = 0; j < sales.length; j++) {
+          if (acceptableRatio > sales[j]) continue;
+          paid += emoticons[j] * ((100 - sales[j]) / 100);
+          if (paid >= maximumBudget) {
+            isBuyPlus = true;
+            paid = 0;
+            break;
+          }
+        }
+
+        if (isBuyPlus) {
+          plusCnt += 1;
+        }
+        totalProfit += paid;
+      }
+      if (plusCnt > answer[0]) {
+        answer = [plusCnt, totalProfit];
+      } else if (plusCnt === answer[0]) {
+        answer[1] = Math.max(answer[1], totalProfit);
+      }
+      return;
+    }
+    for (let i = 0; i < 4; i++) {
+      sales[depth] = salesRatio[i];
+      dfs(depth + 1);
+      sales[depth] = 0;
+    }
+  };
+  dfs(0);
+  return answer;
+}
