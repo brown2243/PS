@@ -1,47 +1,47 @@
-// 이모티콘 할인행사
-function solution(users, emoticons) {
-  const salesRatio = [40, 30, 20, 10];
-  const n = emoticons.length;
-  const sales = new Array(n).fill(0);
-  let answer = [0, 0];
-
-  const dfs = (depth) => {
-    if (depth === n) {
-      let plusCnt = 0,
-        totalProfit = 0;
-
-      for (let i = 0; i < users.length; i++) {
-        const [acceptableRatio, maximumBudget] = users[i];
-        let paid = 0;
-        let isBuyPlus = false;
-        for (let j = 0; j < sales.length; j++) {
-          if (acceptableRatio > sales[j]) continue;
-          paid += emoticons[j] * ((100 - sales[j]) / 100);
-          if (paid >= maximumBudget) {
-            isBuyPlus = true;
-            paid = 0;
-            break;
-          }
-        }
-
-        if (isBuyPlus) {
-          plusCnt += 1;
-        }
-        totalProfit += paid;
+// 혼자서 하는 틱택토
+function solution(board) {
+  const n = 3;
+  let oCnt = 0;
+  let xCnt = 0;
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < n; j++) {
+      if (board[i][j] === "O") {
+        oCnt += 1;
       }
-      if (plusCnt > answer[0]) {
-        answer = [plusCnt, totalProfit];
-      } else if (plusCnt === answer[0]) {
-        answer[1] = Math.max(answer[1], totalProfit);
+      if (board[i][j] === "X") {
+        xCnt += 1;
       }
-      return;
     }
-    for (let i = 0; i < 4; i++) {
-      sales[depth] = salesRatio[i];
-      dfs(depth + 1);
-      sales[depth] = 0;
+  }
+  const gap = oCnt - xCnt;
+  if (gap > 1 || gap < 0) {
+    return 0;
+  }
+  const isWin = (who) => {
+    const isPromising = new Array(8).fill(0);
+    for (let i = 0; i < n; i++) {
+      if (board[i][0] === who) isPromising[0]++;
+      if (board[i][1] === who) isPromising[1]++;
+      if (board[i][2] === who) isPromising[2]++;
+      if (board[0][i] === who) isPromising[3]++;
+      if (board[1][i] === who) isPromising[4]++;
+      if (board[2][i] === who) isPromising[5]++;
+      if (board[i][i] === who) isPromising[6]++;
+      if (board[n - i - 1][n - i - 1] === who) isPromising[7]++;
     }
+    return isPromising.some((v) => v === n);
   };
-  dfs(0);
-  return answer;
+
+  const isOWin = isWin("O");
+  const isXWin = isWin("X");
+  if (isOWin && isXWin) {
+    return 0;
+  }
+  if (isOWin && gap !== 1) {
+    return 0;
+  }
+  if (isXWin && gap !== 0) {
+    return 0;
+  }
+  return 1;
 }

@@ -405,6 +405,7 @@ function solution(n, wires) {
 
   return ans;
 }
+
 // 호텔 대실
 const timeToMin = (str) =>
   str
@@ -455,7 +456,6 @@ function solution(n, k) {
 
   return answer[k - 1];
 }
-
 function solution(n, k) {
   const answer = [];
   const arr = new Array(n).fill(1).map((v, i) => v + i);
@@ -966,6 +966,55 @@ function solution(r1, r2) {
   return ans * 4;
 }
 
+// 12/08
+// 혼자서 하는 틱택토
+function solution(board) {
+  const n = 3;
+  let oCnt = 0;
+  let xCnt = 0;
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < n; j++) {
+      if (board[i][j] === "O") {
+        oCnt += 1;
+      }
+      if (board[i][j] === "X") {
+        xCnt += 1;
+      }
+    }
+  }
+  const gap = oCnt - xCnt;
+  if (gap > 1 || gap < 0) {
+    return 0;
+  }
+  const isWin = (who) => {
+    const isPromising = new Array(8).fill(0);
+    for (let i = 0; i < n; i++) {
+      if (board[i][0] === who) isPromising[0]++;
+      if (board[i][1] === who) isPromising[1]++;
+      if (board[i][2] === who) isPromising[2]++;
+      if (board[0][i] === who) isPromising[3]++;
+      if (board[1][i] === who) isPromising[4]++;
+      if (board[2][i] === who) isPromising[5]++;
+      if (board[i][i] === who) isPromising[6]++;
+      if (board[i][n - i - 1] === who) isPromising[7]++;
+    }
+    return isPromising.some((v) => v === n);
+  };
+
+  const isOWin = isWin("O");
+  const isXWin = isWin("X");
+  if (isOWin && isXWin) {
+    return 0;
+  }
+  if (isOWin && gap !== 1) {
+    return 0;
+  }
+  if (isXWin && gap !== 0) {
+    return 0;
+  }
+  return 1;
+}
+
 // KAKAO
 // 거리 두기 확인하기
 function solution(places) {
@@ -995,8 +1044,6 @@ function solution(places) {
       : 1;
   });
 }
-// 엄청난 천재가 푼듯
-// BTS 방식으로 코드 짰는데, 오랜만이라 감잃어서 완성은 못하고 답봄 ㅜㅠㅜ
 // 아래코드가 일반적인 방식
 const iskeepingDistance = (place) => {
   let roomInfo = place.map((rooms) => rooms.split(""));
@@ -1044,12 +1091,11 @@ function solution(places) {
   for (let i = 0; i < 5; i++) {
     keepingDistance.push(iskeepingDistance(places[i]));
   }
-
   return keepingDistance;
 }
+
 // 교점에 별 만들기
 // 내가 짠 식, 완전 통과는 안됌 ㅅㅂ
-
 function getPoint(line1, line2) {
   const [ax1, by1, c1] = line1;
   const [ax2, by2, c2] = line2;
@@ -1060,7 +1106,6 @@ function getPoint(line1, line2) {
   const x = (by1 * c2 - by2 * c1) / (ax1 * by2 - ax2 * by1);
   return [x, -(ax1 / by1) * x - c1 / by1];
 }
-
 function solution(lines) {
   const box = new Set();
   const N = lines.length;
