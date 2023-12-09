@@ -1014,6 +1014,25 @@ function solution(board) {
   }
   return 1;
 }
+// 12/09
+// 숫자 블록
+// 문제가 이상하다 하여 패스
+function solution(begin, end) {
+  end += 1;
+  const getDivisor = (x) => {
+    if (x === 1) {
+      return 0;
+    }
+    for (let i = 2; i < Math.sqrt(x) + 1; i++) {
+      if (x % i === 0) {
+        if (x / i === 1) continue;
+        return Math.max(x / i, i);
+      }
+    }
+    return 1;
+  };
+  return new Array(end - begin).fill(0).map((_, i) => getDivisor(i + begin));
+}
 
 // KAKAO
 // 거리 두기 확인하기
@@ -1243,4 +1262,62 @@ function solution(users, emoticons) {
   };
   dfs(0);
   return answer;
+}
+
+// 택배 배달과 수거하기
+function solution(cap, n, deliveries, pickups) {
+  let ans = 0;
+  let deliveriesTotal = deliveries.reduce((acc, cur) => acc + cur, 0);
+  let pickupsTotal = pickups.reduce((acc, cur) => acc + cur, 0);
+
+  while (deliveriesTotal !== 0 || pickupsTotal !== 0) {
+    while (deliveries.length > 0) {
+      if (deliveries[deliveries.length - 1] === 0) {
+        deliveries.pop();
+      } else {
+        break;
+      }
+    }
+    while (pickups.length > 0) {
+      if (pickups[pickups.length - 1] === 0) {
+        pickups.pop();
+      } else {
+        break;
+      }
+    }
+
+    ans += Math.max(deliveries.length, pickups.length) * 2;
+    let dCap = cap,
+      dCnt = 0;
+    let pCap = cap,
+      pCnt = 0;
+
+    for (let i = deliveries.length - 1; i >= 0; i--) {
+      if (deliveries[i] <= dCap) {
+        dCap -= deliveries[i];
+        dCnt += deliveries[i];
+        deliveries[i] = 0;
+      } else {
+        dCnt += dCap;
+        deliveries[i] -= dCap;
+        break;
+      }
+    }
+
+    for (let i = pickups.length - 1; i >= 0; i--) {
+      if (pickups[i] <= pCap) {
+        pCap -= pickups[i];
+        pCnt += pickups[i];
+        pickups[i] = 0;
+      } else {
+        pCnt += pCap;
+        pickups[i] -= pCap;
+        break;
+      }
+    }
+
+    deliveriesTotal -= dCnt;
+    pickupsTotal -= pCnt;
+  }
+  return ans;
 }

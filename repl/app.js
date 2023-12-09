@@ -1571,7 +1571,6 @@ function solution(n, t, m, p) {
     return ans
 }
 
-LV 3 연습 문제
 
 // 2 x n 타일링 O
 // 뭔가 피보나치 같아서 해보니 바로 맞춤
