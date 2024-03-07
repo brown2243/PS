@@ -979,23 +979,24 @@ function solution(land) {
 // 숫자의 표현
 // 그냥 구현하면 풀림
 function solution(n) {
-    let cnt = 1
-    for(let i = 1; i < n; i++){
-        let num = i
-        for(let j = i+1; j < n; j++){
-            num += j
-            if(num === n){
-                cnt++
-                break
-            }
-            if(num > n){
-                break
-            }
+    let cnt = 1;
+    const half = Math.floor(n / 2);
+    for (let i = 1; i <= half; i++) {
+      let total = i;
+      for (let j = i + 1; j <= half + 1; j++) {
+        total += j;
+        if (total === n) {
+          cnt++;
+          break;
         }
+        if (total > n) {
+          break;
+        }
+      }
     }
     return cnt;
-}
-
+  }
+  
 // 최댓값과 최소값
 function solution(s) {
     s = s.split(" ").map(v => Number(v))

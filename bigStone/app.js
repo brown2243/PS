@@ -1,65 +1,61 @@
-// 양궁대회
-function solution(n, info) {
-  let answer = [];
-  let score = 0;
+// 2852
+{
+  const os = process.platform;
+  const fs = require("fs");
+  const input =
+    os === "linux"
+      ? fs.readFileSync("/dev/stdin").toString().trim()
+      : fs.readFileSync("bigStone/input.txt").toString().trim();
 
-  const dfs = (index, remain, board) => {
-    if (remain < 0) {
-      return;
-    }
-    if (remain === 0) {
-      let rScore = 0;
-      let aScore = 0;
-
-      for (let i = 0; i < 11; i++) {
-        if (info[i] === 0 && board[i] === 0) {
-          continue;
+  const arr = input
+    .split("\n")
+    .slice(1)
+    .map((v) =>
+      v.split(" ").map((v, i) => {
+        if (i === 0) {
+          return Number(v);
         }
+        return v
+          .split(":")
+          .map((v, i) => Number(v) * (i === 0 ? 60 : 1))
+          .reduce((acc, cur) => acc + cur, 0);
+      })
+    );
 
-        const diff = info[i] - board[i];
+  let winningTime1 = 0;
+  let winningTime2 = 0;
+  let score1 = 0;
+  let score2 = 0;
+  let lastTime = 0;
+  let endTime = 48 * 60;
 
-        if (diff >= 0) {
-          aScore += 10 - i;
-        } else if (diff < 0) {
-          rScore += 10 - i;
-        }
-      }
-
-      const diff = rScore - aScore;
-
-      if (score === diff) {
-        const aReverse = [...answer].reverse().join("");
-        const bReverse = [...board].reverse().join("");
-
-        if (aReverse < bReverse) {
-          answer = [...board];
-        }
-      } else if (score < diff) {
-        answer = [...board];
-        score = diff;
-      }
-
-      return;
+  for (let i = 0; i < arr.length; i++) {
+    const [team, time] = arr[i];
+    if (score1 > score2) {
+      winningTime1 += time - lastTime;
     }
-
-    for (let i = index; i < 11; i++) {
-      const origin = board[i];
-
-      for (let j = info[i] + 1; j >= 0; j--) {
-        board[i] = j;
-        dfs(i + 1, remain - j, board);
-      }
-      board[i] = origin;
+    if (score2 > score1) {
+      winningTime2 += time - lastTime;
     }
-  };
-
-  for (let i = 0; i < 11; i++) {
-    const board = Array(11).fill(0);
-
-    board[i] = info[i] + 1;
-    dfs(i + 1, n - board[i], board);
+    if (team === 1) score1++;
+    if (team === 2) score2++;
+    lastTime = time;
   }
 
-  return score === 0 ? [-1] : answer;
+  if (score1 > score2) {
+    winningTime1 += endTime - lastTime;
+  }
+  if (score2 > score1) {
+    winningTime2 += endTime - lastTime;
+  }
+
+  console.log(
+    `${Math.floor(winningTime1 / 60)}`.padStart(2, "0") +
+      ":" +
+      `${winningTime1 % 60}`.padStart(2, "0") +
+      "\n" +
+      `${Math.floor(winningTime2 / 60)}`.padStart(2, "0") +
+      ":" +
+      `${winningTime2 % 60}`.padStart(2, "0")
+  );
 }
-solution(5, [2, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0]);

@@ -1287,10 +1287,9 @@ function solution(cap, n, deliveries, pickups) {
     }
 
     ans += Math.max(deliveries.length, pickups.length) * 2;
+
     let dCap = cap,
       dCnt = 0;
-    let pCap = cap,
-      pCnt = 0;
 
     for (let i = deliveries.length - 1; i >= 0; i--) {
       if (deliveries[i] <= dCap) {
@@ -1304,6 +1303,9 @@ function solution(cap, n, deliveries, pickups) {
       }
     }
 
+    let pCap = cap,
+      pCnt = 0;
+
     for (let i = pickups.length - 1; i >= 0; i--) {
       if (pickups[i] <= pCap) {
         pCap -= pickups[i];
@@ -1315,7 +1317,6 @@ function solution(cap, n, deliveries, pickups) {
         break;
       }
     }
-
     deliveriesTotal -= dCnt;
     pickupsTotal -= pCnt;
   }

@@ -253,19 +253,19 @@
     .map((s) => s.split(" ").map(Number));
 
   let ans = 0,
-    l = 1;
+    left = 1;
   for (let i = 0; i < J; i += 1) {
-    const tmp = apples[i][0];
-    const r = l + M - 1;
-    if (tmp >= l && tmp <= r) {
+    const now = apples[i][0];
+    const right = left + M - 1;
+    if (now >= left && now <= right) {
       continue;
     }
-    if (tmp < l) {
-      ans += l - tmp;
-      l = tmp;
+    if (now < left) {
+      ans += left - now;
+      left = now;
     } else {
-      l += tmp - r;
-      ans += tmp - r;
+      left += now - right;
+      ans += now - right;
     }
   }
   console.log(ans);
