@@ -1,28 +1,41 @@
-// 터렛
+// 18110
 {
   const fs = require("fs");
   const filePath =
     process.platform === "linux" ? "/dev/stdin" : "backjon/input.txt";
 
-  let input = fs.readFileSync(filePath).toString().trim().split("\n");
-  const arr = input
-    .slice(1)
-    .map((v) => v.split(" ").map(Number))
-    .map(([x1, y1, r1, x2, y2, r2]) => {
-      const distance = Math.sqrt((y2 - y1) ** 2 + (x2 - x1) ** 2);
-      const rSum = r1 + r2;
-      const rMinus = Math.abs(r1 - r2);
+  const [[N, M, B], ...arr] = fs
+    .readFileSync(filePath)
+    .toString()
+    .trim()
+    .split("\n")
+    .map((v) => v.split(" ").map(Number));
+  let answer = [Number.MAX_SAFE_INTEGER, 256];
+  for (let layer = 0; layer <= 256; layer++) {
+    let time = 0;
+    let b = B;
 
-      if (distance === 0 && r1 === r2) {
-        return -1;
+    for (let y = 0; y < N; y++) {
+      for (let x = 0; x < M; x++) {
+        const point = arr[y][x];
+        if (point === layer) continue;
+        if (point > layer) {
+          b += point - layer;
+          time += (point - layer) * 2;
+        } else {
+          b -= layer - point;
+          time += layer - point;
+        }
       }
-      if (rMinus < distance && distance < rSum) {
-        return 2;
+    }
+
+    if (b >= 0) {
+      if (answer[0] > time) {
+        answer = [time, layer];
+      } else if (answer[0] === time) {
+        answer[1] = layer;
       }
-      if (rMinus === distance || distance === rSum) {
-        return 1;
-      }
-      return 0;
-    });
-  console.log(arr.join("\n"));
+    }
+  }
+  console.log(answer.join(" "));
 }
