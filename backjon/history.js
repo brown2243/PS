@@ -254,3 +254,276 @@
   }
   console.log(answer.join(" "));
 }
+
+// 1074
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "backjon/input.txt";
+
+  const [N, R, C] = fs
+    .readFileSync(filePath)
+    .toString()
+    .trim()
+    // .split("\n")
+    .split(" ")
+    .map(Number);
+  const n = 2 ** N;
+  const matrix = Array.from({ length: n }, () => new Array(n).fill(0));
+
+  const recur = (depth, point, y, x) => {
+    if (depth === 1) {
+      matrix[y][x] = point;
+      matrix[y][x + 1] = point + 1;
+      matrix[y + 1][x] = point + 2;
+      matrix[y + 1][x + 1] = point + 3;
+      return;
+    }
+
+    const next = depth - 1;
+    const nextPoint = 2 ** (depth * 2) / 4;
+
+    const val = 2 ** next;
+    recur(next, point, y, x);
+    recur(next, point + nextPoint * 1, y, x + val);
+    recur(next, point + nextPoint * 2, y + val, x);
+    recur(next, point + nextPoint * 3, y + val, x + val);
+  };
+
+  recur(N, 0, 0, 0);
+  console.log(matrix[R][C]);
+}
+// 1074
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "backjon/input.txt";
+
+  const [N, R, C] = fs
+    .readFileSync(filePath)
+    .toString()
+    .trim()
+    // .split("\n")
+    .split(" ")
+    .map(Number);
+
+  const recur = (depth, point, y, x) => {
+    if (depth === 1) {
+      if (R === y && C === x) {
+        console.log(point);
+      }
+      if (R === y && C === x + 1) {
+        console.log(point + 1);
+      }
+      if (R === y + 1 && C === x) {
+        console.log(point + 2);
+      }
+      if (R === y + 1 && C === x + 1) {
+        console.log(point + 3);
+      }
+      return;
+    }
+
+    const next = depth - 1;
+    const nextPoint = 2 ** (depth * 2) / 4;
+
+    const val = 2 ** next;
+    const nextX = x + val;
+    const nextY = y + val;
+
+    if (y <= R && R < nextY && x <= C && C < nextX) {
+      recur(next, point, y, x);
+    }
+    if (y <= R && R < nextY && nextX <= C) {
+      recur(next, point + nextPoint * 1, y, nextX);
+    }
+    if (nextY <= R && x <= C && C < nextX) {
+      recur(next, point + nextPoint * 2, nextY, x);
+    }
+    if (nextY <= R && nextX <= C) {
+      recur(next, point + nextPoint * 3, nextY, nextX);
+    }
+  };
+  recur(N, 0, 0, 0);
+}
+
+// 2630
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "backjon/input.txt";
+
+  const [[N], ...matrix] = fs
+    .readFileSync(filePath)
+    .toString()
+    .trim()
+    .split("\n")
+    .map((v) => v.split(" ").map(Number));
+
+  let white = 0;
+  let blue = 0;
+
+  const recur = (y, x, cnt) => {
+    const first = matrix[y][x];
+    let flag = true;
+    for (let i = y; i < y + cnt; i++) {
+      for (let j = x; j < x + cnt; j++) {
+        if (first !== matrix[i][j]) {
+          flag = false;
+          break;
+        }
+      }
+    }
+    if (flag) {
+      first ? blue++ : white++;
+    } else {
+      const nextCnt = cnt / 2;
+      const nextY = y + nextCnt;
+      const nextX = x + nextCnt;
+      recur(y, x, nextCnt);
+      recur(y, nextX, nextCnt);
+      recur(nextY, x, nextCnt);
+      recur(nextY, nextX, nextCnt);
+    }
+  };
+  recur(0, 0, N);
+  console.log(`${white}\n${blue}`);
+}
+// 9095
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "backjon/input.txt";
+
+  const [, ...arr] = fs
+    .readFileSync(filePath)
+    .toString()
+    .trim()
+    .split("\n")
+    .map(Number);
+
+  const dp = [0, 1, 2, 4, 7];
+  let ans = ``;
+  for (let i = 0; i < arr.length; i++) {
+    for (let j = dp.length; j <= arr[i]; j++) {
+      dp[j] = dp[j - 1] + dp[j - 2] + dp[j - 3];
+    }
+    ans += `${dp[arr[i]]}\n`;
+  }
+  console.log(ans);
+}
+
+// 11724
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "backjon/input.txt";
+
+  const [[N, M], ...edges] = fs
+    .readFileSync(filePath)
+    .toString()
+    .trim()
+    .split("\n")
+    .map((v) => v.split(" ").map(Number));
+  const matrix = Array.from({ length: N + 1 }, () => []);
+  const isVisited = new Array(N + 1).fill(false);
+  isVisited[0] = true;
+  let cnt = 0;
+  edges.forEach(([x1, x2]) => {
+    matrix[x1].push(x2);
+    matrix[x2].push(x1);
+  });
+
+  const dfs = (start) => {
+    if (isVisited[start]) {
+      return;
+    }
+    isVisited[start] = true;
+    matrix[start].forEach((v) => {
+      dfs(v);
+    });
+  };
+
+  for (let i = 1; i < matrix.length; i++) {
+    if (!isVisited[i]) {
+      dfs(i);
+      cnt++;
+      if (isVisited.every(Boolean)) {
+        break;
+      }
+    }
+  }
+  console.log(cnt);
+}
+
+// 11726
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "backjon/input.txt";
+
+  const input = fs.readFileSync(filePath).toString().trim();
+  // .split("\n")
+  // .map((v) => v.split(" ").map(Number));
+  const n = Number(input);
+  const dp = [0, 1, 2, 3];
+  const mod = 10007;
+  for (let i = 4; i <= n; i++) {
+    dp[i] = (dp[i - 1] + dp[i - 2]) % mod;
+  }
+  console.log(dp[n]);
+}
+
+// 14940
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "backjon/input.txt";
+
+  const [[N, M], ...matrix] = fs
+    .readFileSync(filePath)
+    .toString()
+    .trim()
+    .split("\n")
+    .map((v) => v.split(" ").map(Number));
+
+  const distance = Array.from({ length: N }, () => new Array(M).fill(0));
+  const start = [0, 0];
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < M; j++) {
+      if (matrix[i][j] === 2) {
+        start[0] = i;
+        start[1] = j;
+        break;
+      }
+    }
+  }
+
+  const q = [start];
+  const dy = [1, 0, -1, 0];
+  const dx = [0, 1, 0, -1];
+
+  while (q.length > 0) {
+    const [y, x] = q.shift();
+    for (let i = 0; i < 4; i++) {
+      const ny = y + dy[i];
+      const nx = x + dx[i];
+      if (0 <= ny && ny < N && 0 <= nx && nx < M) {
+        if (matrix[ny][nx] === 1 && distance[ny][nx] === 0) {
+          distance[ny][nx] = distance[y][x] + 1;
+          q.push([ny, nx]);
+        }
+      }
+    }
+  }
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < M; j++) {
+      if (distance[i][j] === 0 && matrix[i][j] === 1) {
+        distance[i][j] = -1;
+      }
+    }
+  }
+
+  distance[start[0]][start[1]] = 0;
+  console.log(distance.map((v) => v.join(" ")).join("\n"));
+}
