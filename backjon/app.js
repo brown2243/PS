@@ -1,53 +1,57 @@
-// 14940
+// 2504
 {
   const fs = require("fs");
   const filePath =
     process.platform === "linux" ? "/dev/stdin" : "backjon/input.txt";
 
-  const [[N, M], ...matrix] = fs
-    .readFileSync(filePath)
-    .toString()
-    .trim()
-    .split("\n")
-    .map((v) => v.split(" ").map(Number));
+  const str = fs.readFileSync(filePath).toString().trim();
+  const stack = [];
+  let ans = 0;
 
-  const distance = Array.from({ length: N }, () => new Array(M).fill(0));
-  const start = [0, 0];
-  for (let i = 0; i < N; i++) {
-    for (let j = 0; j < M; j++) {
-      if (matrix[i][j] === 2) {
-        start[0] = i;
-        start[1] = j;
+  for (let i = 0; i < str.length; i++) {
+    const bracket = str[i];
+    if (bracket === "(" || bracket === "[") {
+      stack.push(bracket);
+      continue;
+    }
+    if (stack.length === 0) {
+      ans = 0;
+      break;
+    }
+    const lastBracket = stack.pop();
+    let value = 0;
+
+    if (lastBracket === "(" && bracket === ")") {
+      value = 2;
+    } else if (lastBracket === "[" && bracket === "]") {
+      value = 3;
+    }
+    //
+    else {
+      ans = 0;
+      break;
+    }
+
+    while (stack.length > 0 && i < str.length - 1) {
+      const lastBracket = stack[stack.length - 1];
+      const nextBracket = str[i + 1];
+      const num = Number(lastBracket);
+      if (!Number.isNaN(num)) {
+        value += num;
+        stack.pop();
+      } else if (lastBracket === "(" && nextBracket === ")") {
+        value *= 2;
+        i += 1;
+        stack.pop();
+      } else if (lastBracket === "[" && nextBracket === "]") {
+        value *= 3;
+        i += 1;
+        stack.pop();
+      } else {
         break;
       }
     }
+    stack.length === 0 ? (ans += value) : stack.push(value.toString());
   }
-
-  const q = [start];
-  const dy = [1, 0, -1, 0];
-  const dx = [0, 1, 0, -1];
-
-  while (q.length > 0) {
-    const [y, x] = q.shift();
-    for (let i = 0; i < 4; i++) {
-      const ny = y + dy[i];
-      const nx = x + dx[i];
-      if (0 <= ny && ny < N && 0 <= nx && nx < M) {
-        if (matrix[ny][nx] === 1 && distance[ny][nx] === 0) {
-          distance[ny][nx] = distance[y][x] + 1;
-          q.push([ny, nx]);
-        }
-      }
-    }
-  }
-  for (let i = 0; i < N; i++) {
-    for (let j = 0; j < M; j++) {
-      if (distance[i][j] === 0 && matrix[i][j] === 1) {
-        distance[i][j] = -1;
-      }
-    }
-  }
-
-  distance[start[0]][start[1]] = 0;
-  console.log(distance.map((v) => v.join(" ")).join("\n"));
+  console.log(ans);
 }

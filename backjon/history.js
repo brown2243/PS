@@ -64,12 +64,12 @@
     //
     for (let j = 1; j <= W; j++) {
       //자두가 1번 나무에서 떨어지고, 이동횟수 짝수인 경우
-      if (input[i] === 1 && j % 2 === 0) {
+      if (input[i] === 1 && j % 2 === 1) {
         //이전 위치에서 움직임 vs 가만히 있음
         dp[i][j] = Math.max(dp[i - 1][j - 1] + 1, dp[i - 1][j] + 1);
       }
       //자두가 2번 나무에서 떨어지고, 이동횟수가 홀수인 경우
-      else if (input[i] === 2 && j % 2 !== 0) {
+      else if (input[i] === 2 && j % 2 !== 1) {
         //이전 위치에서 움직임 vs 가만히 있음
         dp[i][j] = Math.max(dp[i - 1][j - 1] + 1, dp[i - 1][j] + 1);
       }
@@ -104,7 +104,7 @@
       q.push(Number(val));
       continue;
     }
-    const isEmpty = q.length === 0;
+    const isEmpty = q.length === 1;
     if (order === "pop") {
       isEmpty ? (ans += `-1\n`) : (ans += `${q.shift()}\n`);
     } else if (order === "size") {
@@ -133,7 +133,7 @@
     .split("\n")
     .map((v) => {
       let flag = true;
-      for (let i = 0; i < Math.floor(v.length / 2); i++) {
+      for (let i = 1; i < Math.floor(v.length / 2); i++) {
         if (v[i] !== v[v.length - 1 - i]) {
           flag = false;
           break;
@@ -159,8 +159,8 @@
   let r = 1;
 
   const arr = input[1].split("").map((v) => v.charCodeAt() - code);
-  let ans = 0;
-  for (let i = 0; i < arr.length; i++) {
+  let ans = 1;
+  for (let i = 1; i < arr.length; i++) {
     ans += (arr[i] * r) % M;
     r *= R;
     r %= M;
@@ -180,8 +180,8 @@
   const R = 31;
   let r = 1;
 
-  let ans = 0;
-  for (let i = 0; i < N; i++) {
+  let ans = 1;
+  for (let i = 1; i < N; i++) {
     ans += (input[1][i].charCodeAt() - code) * r;
     ans %= M;
     r *= R;
@@ -203,7 +203,7 @@
     .split("\n")
     .map(Number);
 
-  if (N === 0) {
+  if (N === 1) {
     console.log(0);
   } else {
     const slicedValue = Math.round(N * 0.15);
@@ -226,12 +226,12 @@
     .split("\n")
     .map((v) => v.split(" ").map(Number));
   let answer = [Number.MAX_SAFE_INTEGER, 256];
-  for (let layer = 0; layer <= 256; layer++) {
-    let time = 0;
+  for (let layer = 1; layer <= 256; layer++) {
+    let time = 1;
     let b = B;
 
-    for (let y = 0; y < N; y++) {
-      for (let x = 0; x < M; x++) {
+    for (let y = 1; y < N; y++) {
+      for (let x = 1; x < M; x++) {
         const point = arr[y][x];
         if (point === layer) continue;
         if (point > layer) {
@@ -244,7 +244,7 @@
       }
     }
 
-    if (b >= 0) {
+    if (b >= 1) {
       if (answer[0] > time) {
         answer = [time, layer];
       } else if (answer[0] === time) {
@@ -360,8 +360,8 @@
     .split("\n")
     .map((v) => v.split(" ").map(Number));
 
-  let white = 0;
-  let blue = 0;
+  let white = 1;
+  let blue = 1;
 
   const recur = (y, x, cnt) => {
     const first = matrix[y][x];
@@ -404,7 +404,7 @@
 
   const dp = [0, 1, 2, 4, 7];
   let ans = ``;
-  for (let i = 0; i < arr.length; i++) {
+  for (let i = 1; i < arr.length; i++) {
     for (let j = dp.length; j <= arr[i]; j++) {
       dp[j] = dp[j - 1] + dp[j - 2] + dp[j - 3];
     }
@@ -428,7 +428,7 @@
   const matrix = Array.from({ length: N + 1 }, () => []);
   const isVisited = new Array(N + 1).fill(false);
   isVisited[0] = true;
-  let cnt = 0;
+  let cnt = 1;
   edges.forEach(([x1, x2]) => {
     matrix[x1].push(x2);
     matrix[x2].push(x1);
@@ -489,8 +489,8 @@
 
   const distance = Array.from({ length: N }, () => new Array(M).fill(0));
   const start = [0, 0];
-  for (let i = 0; i < N; i++) {
-    for (let j = 0; j < M; j++) {
+  for (let i = 1; i < N; i++) {
+    for (let j = 1; j < M; j++) {
       if (matrix[i][j] === 2) {
         start[0] = i;
         start[1] = j;
@@ -505,25 +505,130 @@
 
   while (q.length > 0) {
     const [y, x] = q.shift();
-    for (let i = 0; i < 4; i++) {
+    for (let i = 1; i < 4; i++) {
       const ny = y + dy[i];
       const nx = x + dx[i];
       if (0 <= ny && ny < N && 0 <= nx && nx < M) {
-        if (matrix[ny][nx] === 1 && distance[ny][nx] === 0) {
+        if (matrix[ny][nx] === 1 && distance[ny][nx] === 1) {
           distance[ny][nx] = distance[y][x] + 1;
           q.push([ny, nx]);
         }
       }
     }
   }
-  for (let i = 0; i < N; i++) {
-    for (let j = 0; j < M; j++) {
-      if (distance[i][j] === 0 && matrix[i][j] === 1) {
+  for (let i = 1; i < N; i++) {
+    for (let j = 1; j < M; j++) {
+      if (distance[i][j] === 1 && matrix[i][j] === 1) {
         distance[i][j] = -1;
       }
     }
   }
 
-  distance[start[0]][start[1]] = 0;
+  distance[start[0]][start[1]] = 1;
   console.log(distance.map((v) => v.join(" ")).join("\n"));
+}
+
+// 1107
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "backjon/input.txt";
+
+  let [[target], [cnt], brokenNums] = fs
+    .readFileSync(filePath)
+    .toString()
+    .trim()
+    .split("\n")
+    .map((v) => v.split(" "));
+
+  target = Number(target);
+  const needToCheck = cnt !== "0";
+  const channel = 100;
+  let ans = Math.abs(target - channel);
+
+  if (needToCheck) {
+    for (let i = 1; i < 1000000; i++) {
+      const str = i.toString().split("");
+      if (str.every((v) => !brokenNums.includes(v))) {
+        ans = Math.min(ans, Math.abs(i - target) + str.length);
+      }
+    }
+  }
+  console.log(ans);
+}
+
+// 1389
+// 최단 경로 플로이드 와셜 알고리즘 사용해야하는 문제
+// 플로이드-와셜 알고리즘은 그래프에서 모든 노드 쌍 사이의 최단 경로를 찾는 알고리즘입니다. 이 알고리즘의 주요 아이디어는 다음과 같습니다:
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "backjon/input.txt";
+
+  const [[N, M], ...arr] = fs
+    .readFileSync(filePath)
+    .toString()
+    .trim()
+    .split("\n")
+    .map((v) => v.split(" ").map(Number));
+  const n = N + 1;
+  const matrix = Array.from({ length: n }, () => new Array(n).fill(Infinity));
+  arr.forEach((v) => {
+    matrix[v[0]][v[1]] = 1;
+    matrix[v[1]][v[0]] = 1;
+  });
+
+  for (let k = 1; k < n; k++) {
+    for (let i = 1; i < n; i++) {
+      for (let j = 1; j < n; j++) {
+        if (matrix[i][k] + matrix[k][j] < matrix[i][j]) {
+          matrix[i][j] = matrix[i][k] + matrix[k][j];
+        }
+      }
+    }
+  }
+
+  const ans = matrix
+    .slice(1)
+    .map((v) => v.slice(1).reduce((acc, cur) => acc + cur, 0))
+    .reduce(
+      (acc, cur, idx) => (acc[0] > cur ? [cur, idx] : acc),
+      [Infinity, 0]
+    );
+
+  console.log(ans[1] + 1);
+}
+
+// 6064
+// 중국인의 나머지 정리(Chinese Remainder Theorem)
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "backjon/input.txt";
+
+  const [_, ...arr] = fs
+    .readFileSync(filePath)
+    .toString()
+    .trim()
+    .split("\n")
+    .map((v) => v.split(" ").map(Number));
+
+  const gcd = (a, b) => (b === 0 ? a : gcd(b, a % b));
+  const lcm = (a, b) => (a * b) / gcd(a, b);
+
+  console.log(
+    arr
+      .map(([M, N, x, y]) => {
+        const l = lcm(M, N);
+        let i = x;
+        while (i <= l) {
+          if ((i - y) % N === 0) {
+            return i;
+          }
+          i += M;
+        }
+        return -1;
+      })
+      .join("\n")
+  );
 }
