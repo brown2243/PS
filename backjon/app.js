@@ -1,57 +1,39 @@
-// 2504
+// 11724
 {
   const fs = require("fs");
   const filePath =
     process.platform === "linux" ? "/dev/stdin" : "backjon/input.txt";
 
-  const str = fs.readFileSync(filePath).toString().trim();
-  const stack = [];
+  const [[N, M], ...arr] = fs
+    .readFileSync(filePath)
+    .toString()
+    .trim()
+    .split("\n")
+    .map((v) => v.split(" ").map(Number));
+
+  const n = N + 1;
+  const isVisted = new Array(n).fill(false);
+  const network = Array.from({ length: n }, () => []);
+
+  arr.forEach(([x, y]) => {
+    network[x].push(y);
+    network[y].push(x);
+  });
+
   let ans = 0;
+  const dfs = (now) => {
+    if (isVisted[now]) {
+      return;
+    }
+    isVisted[now] = true;
+    network[now].forEach(dfs);
+  };
 
-  for (let i = 0; i < str.length; i++) {
-    const bracket = str[i];
-    if (bracket === "(" || bracket === "[") {
-      stack.push(bracket);
-      continue;
+  for (let i = 1; i < n; i++) {
+    if (!isVisted[i]) {
+      dfs(i);
+      ans += 1;
     }
-    if (stack.length === 0) {
-      ans = 0;
-      break;
-    }
-    const lastBracket = stack.pop();
-    let value = 0;
-
-    if (lastBracket === "(" && bracket === ")") {
-      value = 2;
-    } else if (lastBracket === "[" && bracket === "]") {
-      value = 3;
-    }
-    //
-    else {
-      ans = 0;
-      break;
-    }
-
-    while (stack.length > 0 && i < str.length - 1) {
-      const lastBracket = stack[stack.length - 1];
-      const nextBracket = str[i + 1];
-      const num = Number(lastBracket);
-      if (!Number.isNaN(num)) {
-        value += num;
-        stack.pop();
-      } else if (lastBracket === "(" && nextBracket === ")") {
-        value *= 2;
-        i += 1;
-        stack.pop();
-      } else if (lastBracket === "[" && nextBracket === "]") {
-        value *= 3;
-        i += 1;
-        stack.pop();
-      } else {
-        break;
-      }
-    }
-    stack.length === 0 ? (ans += value) : stack.push(value.toString());
   }
   console.log(ans);
 }

@@ -632,3 +632,136 @@
       .join("\n")
   );
 }
+
+// 2606
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "backjon/input.txt";
+
+  const [N, _, ...arr] = fs
+    .readFileSync(filePath)
+    .toString()
+    .trim()
+    .split("\n");
+
+  const n = Number(N) + 1;
+  const isVisted = new Array(n).fill(false);
+  const network = Array.from({ length: n }, () => []);
+
+  arr
+    .map((v) => v.split(" ").map(Number))
+    .forEach(([x, y]) => {
+      network[x].push(y);
+      network[y].push(x);
+    });
+
+  const dfs = (now) => {
+    if (isVisted[now]) {
+      return;
+    }
+    isVisted[now] = true;
+    network[now].forEach(dfs);
+  };
+  dfs(1);
+
+  console.log(isVisted.filter(Boolean).length - 1);
+}
+
+// 1260
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "backjon/input.txt";
+
+  const [[N, M, V], ...arr] = fs
+    .readFileSync(filePath)
+    .toString()
+    .trim()
+    .split("\n")
+    .map((v) => v.split(" ").map(Number));
+
+  const n = N + 1;
+  const isVisted = new Array(n).fill(false);
+  const network = Array.from({ length: n }, () => []);
+
+  arr.forEach(([x, y]) => {
+    network[x].push(y);
+    network[y].push(x);
+  });
+
+  network.forEach((row) => row.sort((a, b) => a - b));
+
+  let dfsAns = "";
+  const dfs = (now) => {
+    if (isVisted[now]) {
+      return;
+    }
+    isVisted[now] = true;
+    dfsAns += now.toString() + " ";
+    network[now].forEach(dfs);
+  };
+  dfs(V);
+
+  isVisted.fill(false);
+  let bfsAns = "";
+  const q = [];
+  const bfs = (start) => {
+    q.push(start);
+    isVisted[start] = true;
+
+    while (q.length > 0) {
+      const now = q.shift();
+      bfsAns += now.toString() + " ";
+
+      network[now].forEach((next) => {
+        if (!isVisted[next]) {
+          isVisted[next] = true;
+          q.push(next);
+        }
+      });
+    }
+  };
+  bfs(V);
+  console.log(dfsAns + "\n" + bfsAns);
+}
+
+// 11724
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "backjon/input.txt";
+
+  const [[N, M], ...arr] = fs
+    .readFileSync(filePath)
+    .toString()
+    .trim()
+    .split("\n")
+    .map((v) => v.split(" ").map(Number));
+
+  const n = N + 1;
+  const isVisted = new Array(n).fill(false);
+  const network = Array.from({ length: n }, () => []);
+
+  arr.forEach(([x, y]) => {
+    network[x].push(y);
+    network[y].push(x);
+  });
+
+  let ans = 0;
+  const dfs = (now) => {
+    if (isVisted[now]) {
+      return;
+    }
+    isVisted[now] = true;
+    network[now].forEach(dfs);
+  };
+
+  for (let i = 1; i < n; i++) {
+    if (!isVisted[i]) {
+      dfs(i);
+      ans += 1;
+    }
+  }
+  console.log(ans);
+}
