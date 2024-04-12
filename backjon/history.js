@@ -815,3 +815,72 @@
       .join("\n")
   );
 }
+
+// 10211
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "backjon/input.txt";
+
+  const [, ...arr] = fs
+    .readFileSync(filePath)
+    .toString()
+    .trim()
+    .split("\n")
+    .map((v) => v.split(" ").map(Number));
+
+  let ans = "";
+  for (let i = 0; i < arr.length; i += 2) {
+    const nums = arr[i + 1];
+
+    let localMax = nums[0];
+    let globalMax = nums[0];
+    for (let j = 1; j < nums.length; j++) {
+      localMax = Math.max(nums[j], localMax + nums[j]);
+      if (localMax > globalMax) {
+        globalMax = localMax;
+      }
+    }
+    ans += `${globalMax}\n`;
+  }
+
+  console.log(ans);
+}
+
+// 11660
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "backjon/input.txt";
+
+  const [[N, M], ...arr] = fs
+    .readFileSync(filePath)
+    .toString()
+    .trim()
+    .split("\n")
+    .map((v) => v.split(" ").map(Number));
+
+  const matrix = arr.slice(0, N);
+  const points = arr.slice(N);
+
+  let ans = "";
+  for (let i = 0; i < points.length; i += 1) {
+    let sum = 0;
+    const [y1, x1, y2, x2] = points[i].map((v) => v - 1);
+    let y = y1,
+      x = x1;
+
+    while (x <= x2 && y <= y2) {
+      sum += matrix[y][x];
+      if (x + 1 === N) {
+        x = x1;
+        y += 1;
+      } else {
+        x += 1;
+      }
+    }
+
+    ans += `${sum}\n`;
+  }
+  console.log(ans);
+}
