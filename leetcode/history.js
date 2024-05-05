@@ -156,3 +156,101 @@ var threeSum = function (nums) {
   }
   return ans;
 };
+
+/**
+ * @param {Array} arr
+ * @param {number} size
+ * @return {Array}
+ */
+var chunk = function (arr, size) {
+  const chunks = [];
+  for (let i = 0; i < arr.length; i += size) {
+    chunks.push(arr.slice(i, i + size));
+  }
+  return chunks;
+};
+
+/**
+ * @param {Array<Function>} functions
+ * @return {Promise<any>}
+ */
+var promiseAll = function (functions) {
+  return new Promise((resolve, reject) => {
+    const n = functions.length;
+    const arr = new Array(n);
+    let cnt = 0;
+    functions.forEach((fn, i) => {
+      fn()
+        .then((v) => {
+          arr[i] = v;
+          cnt++;
+          if (cnt === n) {
+            resolve(arr);
+          }
+        })
+        .catch(reject);
+    });
+  });
+};
+
+/**
+ * @param {number} n
+ * @return {number}
+ */
+var tribonacci = function (n) {
+  const dp = [0, 1, 1, 2, 4];
+  for (let i = 5; i <= n; i++) {
+    dp[i] = dp[i - 1] + dp[i - 2] + dp[i - 3];
+  }
+  return dp[n];
+};
+
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var rob = function (nums) {
+  const dp = [nums[0], nums[1]];
+  for (let i = 2; i < nums.length; i++) {
+    dp[i] = Math.max(dp[i - 1], dp[i - 2] + nums[i]);
+  }
+  return dp[dp.length - 1];
+};
+/**
+ * @param {number} n
+ * @return {number}
+ */
+var climbStairs = function (n) {
+  const dp = [0, 1, 2, 3];
+  // 4
+  // 1 1 1 1
+  // 1 1 2
+  // 1 2 1
+  // 2 1 1
+  // 2 2
+  for (let i = 4; i <= n; i++) {
+    dp[i] = dp[i - 1] + dp[i - 2];
+  }
+  return dp[n];
+};
+
+/**
+ * @param {string} s
+ * @param {string[]} wordDict
+ * @return {boolean}
+ */
+var wordBreak = function (s, wordDict) {
+  const n = s.length;
+  const dp = new Array(n + 1).fill(false);
+  dp[0] = true;
+  const maxLength = Math.max(n, ...wordDict.map((v) => v.length));
+
+  for (let i = 1; i < n + 1; i++) {
+    for (let j = i - 1; j > Math.max(i - maxLength - 1, -1); j--) {
+      if (dp[j] && wordDict.includes(s.substring(j, i))) {
+        dp[i] = true;
+      }
+    }
+  }
+  return dp[n];
+};

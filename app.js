@@ -28,7 +28,7 @@ var threeSum = function (nums) {
         const rightVal = nums[k];
         j++;
         k--;
-        while (leftVal === nums[j] || rightVal === nums[k]) {
+        while (leftVal === nums[j] && rightVal === nums[k]) {
           j++;
           k--;
         }
