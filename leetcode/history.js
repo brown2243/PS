@@ -239,6 +239,7 @@ var climbStairs = function (n) {
  * @param {string[]} wordDict
  * @return {boolean}
  */
+// 다시
 var wordBreak = function (s, wordDict) {
   const n = s.length;
   const dp = new Array(n + 1).fill(false);
@@ -251,6 +252,61 @@ var wordBreak = function (s, wordDict) {
         dp[i] = true;
       }
     }
+  }
+  return dp[n];
+};
+
+/**
+ * @return {null|boolean|number|string|Array|Object}
+ */
+Array.prototype.last = function () {
+  return this.length > 0 ? this[this.length - 1] : -1;
+};
+
+/**
+ * @param {Function} fn
+ * @return {Object}
+ */
+Array.prototype.groupBy = function (fn) {
+  return this.reduce((acc, cur) => {
+    const key = fn(cur);
+    if (!(key in acc)) {
+      acc[key] = [];
+    }
+    acc[key].push(cur);
+    return acc;
+  }, {});
+};
+
+/**
+ * @param {number[]} cost
+ * @return {number}
+ */
+// 다시
+var minCostClimbingStairs = function (cost) {
+  const n = cost.length;
+  const dp = new Array(n);
+  dp[0] = cost[0];
+  dp[1] = cost[1];
+
+  for (let i = 2; i < n; i++) {
+    dp[i] = cost[i] + Math.min(dp[i - 1], dp[i - 2]);
+  }
+  return Math.min(dp[n - 1], dp[n - 2]);
+};
+/**
+ * @param {number} n
+ * @return {number}
+ */
+// 다시
+var numTilings = function (n) {
+  const mod = 10 ** 9 + 7;
+  const dp = new Array(n + 1).fill(0);
+  dp[1] = 1;
+  dp[2] = 2;
+  dp[3] = 5;
+  for (let i = 4; i <= n; i++) {
+    dp[i] = (2 * dp[i - 1] + dp[i - 3]) % mod;
   }
   return dp[n];
 };

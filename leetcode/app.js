@@ -1,20 +1,20 @@
 /**
- * @param {string} s
- * @param {string[]} wordDict
- * @return {boolean}
+ * @param {number} n
+ * @return {number}
  */
-var wordBreak = function (s, wordDict) {
-  const n = s.length;
-  const dp = new Array(n + 1).fill(false);
-  dp[0] = true;
-  const maxLength = Math.max(n, ...wordDict.map((v) => v.length));
-
-  for (let i = 1; i < n + 1; i++) {
-    for (let j = i - 1; j > Math.max(i - maxLength - 1, -1); j--) {
-      if (dp[j] && wordDict.includes(s.substring(j, i))) {
-        dp[i] = true;
-      }
-    }
+var numTilings = function (n) {
+  const mod = 10 ** 9 + 7;
+  const dp = new Array(n + 1).fill(0);
+  dp[1] = 1;
+  dp[2] = 2;
+  dp[3] = 5;
+  for (let i = 4; i <= n; i++) {
+    dp[i] = (2 * dp[i - 1] + dp[i - 3]) % mod;
   }
   return dp[n];
 };
+
+// 1
+// 2
+// 5
+//
