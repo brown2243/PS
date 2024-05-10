@@ -1,20 +1,21 @@
 /**
- * @param {number} n
+ * @param {number[]} coins
+ * @param {number} amount
  * @return {number}
  */
-var numTilings = function (n) {
-  const mod = 10 ** 9 + 7;
-  const dp = new Array(n + 1).fill(0);
-  dp[1] = 1;
-  dp[2] = 2;
-  dp[3] = 5;
-  for (let i = 4; i <= n; i++) {
-    dp[i] = (2 * dp[i - 1] + dp[i - 3]) % mod;
-  }
-  return dp[n];
-};
+var coinChange = function (coins, amount) {
+  const dp = new Array(amount + 1).fill(Number.MAX_SAFE_INTEGER);
+  dp[0] = 0;
 
-// 1
-// 2
-// 5
-//
+  for (let amnt = 1; amnt < dp.length; amnt++) {
+    coins.forEach((coin) => {
+      if (amnt < coin) {
+        return;
+      }
+      if (dp[amnt - coin] !== Number.MAX_SAFE_INTEGER) {
+        dp[amnt] = Math.min(dp[amnt], dp[amnt - coin] + 1);
+      }
+    });
+  }
+  return dp[amount] === Number.MAX_SAFE_INTEGER ? -1 : dp[amount];
+};

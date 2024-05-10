@@ -310,3 +310,208 @@ var numTilings = function (n) {
   }
   return dp[n];
 };
+
+/**
+ * @param {Array} arr1
+ * @param {Array} arr2
+ * @return {Array}
+ */
+var join = function (arr1, arr2) {
+  arr1.sort((a, b) => a.id - b.id);
+  arr2.sort((a, b) => a.id - b.id);
+
+  const arr = [];
+  const n1 = arr1.length;
+  const n2 = arr2.length;
+  let i1 = 0,
+    i2 = 0;
+
+  while (i1 < n1 || i2 < n2) {
+    const val1 = arr1?.[i1];
+    const val2 = arr2?.[i2];
+    if (!val1) {
+      arr.push(...arr2.slice(i2));
+      break;
+    }
+    if (!val2) {
+      arr.push(...arr1.slice(i1));
+      break;
+    }
+    if (val1.id === val2.id) {
+      const val = { ...val1, ...val2 };
+      arr.push(val);
+      i1++;
+      i2++;
+    } else if (val1.id < val2.id) {
+      arr.push(val1);
+      i1++;
+    } else {
+      arr.push(val2);
+      i2++;
+    }
+  }
+  return arr;
+};
+/**
+ * @param {Array} arr1
+ * @param {Array} arr2
+ * @return {Array}
+ */
+
+var join = function (arr1, arr2) {
+  const ids = {};
+
+  arr1.forEach((item) => {
+    ids[item.id] = item;
+  });
+
+  arr2.forEach((item) => {
+    const { id } = item;
+
+    if (id in ids) {
+      ids[id] = { ...ids[id], ...item };
+    } else {
+      ids[id] = item;
+    }
+  });
+
+  return Object.values(ids);
+};
+
+/**
+ * @param {Array} arr
+ * @param {number} depth
+ * @return {Array}
+ */
+var flat = function (arr, n) {
+  const recur = (arr, n) => {
+    if (n <= 0) {
+      return arr;
+    }
+    for (let i = 0; i < arr.length; i++) {
+      const now = arr[i];
+      if (Array.isArray(now)) {
+        const leng = now.length;
+        arr.splice(i, 1, ...now);
+        i += leng - 1;
+      }
+    }
+    return recur(arr, n - 1);
+  };
+  return recur([...arr], n);
+};
+
+var flat = function (arr, n) {
+  const newArr = [];
+
+  const recur = (arr, depth) => {
+    for (let i = 0; i < arr.length; i++) {
+      if (Array.isArray(arr[i]) && depth < n) {
+        recur(arr[i], depth + 1);
+      } else {
+        newArr.push(arr[i]);
+      }
+    }
+  };
+
+  recur(arr, 0);
+  return newArr;
+};
+
+/**
+ * @param {Object|Array} obj
+ * @return {Object|Array}
+ */
+var compactObject = function (obj) {
+  const recur = (obj) => {
+    let wasArray = false;
+
+    if (Array.isArray(obj)) {
+      wasArray = true;
+      obj = obj.reduce((acc, cur, idx) => {
+        acc[idx] = cur;
+        return acc;
+      }, {});
+    }
+
+    for (let key in obj) {
+      const val = obj[key];
+      if (!Boolean(val)) {
+        delete obj[key];
+      } else if ("object" === typeof val) {
+        obj[key] = recur(val);
+      }
+    }
+
+    return wasArray ? Object.values(obj) : obj;
+  };
+  return recur(obj);
+};
+
+/**
+ * @param {Object|Array} obj
+ * @return {Object|Array}
+ */
+var compactObject = function (obj) {
+  function solve(obj) {
+    if (!obj) return false;
+    if (typeof obj !== "object") return obj;
+
+    if (Array.isArray(obj)) {
+      let res = [];
+      obj.forEach((el) => {
+        let subRes = solve(el);
+        if (subRes) res.push(subRes);
+      });
+
+      return res;
+    } else {
+      let res = {};
+      Object.entries(obj).forEach(([key, val]) => {
+        let subRes = solve(val);
+        if (subRes) res[key] = subRes;
+      });
+      return res;
+    }
+  }
+
+  return solve(obj);
+};
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var lengthOfLIS = function (nums) {
+  const dp = new Array(nums.length).fill(1);
+  for (let i = 1; i < nums.length; i++) {
+    for (let j = 0; j < i; j++) {
+      if (nums[i] > nums[j]) {
+        dp[i] = Math.max(dp[i], dp[j] + 1);
+      }
+    }
+  }
+  return Math.max(...dp);
+};
+
+/**
+ * @param {number[]} coins
+ * @param {number} amount
+ * @return {number}
+ */
+// 다시
+var coinChange = function (coins, amount) {
+  const dp = new Array(amount + 1).fill(Number.MAX_SAFE_INTEGER);
+  dp[0] = 0;
+
+  for (let amnt = 1; amnt < dp.length; amnt++) {
+    coins.forEach((coin) => {
+      if (amnt < coin) {
+        return;
+      }
+      if (dp[amnt - coin] !== Number.MAX_SAFE_INTEGER) {
+        dp[amnt] = Math.min(dp[amnt], dp[amnt - coin] + 1);
+      }
+    });
+  }
+  return dp[amount] === Number.MAX_SAFE_INTEGER ? -1 : dp[amount];
+};
