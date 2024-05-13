@@ -515,3 +515,76 @@ var coinChange = function (coins, amount) {
   }
   return dp[amount] === Number.MAX_SAFE_INTEGER ? -1 : dp[amount];
 };
+
+/**
+ * @param {number[]} nums
+ * @return {void}
+ */
+var ArrayWrapper = function (nums) {
+  this.arr = nums;
+};
+
+/**
+ * @return {number}
+ */
+ArrayWrapper.prototype.valueOf = function () {
+  return this.arr.reduce((acc, cur) => acc + cur, 0);
+};
+
+/**
+ * @return {string}
+ */
+ArrayWrapper.prototype.toString = function () {
+  return `[${this.arr.join(",")}]`;
+};
+
+/**
+ * @param {number} m
+ * @param {number} n
+ * @return {number}
+ */
+var uniquePaths = function (m, n) {
+  const dp = [];
+  dp.push(new Array(n).fill(1));
+
+  for (let i = 1; i < m; i++) {
+    const arr = new Array(n).fill(1);
+    for (let j = 1; j < n; j++) {
+      arr[j] = arr[j - 1] + dp[i - 1][j];
+    }
+    dp.push(arr);
+  }
+  return dp[m - 1][n - 1];
+};
+
+/**
+ * @param {number[][]} triangle
+ * @return {number}
+ */
+var minimumTotal = function (triangle) {
+  const dp = Array.from({ length: triangle.length }, () => []);
+  dp[triangle.length - 1] = [...triangle[triangle.length - 1]];
+
+  for (let i = triangle.length - 1; i > 0; i--) {
+    for (let j = 0; j < triangle[i].length - 1; j++) {
+      dp[i - 1][j] = Math.min(
+        triangle[i - 1][j] + dp[i][j],
+        triangle[i - 1][j] + dp[i][j + 1]
+      );
+    }
+  }
+  return dp[0][0];
+};
+
+/**
+ * @param {number[][]} triangle
+ * @return {number}
+ */
+var minimumTotal = function (triangle) {
+  for (let i = triangle.length - 2; i >= 0; i--) {
+    for (let j = 0; j < triangle[i].length; j++) {
+      triangle[i][j] += Math.min(triangle[i + 1][j], triangle[i + 1][j + 1]);
+    }
+  }
+  return triangle[0][0];
+};
