@@ -588,3 +588,132 @@ var minimumTotal = function (triangle) {
   }
   return triangle[0][0];
 };
+
+class Calculator {
+  constructor(value) {
+    this._value = value;
+  }
+
+  /**
+   * @param {number} value
+   * @return {Calculator}
+   */
+  add(value) {
+    this._value += value;
+    return this;
+  }
+
+  /**
+   * @param {number} value
+   * @return {Calculator}
+   */
+  subtract(value) {
+    this._value -= value;
+    return this;
+  }
+
+  /**
+   * @param {number} value
+   * @return {Calculator}
+   */
+  multiply(value) {
+    this._value *= value;
+    return this;
+  }
+
+  /**
+   * @param {number} value
+   * @return {Calculator}
+   */
+  divide(value) {
+    if (value === 0) {
+      throw new Error("Division by zero is not allowed");
+    }
+    this._value /= value;
+    return this;
+  }
+
+  /**
+   * @param {number} value
+   * @return {Calculator}
+   */
+  power(value) {
+    this._value = this._value ** value;
+    return this;
+  }
+
+  /**
+   * @return {number}
+   */
+  getResult() {
+    return this._value;
+  }
+}
+/**
+ * @param {string} text1
+ * @param {string} text2
+ * @return {number}
+ */
+// 다시 https://leetcode.com/problems/longest-common-subsequence/solutions/348884/c-with-picture-o-nm/?envType=study-plan-v2&envId=leetcode-75
+var longestCommonSubsequence = function (text1, text2) {
+  const length1 = text1.length + 1;
+  const length2 = text2.length + 1;
+
+  const dp = Array.from({ length: length1 }, () => new Array(length2).fill(0));
+
+  for (let i = 1; i < length1; i++) {
+    for (let j = 1; j < length2; j++) {
+      if (text1[i - 1] === text2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+      } else {
+        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+      }
+    }
+  }
+  return dp[length1 - 1][length2 - 1];
+};
+// 다시
+/**
+ * @param {string} s
+ * @return {number}
+ */
+var longestPalindromeSubseq = function (s) {
+  const n = s.length;
+  const dp = Array.from({ length: n }, () => new Array(n).fill(0));
+
+  for (let i = n - 1; i >= 0; i--) {
+    dp[i][i] = 1;
+    for (let j = i + 1; j < n; j++) {
+      if (s[i] == s[j]) {
+        dp[i][j] = dp[i + 1][j - 1] + 2;
+      } else {
+        dp[i][j] = Math.max(dp[i + 1][j], dp[i][j - 1]);
+      }
+    }
+  }
+  return dp[0][n - 1];
+};
+
+/**
+ * @param {number[][]} grid
+ * @return {number}
+ */
+var minPathSum = function (grid) {
+  const y = grid.length;
+  const x = grid[0].length;
+  for (let i = 1; i < x; i++) {
+    grid[0][i] += grid[0][i - 1];
+  }
+  for (let i = 1; i < y; i++) {
+    grid[i][0] += grid[i - 1][0];
+  }
+  for (let i = 1; i < y; i++) {
+    for (let j = 1; j < x; j++) {
+      grid[i][j] = Math.min(
+        grid[i - 1][j] + grid[i][j],
+        grid[i][j - 1] + grid[i][j]
+      );
+    }
+  }
+  return grid[y - 1][x - 1];
+};
