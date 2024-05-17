@@ -1,23 +1,25 @@
 /**
- * @param {number[][]} grid
+ * @param {number[]} prices
  * @return {number}
  */
-var minPathSum = function (grid) {
-  const y = grid.length;
-  const x = grid[0].length;
-  for (let i = 1; i < x; i++) {
-    grid[0][i] += grid[0][i - 1];
+var maxProfit = function (prices, fee) {
+  const n = prices.length;
+  if (n <= 1) {
+    return 0;
   }
-  for (let i = 1; i < y; i++) {
-    grid[i][0] += grid[i - 1][0];
+
+  const sells = new Array(n).fill(0);
+  const buys = new Array(n).fill(0);
+
+  sells[0] = 0;
+  buys[0] = -prices[0];
+  sells[1] = Math.max(sells[0], buys[0] + prices[1] - fee);
+  buys[1] = Math.max(buys[0], sells[0] - prices[1]);
+
+  for (let i = 2; i < n; i++) {
+    sells[i] = Math.max(sells[i - 1], buys[i - 1] + prices[i] - fee);
+    buys[i] = Math.max(buys[i - 1], sells[i - 2] - prices[i]);
   }
-  for (let i = 1; i < y; i++) {
-    for (let j = 1; j < x; j++) {
-      grid[i][j] = Math.min(
-        grid[i - 1][j] + grid[i][j],
-        grid[i][j - 1] + grid[i][j]
-      );
-    }
-  }
-  return grid[y - 1][x - 1];
+
+  return sells[n - 1];
 };

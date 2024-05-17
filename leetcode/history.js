@@ -717,3 +717,105 @@ var minPathSum = function (grid) {
   }
   return grid[y - 1][x - 1];
 };
+
+/**
+ * @param {number[][]} obstacleGrid
+ * @return {number}
+ */
+// 시간초과
+var uniquePathsWithObstacles = function (obstacleGrid) {
+  const n = obstacleGrid.length;
+  const m = obstacleGrid[0].length;
+  const isVisted = Array.from({ length: n }, () => new Array(m).fill(false));
+
+  let cnt = 0;
+
+  const recur = (y, x) => {
+    if (y === n || x === m || obstacleGrid[y][x] === 1) {
+      return;
+    }
+    if (y === n - 1 && x === m - 1) {
+      cnt++;
+      return;
+    }
+    isVisted[y][x] = true;
+    recur(y + 1, x);
+    recur(y, x + 1);
+    isVisted[y][x] = false;
+  };
+  recur(0, 0);
+  return cnt;
+};
+
+/**
+ * @param {number[][]} obstacleGrid
+ * @return {number}
+ */
+var uniquePathsWithObstacles = function (obstacleGrid) {
+  if (obstacleGrid[0][0] === 1) return 0;
+  const m = obstacleGrid.length;
+  const n = obstacleGrid[0].length;
+  const dp = Array.from({ length: m }, () => new Array(n).fill(0));
+  dp[0][0] = 1;
+
+  for (let i = 1; i < m; i++) {
+    dp[i][0] = obstacleGrid[i][0] === 0 && dp[i - 1][0] === 1 ? 1 : 0;
+  }
+  for (let j = 1; j < n; j++) {
+    dp[0][j] = obstacleGrid[0][j] === 0 && dp[0][j - 1] === 1 ? 1 : 0;
+  }
+
+  for (let i = 1; i < m; i++) {
+    for (let j = 1; j < n; j++) {
+      if (obstacleGrid[i][j] === 0) {
+        dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+      } else {
+        dp[i][j] = 0;
+      }
+    }
+  }
+  return dp[m - 1][n - 1];
+};
+/**
+ * @param {number[]} prices
+ * @return {number}
+ */
+var maxProfit = function (prices) {
+  const n = prices.length;
+  if (n <= 1) {
+    return 0;
+  }
+
+  const sells = new Array(n).fill(0);
+  const buys = new Array(n).fill(0);
+
+  sells[0] = 0;
+  buys[0] = -prices[0];
+  sells[1] = Math.max(sells[0], buys[0] + prices[1]);
+  buys[1] = Math.max(buys[0], sells[0] - prices[1]);
+
+  for (let i = 2; i < n; i++) {
+    sells[i] = Math.max(sells[i - 1], buys[i - 1] + prices[i]);
+    buys[i] = Math.max(buys[i - 1], sells[i - 2] - prices[i]);
+  }
+
+  return sells[n - 1];
+};
+
+/**
+ * @param {number[]} prices
+ * @param {number} fee
+ * @return {number}
+ */
+var maxProfit = function (prices, fee) {
+  const n = prices.length;
+  let profit = 0;
+  let hold = prices[0];
+
+  for (let i = 1; i < n; i++) {
+    profit = Math.max(profit, prices[i] - hold - fee);
+    hold = Math.min(hold, prices[i] - profit);
+  }
+
+  return profit;
+};
