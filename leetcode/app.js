@@ -1,25 +1,20 @@
 /**
- * @param {number[]} prices
- * @return {number}
+ * @param {string} s
+ * @return {string}
  */
-var maxProfit = function (prices, fee) {
-  const n = prices.length;
-  if (n <= 1) {
-    return 0;
+var longestPalindrome = function (s) {
+  const n = s.length;
+
+  const dp = Array.from({ length: n + 1 }, () => new Array(n + 1).fill(false));
+  dp[0][0] = true;
+
+  let last = s[0];
+
+  for (let i = 1; i <= n; i++) {
+    dp[i][i] = true;
+    for (let j = i + 1; j <= n; j++) {
+      if (s[i - 1] === s[j - 1] && (i - j <= 2 || dp[j + 1][i - 1])) {
+      }
+    }
   }
-
-  const sells = new Array(n).fill(0);
-  const buys = new Array(n).fill(0);
-
-  sells[0] = 0;
-  buys[0] = -prices[0];
-  sells[1] = Math.max(sells[0], buys[0] + prices[1] - fee);
-  buys[1] = Math.max(buys[0], sells[0] - prices[1]);
-
-  for (let i = 2; i < n; i++) {
-    sells[i] = Math.max(sells[i - 1], buys[i - 1] + prices[i] - fee);
-    buys[i] = Math.max(buys[i - 1], sells[i - 2] - prices[i]);
-  }
-
-  return sells[n - 1];
 };
