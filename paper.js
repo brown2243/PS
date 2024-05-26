@@ -1,14 +1,16 @@
-function solution(n, works) {
-  works.sort((a, b) => b - a);
-
-  while (n > 0) {
-    let max = works[0];
-    for (let i = 0; i < works.length; i++) {
-      if (n > 0 && works[i] === max) {
-        works[i]--;
-        n--;
-      }
-    }
+class TreeNode {
+  constructor(value) {
+    this.value = value;
+    this.children = [];
   }
-  return works.reduce((acc, cur) => acc + (cur <= 0 ? 0 : cur ** 2), 0);
+
+  addChild(node) {
+    this.children.push(node);
+  }
+}
+
+class Tree {
+  constructor(rootValue) {
+    this.root = new TreeNode(rootValue);
+  }
 }
