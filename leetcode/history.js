@@ -849,3 +849,47 @@ var minDistance = function (word1, word2) {
   }
   return dp[m][n];
 };
+
+/**
+ * @param {string} s
+ * @return {string}
+ */
+var removeStars = function (s) {
+  const stack = [];
+  for (let i = 0; i < s.length; i++) {
+    const char = s[i];
+    if (char === "*") {
+      stack.pop();
+    } else {
+      stack.push(char);
+    }
+  }
+  return stack.join("");
+};
+/**
+ * @param {string} pattern
+ * @param {string} s
+ * @return {boolean}
+ */
+var wordPattern = function (pattern, s) {
+  const a = pattern.split("");
+  const b = s.split(" ");
+  if (a.length !== b.length) {
+    return false;
+  }
+  const obj1 = {};
+  const obj2 = {};
+  for (let i = 0; i < a.length; i++) {
+    const p = a[i];
+    const str = b[i];
+    if (obj1.hasOwnProperty(p) && obj1[p] !== str) {
+      return false;
+    }
+    if (obj2.hasOwnProperty(str) && obj2[str] !== p) {
+      return false;
+    }
+    obj1[p] = str;
+    obj2[str] = p;
+  }
+  return true;
+};
