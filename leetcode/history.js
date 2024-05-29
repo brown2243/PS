@@ -893,3 +893,26 @@ var wordPattern = function (pattern, s) {
   }
   return true;
 };
+
+/**
+ * @param {string} s
+ * @param {string} t
+ * @return {boolean}
+ */
+var isAnagram = function (s, t) {
+  if (s.length !== t.length) {
+    return false;
+  }
+  const obj = s.split("").reduce((obj, cur) => {
+    obj[cur] = obj[cur] + 1 || 1;
+    return obj;
+  }, {});
+  for (let i = 0; i < t.length; i++) {
+    const char = t[i];
+    if (!obj.hasOwnProperty(char) || !obj[char]) {
+      return false;
+    }
+    obj[char] -= 1;
+  }
+  return true;
+};

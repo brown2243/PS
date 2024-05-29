@@ -19,29 +19,36 @@ var longestPalindrome = function (s) {
   }
 };
 /**
- * @param {string} pattern
- * @param {string} s
- * @return {boolean}
+ * @param {number[]} asteroids
+ * @return {number[]}
  */
-var wordPattern = function (pattern, s) {
-  const a = pattern.split("");
-  const b = s.split(" ");
-  if (a.length !== b.length) {
-    return false;
-  }
-  const obj1 = {};
-  const obj2 = {};
-  for (let i = 0; i < a.length; i++) {
-    const p = a[i];
-    const str = b[i];
-    if (obj1.hasOwnProperty(p) && obj1[p] !== str) {
-      return false;
+var asteroidCollision = function (asteroids) {
+  const stack = [];
+  asteroids.forEach((asteroid) => {
+    if (stack.length === 0) {
+      stack.push(asteroid);
+      return;
     }
-    if (obj2.hasOwnProperty(str) && obj2[str] !== p) {
-      return false;
+    if (
+      (stack[stack.length - 1] > 0 && asteroid > 0) ||
+      (stack[stack.length - 1] < 0 && asteroid < 0)
+    ) {
+      stack.push(asteroid);
+    } else {
+      while (stack.length > 0) {
+        const l = Math.abs(stack[stack.length - 1]);
+        const n = Math.abs(asteroid);
+        if (l === n) {
+          stack.pop();
+          break;
+        } else if (l < n) {
+          stack.pop();
+        } else {
+          stack[stack.length - 1] = asteroid;
+          break;
+        }
+      }
     }
-    obj1[p] = str;
-    obj2[str] = p;
-  }
-  return true;
+  });
+  return stack;
 };
