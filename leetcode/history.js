@@ -916,3 +916,129 @@ var isAnagram = function (s, t) {
   }
   return true;
 };
+
+/**
+ * @param {number[]} asteroids
+ * @return {number[]}
+ */
+var asteroidCollision = function (asteroids) {
+  const stack = [];
+  for (let asteroid of asteroids) {
+    if (stack.length === 0) {
+      stack.push(asteroid);
+    } else if (
+      (stack[stack.length - 1] > 0 && asteroid > 0) ||
+      (stack[stack.length - 1] < 0 && asteroid < 0) ||
+      (stack[stack.length - 1] < 0 && asteroid > 0)
+    ) {
+      stack.push(asteroid);
+    } else {
+      let flag = true;
+      const n = Math.abs(asteroid);
+      while (stack.length > 0 && stack[stack.length - 1] > 0 && asteroid < 0) {
+        const l = Math.abs(stack[stack.length - 1]);
+        if (l === n) {
+          flag = false;
+          stack.pop();
+          break;
+        } else if (l > n) {
+          flag = false;
+          break;
+        } else {
+          stack.pop();
+        }
+      }
+      if (flag) {
+        stack.push(asteroid);
+      }
+    }
+  }
+  return stack;
+};
+/**
+ * @param {string} s
+ * @return {string}
+ */
+var decodeString = function (s) {
+  const stack = [];
+  for (let i = 0; i < s.length; i++) {
+    const char = s[i];
+    if (char === "]") {
+      const start = stack.lastIndexOf("[");
+      let numIdxStart = start - 1;
+      const numIdxEnd = numIdxStart;
+      for (let i = numIdxEnd - 1; i >= 0; i--) {
+        if (Number.isNaN(Number(stack[i]))) {
+          break;
+        } else {
+          numIdxStart = i;
+        }
+      }
+      const str = stack.splice(start, stack.length - start).slice(1);
+      const num = Number(
+        stack.splice(numIdxStart, numIdxEnd - numIdxStart + 1).join("")
+      );
+
+      for (let i = 0; i < num; i++) {
+        stack.push(...str);
+      }
+    } else {
+      stack.push(char);
+    }
+  }
+  return stack.join("");
+};
+
+/**
+ * @param {number[]} nums
+ * @return {boolean}
+ */
+var canJump = function (nums) {
+  const dp = new Array(nums.length).fill(false);
+  dp[0] = true;
+
+  for (let i = 0; i < nums.length; i++) {
+    if (!dp[i]) {
+      break;
+    }
+    const num = nums[i];
+    for (let j = i + 1; j <= num + i; j++) {
+      dp[j] = true;
+    }
+  }
+  return dp[dp.length - 1];
+};
+/**
+ * @param {number[]} nums
+ * @return {boolean}
+ */
+var canJump = function (nums) {
+  let goal = nums.length - 1;
+
+  for (let i = nums.length - 2; i >= 0; i--) {
+    if (i + nums[i] >= goal) {
+      goal = i;
+    }
+  }
+
+  return goal === 0;
+};
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var jump = function (nums) {
+  const n = nums.length;
+  const dp = new Array(n).fill(Number.MAX_SAFE_INTEGER);
+  dp[0] = 0;
+
+  for (let i = 0; i < n; i++) {
+    const num = nums[i];
+    if (dp[i] !== Number.MAX_SAFE_INTEGER) {
+      for (let j = i + 1; j <= i + num; j++) {
+        dp[j] = Math.min(dp[j], dp[i] + 1);
+      }
+    }
+  }
+  return dp[n - 1];
+};
