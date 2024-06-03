@@ -649,50 +649,6 @@ class Calculator {
     return this._value;
   }
 }
-/**
- * @param {string} text1
- * @param {string} text2
- * @return {number}
- */
-// 다시 https://leetcode.com/problems/longest-common-subsequence/solutions/348884/c-with-picture-o-nm/?envType=study-plan-v2&envId=leetcode-75
-var longestCommonSubsequence = function (text1, text2) {
-  const length1 = text1.length + 1;
-  const length2 = text2.length + 1;
-
-  const dp = Array.from({ length: length1 }, () => new Array(length2).fill(0));
-
-  for (let i = 1; i < length1; i++) {
-    for (let j = 1; j < length2; j++) {
-      if (text1[i - 1] === text2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-      } else {
-        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-      }
-    }
-  }
-  return dp[length1 - 1][length2 - 1];
-};
-// 다시
-/**
- * @param {string} s
- * @return {number}
- */
-var longestPalindromeSubseq = function (s) {
-  const n = s.length;
-  const dp = Array.from({ length: n }, () => new Array(n).fill(0));
-
-  for (let i = n - 1; i >= 0; i--) {
-    dp[i][i] = 1;
-    for (let j = i + 1; j < n; j++) {
-      if (s[i] == s[j]) {
-        dp[i][j] = dp[i + 1][j - 1] + 2;
-      } else {
-        dp[i][j] = Math.max(dp[i + 1][j], dp[i][j - 1]);
-      }
-    }
-  }
-  return dp[0][n - 1];
-};
 
 /**
  * @param {number[][]} grid
@@ -1041,4 +997,43 @@ var jump = function (nums) {
     }
   }
   return dp[n - 1];
+};
+/**
+ * @param {number} x
+ * @return {boolean}
+ */
+var isPalindrome = function (x) {
+  if (x < 0) {
+    return false;
+  }
+  const str = x.toString();
+  const n = str.length;
+  let ans = true;
+  for (let i = 0; i < Math.floor(n / 2); i++) {
+    if (str[i] !== str[n - i - 1]) {
+      ans = false;
+      break;
+    }
+  }
+  return ans;
+};
+
+/**
+ * @param {number[]} digits
+ * @return {number[]}
+ */
+var plusOne = function (digits) {
+  const n = digits.length;
+  for (let i = n - 1; i >= 0; i--) {
+    if (digits[i] === 9) {
+      digits[i] = 0;
+      if (i === 0) {
+        digits.unshift(1);
+      }
+    } else {
+      digits[i] += 1;
+      break;
+    }
+  }
+  return digits;
 };
