@@ -1,30 +1,26 @@
 /**
- * @param {string} word1
- * @param {string} word2
+ * @param {character[][]} matrix
  * @return {number}
  */
-var minDistance = function (word1, word2) {
-  const m = word1.length;
-  const n = word2.length;
+var maximalSquare = function (matrix) {
+  const m = matrix.length;
+  const n = matrix[0].length;
+  let ans = 0;
 
-  const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(false));
+  for (let i = 0; i < m; i++) {
+    for (let j = 0; j < n; j++) {
+      matrix[i][j] = Number(matrix[i][j]);
 
-  for (let i = 1; i <= m; i++) {
-    dp[i][0] = i;
-  }
+      if (!(i === 0 || j === 0) && matrix[i][j] === 1) {
+        matrix[i][j] =
+          Math.min(matrix[i - 1][j], matrix[i][j - 1], matrix[i - 1][j - 1]) +
+          1;
+      }
 
-  for (let j = 1; j <= n; j++) {
-    dp[0][j] = j;
-  }
-
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (word1[i - 1] === word2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1];
-      } else {
-        dp[i][j] = Math.min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]) + 1;
+      if (matrix[i][j] > ans) {
+        ans = matrix[i][j];
       }
     }
   }
-  return dp[m][n];
+  return ans ** 2;
 };

@@ -562,28 +562,13 @@ var uniquePaths = function (m, n) {
  * @return {number}
  */
 var minimumTotal = function (triangle) {
-  const dp = Array.from({ length: triangle.length }, () => []);
-  dp[triangle.length - 1] = [...triangle[triangle.length - 1]];
+  const n = triangle.length;
 
-  for (let i = triangle.length - 1; i > 0; i--) {
-    for (let j = 0; j < triangle[i].length - 1; j++) {
-      dp[i - 1][j] = Math.min(
-        triangle[i - 1][j] + dp[i][j],
-        triangle[i - 1][j] + dp[i][j + 1]
-      );
-    }
-  }
-  return dp[0][0];
-};
-
-/**
- * @param {number[][]} triangle
- * @return {number}
- */
-var minimumTotal = function (triangle) {
-  for (let i = triangle.length - 2; i >= 0; i--) {
-    for (let j = 0; j < triangle[i].length; j++) {
-      triangle[i][j] += Math.min(triangle[i + 1][j], triangle[i + 1][j + 1]);
+  for (let i = n - 2; i >= 0; i--) {
+    const now = triangle[i];
+    const prev = triangle[i + 1];
+    for (let j = 0; j < now.length; j++) {
+      now[j] += Math.min(prev[j], prev[j + 1]);
     }
   }
   return triangle[0][0];
@@ -708,30 +693,34 @@ var uniquePathsWithObstacles = function (obstacleGrid) {
  * @return {number}
  */
 var uniquePathsWithObstacles = function (obstacleGrid) {
-  if (obstacleGrid[0][0] === 1) return 0;
   const m = obstacleGrid.length;
   const n = obstacleGrid[0].length;
-  const dp = Array.from({ length: m }, () => new Array(n).fill(0));
-  dp[0][0] = 1;
 
-  for (let i = 1; i < m; i++) {
-    dp[i][0] = obstacleGrid[i][0] === 0 && dp[i - 1][0] === 1 ? 1 : 0;
+  const dp = Array.from({ length: m }, () => new Array(n).fill(0));
+  for (let i = 0; i < m; i++) {
+    if (obstacleGrid[i][0] === 1) {
+      break;
+    }
+    dp[i][0] = 1;
   }
-  for (let j = 1; j < n; j++) {
-    dp[0][j] = obstacleGrid[0][j] === 0 && dp[0][j - 1] === 1 ? 1 : 0;
+  for (let j = 0; j < n; j++) {
+    if (obstacleGrid[0][j] === 1) {
+      break;
+    }
+    dp[0][j] = 1;
   }
 
   for (let i = 1; i < m; i++) {
     for (let j = 1; j < n; j++) {
-      if (obstacleGrid[i][j] === 0) {
-        dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
-      } else {
-        dp[i][j] = 0;
+      if (obstacleGrid[i][j] !== 1) {
+        dp[i][j] += dp[i - 1][j] + dp[i][j - 1];
       }
     }
   }
+
   return dp[m - 1][n - 1];
 };
+
 /**
  * @param {number[]} prices
  * @return {number}
@@ -1036,4 +1025,45 @@ var plusOne = function (digits) {
     }
   }
   return digits;
+};
+
+/**
+ * @param {number[]} gain
+ * @return {number}
+ */
+var largestAltitude = function (gain) {
+  let last = 0;
+  let ans = last;
+  gain.forEach((v) => {
+    last += v;
+    if (last > ans) {
+      ans = last;
+    }
+  });
+  return ans;
+};
+
+/**
+ * @param {character[][]} matrix
+ * @return {number}
+ */
+var maximalSquare = function (matrix) {
+  const m = matrix.length;
+  const n = matrix[0].length;
+  let ans = 0;
+
+  for (let i = 0; i < m; i++) {
+    for (let j = 0; j < n; j++) {
+      matrix[i][j] = Number(matrix[i][j]);
+      if (!(i === 0 || j === 0) && matrix[i][j] === 1) {
+        matrix[i][j] =
+          Math.min(matrix[i - 1][j], matrix[i][j - 1], matrix[i - 1][j - 1]) +
+          1;
+      }
+      if (matrix[i][j] > ans) {
+        ans = matrix[i][j];
+      }
+    }
+  }
+  return ans ** 2;
 };

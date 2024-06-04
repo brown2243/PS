@@ -38,14 +38,19 @@ var isInterleave = function (s1, s2, s3) {
  * @return {number}
  */
 // 다시 https://leetcode.com/problems/longest-common-subsequence/solutions/348884/c-with-picture-o-nm/?envType=study-plan-v2&envId=leetcode-75
+/**
+ * @param {string} text1
+ * @param {string} text2
+ * @return {number}
+ */
 var longestCommonSubsequence = function (text1, text2) {
-  const length1 = text1.length + 1;
-  const length2 = text2.length + 1;
+  const m = text1.length;
+  const n = text2.length;
 
-  const dp = Array.from({ length: length1 }, () => new Array(length2).fill(0));
+  const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
 
-  for (let i = 1; i < length1; i++) {
-    for (let j = 1; j < length2; j++) {
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
       if (text1[i - 1] === text2[j - 1]) {
         dp[i][j] = dp[i - 1][j - 1] + 1;
       } else {
@@ -53,8 +58,10 @@ var longestCommonSubsequence = function (text1, text2) {
       }
     }
   }
-  return dp[length1 - 1][length2 - 1];
+
+  return dp[m][n];
 };
+
 // 다시
 /**
  * @param {string} s
