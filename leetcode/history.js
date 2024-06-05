@@ -206,17 +206,6 @@ var tribonacci = function (n) {
 };
 
 /**
- * @param {number[]} nums
- * @return {number}
- */
-var rob = function (nums) {
-  const dp = [nums[0], nums[1]];
-  for (let i = 2; i < nums.length; i++) {
-    dp[i] = Math.max(dp[i - 1], dp[i - 2] + nums[i]);
-  }
-  return dp[dp.length - 1];
-};
-/**
  * @param {number} n
  * @return {number}
  */
@@ -232,6 +221,26 @@ var climbStairs = function (n) {
     dp[i] = dp[i - 1] + dp[i - 2];
   }
   return dp[n];
+};
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var rob = function (nums) {
+  const n = nums.length;
+  if (n <= 2) {
+    return Math.max(...nums);
+  }
+
+  const dp = new Array(n).fill(0);
+  dp[0] = nums[0];
+  dp[1] = Math.max(nums[0], nums[1]);
+
+  for (let i = 2; i < n; i++) {
+    dp[i] = Math.max(dp[i - 1], nums[i] + dp[i - 2]);
+  }
+
+  return dp[n - 1];
 };
 
 /**
@@ -1066,4 +1075,96 @@ var maximalSquare = function (matrix) {
     }
   }
   return ans ** 2;
+};
+
+/**
+ * @param {number[]} citations
+ * @return {number}
+ */
+var hIndex = function (citations) {
+  citations.sort((a, b) => b - a);
+
+  for (let i = 0; i < citations.length; i++) {
+    if (citations[i] <= i) {
+      return i;
+    }
+  }
+
+  return citations.length;
+};
+
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number[]}
+ */
+var twoSum = function (nums, target) {
+  const obj = nums.reduce((obj, cur, i) => {
+    obj[cur] = i;
+    return obj;
+  }, {});
+
+  for (let i = 0; i < nums.length; i++) {
+    const num = nums[i];
+    const suffixed = target - num;
+    if (suffixed in obj && obj[suffixed] !== i) {
+      return [i, obj[suffixed]];
+    }
+  }
+  return 0;
+};
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number[]}
+ */
+var twoSum = function (nums, target) {
+  const obj = {};
+  for (let i = 0; i < nums.length; i++) {
+    const suffixed = target - nums[i];
+    if (suffixed in obj) {
+      return [obj[suffixed], i];
+    } else {
+      obj[nums[i]] = i;
+    }
+  }
+  return [-1, -1];
+};
+/**
+ * @param {number} n
+ * @return {boolean}
+ */
+var isHappy = function (n) {
+  const obj = {};
+  while (true) {
+    const num = String(n)
+      .split("")
+      .map(Number)
+      .reduce((acc, cur) => acc + cur ** 2, 0);
+    if (num === 1) {
+      return true;
+    } else if (obj[num]) {
+      return false;
+    } else {
+      obj[num] = true;
+    }
+    n = num;
+  }
+};
+/**
+ * @param {string[]} strs
+ * @return {string[][]}
+ */
+var groupAnagrams = function (strs) {
+  return Object.values(
+    strs.reduce((obj, cur) => {
+      const key = cur.split("").sort().join();
+      if (key in obj) {
+        obj[key].push(cur);
+      } else {
+        obj[key] = [cur];
+      }
+      return obj;
+    }, {})
+  );
 };

@@ -1,26 +1,27 @@
 /**
- * @param {character[][]} matrix
- * @return {number}
+ * @param {string} s
+ * @param {string[]} wordDict
+ * @return {boolean}
  */
-var maximalSquare = function (matrix) {
-  const m = matrix.length;
-  const n = matrix[0].length;
-  let ans = 0;
+var wordBreak = function (s, wordDict) {
+  const n = s.length;
 
-  for (let i = 0; i < m; i++) {
-    for (let j = 0; j < n; j++) {
-      matrix[i][j] = Number(matrix[i][j]);
+  const dp = new Array(n + 1).fill(false);
+  dp[0] = true;
 
-      if (!(i === 0 || j === 0) && matrix[i][j] === 1) {
-        matrix[i][j] =
-          Math.min(matrix[i - 1][j], matrix[i][j - 1], matrix[i - 1][j - 1]) +
-          1;
-      }
+  const maxLength = Math.max(...wordDict.map((v) => v.length));
 
-      if (matrix[i][j] > ans) {
-        ans = matrix[i][j];
+  for (let i = 1; i <= n; i++) {
+    for (let j = i - 1; j >= Math.max(0, i - maxLength); j--) {
+      const str = s.substring(j, i);
+      console.log(str);
+      if (wordDict.includes(str) && dp[j]) {
+        dp[i] = true;
+        console.log(dp.join(" "));
       }
     }
   }
-  return ans ** 2;
+  return dp[n];
 };
+
+wordBreak("leetcode", ["leet", "code"]);
