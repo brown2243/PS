@@ -1,27 +1,22 @@
 /**
- * @param {string} s
- * @param {string[]} wordDict
- * @return {boolean}
+ * @param {string} text1
+ * @param {string} text2
+ * @return {number}
  */
-var wordBreak = function (s, wordDict) {
-  const n = s.length;
+var longestCommonSubsequence = function (text1, text2) {
+  const m = text1.length;
+  const n = text2.length;
 
-  const dp = new Array(n + 1).fill(false);
-  dp[0] = true;
+  const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
 
-  const maxLength = Math.max(...wordDict.map((v) => v.length));
-
-  for (let i = 1; i <= n; i++) {
-    for (let j = i - 1; j >= Math.max(0, i - maxLength); j--) {
-      const str = s.substring(j, i);
-      console.log(str);
-      if (wordDict.includes(str) && dp[j]) {
-        dp[i] = true;
-        console.log(dp.join(" "));
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (text1[i - 1] === text2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+      } else {
+        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
       }
     }
   }
-  return dp[n];
+  return dp[m][n];
 };
-
-wordBreak("leetcode", ["leet", "code"]);

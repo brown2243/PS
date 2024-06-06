@@ -1168,3 +1168,197 @@ var groupAnagrams = function (strs) {
     }, {})
   );
 };
+
+/**
+ * Forward declaration of guess API.
+ * @param {number} num   your guess
+ * @return 	     -1 if num is higher than the picked number
+ *			      1 if num is lower than the picked number
+ *               otherwise return 0
+ * var guess = function(num) {}
+ */
+
+/**
+ * @param {number} n
+ * @return {number}
+ */
+var guessNumber = function (n) {
+  const min = 1;
+  const max = n;
+  let left = min;
+  let right = max;
+  while (true) {
+    let mid = Math.floor((left + right) / 2);
+    const result = guess(mid);
+    if (result === 0) {
+      return mid;
+    }
+    if (result === 1) {
+      left = mid + 1;
+    } else {
+      right = mid - 1;
+    }
+    if (mid < min || mid > max) {
+      return -1;
+    }
+  }
+};
+/**
+ * @param {TreeNode} root
+ * @param {number} val
+ * @return {TreeNode}
+ */
+var searchBST = function (root, val) {
+  if (val === root.val) {
+    return root;
+  }
+  if (val < root.val && root.left) {
+    return searchBST(root.left, val);
+  }
+  if (val > root.val && root.right) {
+    return searchBST(root.right, val);
+  }
+  return null;
+};
+
+var RandomizedSet = function () {
+  this._map = new Map();
+};
+/**
+ * @param {number} val
+ * @return {boolean}
+ */
+RandomizedSet.prototype.insert = function (val) {
+  const isExisted = this._map.has(val);
+  if (!isExisted) {
+    this._map.set(val, val);
+  }
+  return !isExisted;
+};
+
+/**
+ * @param {number} val
+ * @return {boolean}
+ */
+RandomizedSet.prototype.remove = function (val) {
+  const isExisted = this._map.has(val);
+  if (isExisted) {
+    this._map.delete(val);
+  }
+  return isExisted;
+};
+
+/**
+ * @return {number}
+ */
+RandomizedSet.prototype.getRandom = function () {
+  const arr = Array.from(this._map.keys());
+  const idx = Math.floor(Math.random() * arr.length);
+  return arr[idx];
+};
+
+//
+var RandomizedSet = function () {
+  this.map = new Map();
+  this.list = [];
+};
+
+/**
+ * @param {number} val
+ * @return {boolean}
+ */
+RandomizedSet.prototype.insert = function (val) {
+  if (this.map.has(val)) return false;
+  this.list.push(val);
+  this.map.set(val, this.list.length - 1);
+  return true;
+};
+
+/**
+ * @param {number} val
+ * @return {boolean}
+ */
+RandomizedSet.prototype.remove = function (val) {
+  if (!this.map.has(val)) return false;
+
+  const idxToRemove = this.map.get(val);
+  const lastElement = this.list[this.list.length - 1];
+
+  // 이부분 지림
+  // Swap the last element with the one to remove
+  this.list[idxToRemove] = lastElement;
+  this.map.set(lastElement, idxToRemove);
+
+  // Remove the last element (now moved to idxToRemove)
+  this.list.pop();
+  this.map.delete(val);
+
+  return true;
+};
+
+/**
+ * @return {number}
+ */
+RandomizedSet.prototype.getRandom = function () {
+  const randomIndex = Math.floor(Math.random() * this.list.length);
+  return this.list[randomIndex];
+};
+
+/**
+ * @param {number[]} nums
+ * @return {string[]}
+ */
+var summaryRanges = function (nums) {
+  const ans = [];
+  if (nums.length === 0) {
+    return ans;
+  }
+  let startIdx = 0;
+  let lastIdx = 0;
+  for (let i = 1; i < nums.length; i++) {
+    if (nums[i] - nums[lastIdx] === 1) {
+      lastIdx = i;
+      nums[lastIdx] = nums[i];
+    } else {
+      if (startIdx === lastIdx) {
+        ans.push(`${nums[startIdx]}`);
+      } else {
+        ans.push(`${nums[startIdx]}->${nums[lastIdx]}`);
+      }
+      startIdx = i;
+      lastIdx = i;
+      nums[lastIdx] = nums[i];
+    }
+  }
+  if (startIdx === lastIdx) {
+    ans.push(`${nums[startIdx]}`);
+  } else {
+    ans.push(`${nums[startIdx]}->${nums[lastIdx]}`);
+  }
+  return ans;
+};
+
+/**
+ * @param {string} s
+ * @return {boolean}
+ */
+var isValid = function (s) {
+  const stack = [];
+  const pairs = {
+    ")": "(",
+    "]": "[",
+    "}": "{",
+  };
+  const arr = s.split("");
+  for (let char of arr) {
+    if (char in pairs) {
+      const last = stack.pop();
+      if (last !== pairs[char]) {
+        return false;
+      }
+    } else {
+      stack.push(char);
+    }
+  }
+  return stack.length === 0;
+};
