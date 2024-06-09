@@ -884,3 +884,88 @@
   }
   console.log(ans);
 }
+
+// 17219
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "backjon/input.txt";
+
+  const [info, ...arr] = fs
+    .readFileSync(filePath)
+    .toString()
+    .trim()
+    .split("\n");
+
+  const [N] = info.split(" ").map(Number);
+  let obj = {};
+  let ans = "";
+  for (let i = 0; i < N; i++) {
+    const [url, password] = arr[i].split(" ");
+    obj[url] = password;
+  }
+  for (let i = N; i < arr.length; i++) {
+    ans += `${obj[arr[i]]}\n`;
+  }
+  console.log(ans);
+}
+
+// 17626
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "backjon/input.txt";
+
+  let N = fs.readFileSync(filePath).toString().trim();
+  N = Number(N);
+
+  const dp = new Array(N + 1).fill(Number.MAX_SAFE_INTEGER);
+  dp[0] = 0;
+
+  for (let i = 1; i <= Math.sqrt(N); i++) {
+    dp[i ** 2] = 1;
+  }
+
+  for (let i = 2; i <= N; i++) {
+    if (dp[i] === 1) continue;
+    for (let j = 1; j ** 2 < i; j++) {
+      dp[i] = Math.min(dp[i], dp[i - j ** 2] + 1);
+    }
+  }
+
+  console.log(dp[N]);
+}
+
+// 11727
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "backjon/input.txt";
+
+  let N = fs.readFileSync(filePath).toString().trim();
+  N = Number(N);
+
+  const MOD = 10007;
+  const dp = new Array(N + 1).fill(0);
+  dp[0] = 0;
+  dp[1] = 1;
+  dp[2] = 3;
+
+  for (let i = 3; i <= N; i++) {
+    dp[i] = (dp[i - 1] + 2 * dp[i - 2]) % MOD;
+  }
+
+  console.log(dp[N]);
+}
+
+// 31403
+{
+  const fs = require("fs");
+  const filePath =
+    process.platform === "linux" ? "/dev/stdin" : "backjon/input.txt";
+
+  const [A, B, C] = fs.readFileSync(filePath).toString().trim().split("\n");
+
+  console.log(Number(A) + Number(B) - Number(C));
+  console.log(A + B - C);
+}
