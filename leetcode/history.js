@@ -1362,3 +1362,60 @@ var isValid = function (s) {
   }
   return stack.length === 0;
 };
+var RecentCounter = function () {
+  this._queue = [];
+};
+
+/**
+ * @param {number} t
+ * @return {number}
+ */
+RecentCounter.prototype.ping = function (t) {
+  this._queue.push(t);
+  const range = [t - 3000, t];
+  let left = 0;
+  while (this._queue[left] < range[0]) {
+    left++;
+  }
+  this._queue.splice(0, left);
+  return this._queue.length;
+};
+
+/**
+ * Your RecentCounter object will be instantiated and called as such:
+ * var obj = new RecentCounter()
+ * var param_1 = obj.ping(t)
+ */
+
+/**
+ * @param {string} senate
+ * @return {string}
+ */
+var predictPartyVictory = function (senate) {
+  const radiant = "Radiant";
+  const dire = "Dire";
+
+  const rq = [];
+  const dq = [];
+  let n = senate.length;
+
+  for (let i = 0; i < n; i++) {
+    if (senate[i] === "R") {
+      rq.push(i);
+    } else {
+      dq.push(i);
+    }
+  }
+
+  while (rq.length > 0 && dq.length > 0) {
+    const r = rq.shift();
+    const d = dq.shift();
+
+    if (r < d) {
+      rq.push(n++);
+    } else {
+      dq.push(n++);
+    }
+  }
+  return rq.length !== 0 ? radiant : dire;
+};
