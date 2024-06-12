@@ -1,39 +1,31 @@
-/**
- * @param {number[]} nums
- * @return {number[][]}
- */
-var threeSum = function (nums) {
-  nums.sort((a, b) => a - b);
-  const ans = [];
-  for (let i = 0; i < nums.length; i++) {
-    const now = nums[i];
-    if (now > 0) {
-      break;
-    }
-    if (i > 0 && now === nums[i - 1]) {
-      continue;
-    }
-    const localTarget = 0 - now;
-    let j = i + 1;
-    let k = nums.length - 1;
-    while (j < k) {
-      const sum = nums[j] + nums[k];
-      if (localTarget < sum) {
-        k--;
-      } else if (localTarget > sum) {
-        j++;
-      } else {
-        ans.push([nums[i], nums[j], nums[k]]);
-        const leftVal = nums[j];
-        const rightVal = nums[k];
-        j++;
-        k--;
-        while (leftVal === nums[j] && rightVal === nums[k]) {
-          j++;
-          k--;
-        }
+function solution(k, dungeons) {
+  const n = dungeons.length;
+  const visited = new Array(n).fill(false);
+
+  let globalCount = 0;
+
+  const permutation = (k, cnt = 0) => {
+    globalCount = Math.max(globalCount, cnt);
+
+    for (let i = 0; i < n; i++) {
+      if (visited[i]) continue;
+      const [required, spend] = dungeons[i];
+      if (k >= required) {
+        visited[i] = true;
+        permutation(k - spend, cnt + 1);
+        visited[i] = false;
       }
     }
-  }
-  return ans;
-};
+  };
+
+  permutation(k);
+  return globalCount;
+}
+
+console.log(
+  solution(80, [
+    [80, 20],
+    [50, 40],
+    [30, 10],
+  ])
+);
