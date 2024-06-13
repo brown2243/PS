@@ -1419,3 +1419,96 @@ var predictPartyVictory = function (senate) {
   }
   return rq.length !== 0 ? radiant : dire;
 };
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {number}
+ */
+var maxDepth = function (root) {
+  let leefDepth = 0;
+
+  const dfs = (node, depth) => {
+    if (!node) {
+      return;
+    }
+    leefDepth = Math.max(leefDepth, depth);
+    dfs(node.left, depth + 1);
+    dfs(node.right, depth + 1);
+  };
+  dfs(root, 1);
+  return leefDepth;
+};
+
+/**
+ * @param {number[][]} rooms
+ * @return {boolean}
+ */
+var canVisitAllRooms = function (rooms) {
+  const n = rooms.length;
+  const visited = new Array(n).fill(false);
+
+  const dfs = (now) => {
+    if (visited[now]) {
+      return;
+    }
+    visited[now] = true;
+    for (let i = 0; i < rooms[now].length; i++) {
+      dfs(rooms[now][i]);
+    }
+  };
+  dfs(0);
+  return visited.every((v) => v === true);
+};
+
+/**
+ * @param {character[][]} maze
+ * @param {number[]} entrance
+ * @return {number}
+ */
+var nearestExit = function (maze, entrance) {
+  const m = maze.length;
+  const n = maze[0].length;
+
+  const visited = Array.from({ length: m }, () => new Array(n).fill(false));
+
+  const dy = [1, 0, -1, 0];
+  const dx = [0, 1, 0, -1];
+
+  entrance.push(0);
+  const q = [entrance];
+  let left = 0;
+  let right = 1;
+  visited[entrance[0]][entrance[1]] = true;
+  while (left < right) {
+    const [y, x, step] = q[left++];
+
+    if (step !== 0 && (y === 0 || x === 0 || y === m - 1 || x === n - 1)) {
+      return step;
+    }
+
+    for (let i = 0; i < 4; i++) {
+      const ny = y + dy[i];
+      const nx = x + dx[i];
+      if (
+        0 <= ny &&
+        ny < m &&
+        0 <= nx &&
+        nx < n &&
+        !visited[ny][nx] &&
+        maze[ny][nx] === "."
+      ) {
+        right++;
+        visited[ny][nx] = true;
+        q.push([ny, nx, step + 1]);
+      }
+    }
+  }
+  return -1;
+};

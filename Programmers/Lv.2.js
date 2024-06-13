@@ -1322,3 +1322,68 @@ function solution(cap, n, deliveries, pickups) {
   }
   return ans;
 }
+
+// 피로도
+function solution(k, dungeons) {
+  const n = dungeons.length;
+  const visited = new Array(n).fill(false);
+
+  let globalCount = 0;
+
+  const permutation = (k, cnt = 0) => {
+    globalCount = Math.max(globalCount, cnt);
+
+    for (let i = 0; i < n; i++) {
+      if (visited[i]) continue;
+      const [required, spend] = dungeons[i];
+      if (k >= required) {
+        visited[i] = true;
+        permutation(k - spend, cnt + 1);
+        visited[i] = false;
+      }
+    }
+  };
+
+  permutation(k);
+  return globalCount;
+}
+
+// 전력망을 둘로 나누기
+function solution(n, wires) {
+  const visited = new Array(n + 1).fill(false);
+  const adjList = Array.from({ length: n + 1 }, () => []);
+
+  let globalCount = Infinity;
+
+  wires.forEach(([x, y]) => {
+    adjList[x].push(y);
+    adjList[y].push(x);
+  });
+
+  for (let i = 0; i < wires.length; i++) {
+    const [x, y] = wires[i];
+    adjList[x].splice(adjList[x].indexOf(y), 1);
+    adjList[y].splice(adjList[y].indexOf(x), 1);
+
+    const dfs = (node) => {
+      visited[node] = true;
+      let count = 1;
+
+      for (let next of adjList[node]) {
+        if (!visited[next]) {
+          count += dfs(next);
+        }
+      }
+
+      return count;
+    };
+
+    const localCount = dfs(1);
+    globalCount = Math.min(globalCount, Math.abs(n - localCount - localCount));
+
+    visited.fill(false);
+    adjList[x].push(y);
+    adjList[y].push(x);
+  }
+  return globalCount;
+}
