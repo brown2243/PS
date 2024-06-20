@@ -1512,3 +1512,134 @@ var nearestExit = function (maze, entrance) {
   }
   return -1;
 };
+
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+var deleteMiddle = function (head) {
+  let n = 1;
+  let tmp = head;
+  while (tmp.next) {
+    tmp = tmp.next;
+    n++;
+  }
+  if (n === 1) {
+    head = null;
+    return head;
+  }
+  if (n === 2) {
+    head.next = null;
+    return head;
+  }
+  const target = Math.floor(n / 2);
+  let cnt = 1;
+  tmp = head;
+  while (cnt < target) {
+    tmp = tmp.next;
+    cnt++;
+  }
+  tmp.next = tmp.next.next;
+  return head;
+};
+
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root1
+ * @param {TreeNode} root2
+ * @return {boolean}
+ */
+var leafSimilar = function (root1, root2) {
+  const getLeafs = (node) => {
+    const arr = [];
+    const solve = (node) => {
+      if (node === null) return;
+      if (!node.left && !node.right) {
+        arr.push(node.val);
+      } else {
+        solve(node.left);
+        solve(node.right);
+      }
+    };
+    solve(node);
+    return arr;
+  };
+  const arr1 = getLeafs(root1);
+  const arr2 = getLeafs(root2);
+
+  if (arr1.length !== arr2.length) return false;
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i] !== arr2[i]) return false;
+  }
+  return true;
+};
+/**
+ * @param {string} s
+ * @return {number}
+ */
+var lengthOfLastWord = function (s) {
+  return s.trim().split(" ").pop().length;
+};
+/**
+ * @param {string} haystack
+ * @param {string} needle
+ * @return {number}
+ */
+var strStr = function (haystack, needle) {
+  return haystack.indexOf(needle);
+};
+
+/**
+ * @param {string[]} strs
+ * @return {string}
+ */
+var longestCommonPrefix = function (strs) {
+  let ans = "";
+  const str = strs[0];
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    let flag = true;
+    for (let j = 0; j < strs.length; j++) {
+      if (strs[j][i] !== char) flag = false;
+    }
+    if (flag) {
+      ans += char;
+    } else {
+      break;
+    }
+  }
+  return ans;
+};
+
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+// dp
+var lengthOfLIS = function (nums) {
+  const n = nums.length;
+  const dp = new Array(n).fill(1);
+
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < i; j++) {
+      if (nums[i] > nums[j]) {
+        dp[i] = Math.max(dp[i], dp[j] + 1);
+      }
+    }
+  }
+  return Math.max(...dp);
+};
