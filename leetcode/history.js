@@ -1643,3 +1643,82 @@ var lengthOfLIS = function (nums) {
   }
   return Math.max(...dp);
 };
+
+/**
+ * @param {number[]} nums1
+ * @param {number[]} nums2
+ * @return {number[][]}
+ */
+var findDifference = function (nums1, nums2) {
+  nums1 = Array.from(new Set(nums1));
+  nums2 = Array.from(new Set(nums2));
+
+  const nums1Obj = nums1.reduce((acc, cur) => {
+    acc[cur] = true;
+    return acc;
+  }, {});
+  const nums2Obj = nums2.reduce((acc, cur) => {
+    acc[cur] = true;
+    return acc;
+  }, {});
+  return [nums1.filter((v) => !nums2Obj[v]), nums2.filter((v) => !nums1Obj[v])];
+};
+
+/**
+ * @param {string} word1
+ * @param {string} word2
+ * @return {boolean}
+ */
+var closeStrings = function (word1, word2) {
+  if (word1.length !== word2.length) return false;
+
+  const freq1 = new Map();
+  const freq2 = new Map();
+
+  for (let char of word1) {
+    freq1.set(char, (freq1.get(char) || 0) + 1);
+  }
+  for (let char of word2) {
+    freq2.set(char, (freq2.get(char) || 0) + 1);
+  }
+
+  if (freq1.size !== freq2.size) return false;
+  for (let char of freq1.keys()) {
+    if (!freq2.has(char)) return false;
+  }
+
+  const sortedFreq1 = Array.from(freq1.values()).sort((a, b) => a - b);
+  const sortedFreq2 = Array.from(freq2.values()).sort((a, b) => a - b);
+
+  for (let i = 0; i < sortedFreq1.length; i++) {
+    if (sortedFreq1[i] !== sortedFreq2[i]) return false;
+  }
+
+  return true;
+};
+
+/**
+ * @param {number[]} gas
+ * @param {number[]} cost
+ * @return {number}
+ */
+var canCompleteCircuit = function (gas, cost) {
+  const arr = gas.map((v, i) => v - cost[i]);
+
+  const n = arr.length;
+
+  let start = 0;
+  let local = 0;
+  let global = 0;
+
+  for (let i = 0; i < n; i++) {
+    global += arr[i];
+    local += arr[i];
+    if (local < 0) {
+      local = 0;
+      start = i + 1;
+    }
+  }
+
+  return global >= 0 ? start : -1;
+};
