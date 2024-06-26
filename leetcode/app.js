@@ -1,17 +1,24 @@
 /**
- * @param {number[]} nums
- * @return {number}
+ * @param {string} s
+ * @return {string}
  */
-var lengthOfLIS = function (nums) {
-  const n = nums.length;
-  const dp = new Array(n).fill(1);
+var longestPalindrome = function (s) {
+  const n = s.length;
+  const dp = Array.from({ length: n }, () => new Array(n).fill(false));
 
+  dp[0][0] = true;
+
+  let str = s[0];
   for (let i = 0; i < n; i++) {
+    dp[i][i] = true;
     for (let j = 0; j < i; j++) {
-      if (nums[i] > nums[j]) {
-        dp[i] = Math.max(dp[i], dp[j] + 1);
+      if (s[j] === s[i] && (i - j <= 2 || dp[j + 1][i - 1])) {
+        dp[j][i] = true;
+        if (i - j + 1 > str.length) {
+          str = s.substring(j, i + 1);
+        }
       }
     }
   }
-  return Math.max(...dp);
+  return str;
 };

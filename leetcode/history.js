@@ -1722,3 +1722,100 @@ var canCompleteCircuit = function (gas, cost) {
 
   return global >= 0 ? start : -1;
 };
+
+/**
+ * @param {number[]} arr
+ * @return {boolean}
+ */
+var uniqueOccurrences = function (arr) {
+  const values = Object.values(
+    arr.reduce((acc, cur) => {
+      acc[cur] = acc[cur] + 1 || 1;
+      return acc;
+    }, {})
+  );
+  return values.length === new Set(values).size;
+};
+
+/**
+ * @param {number[][]} grid
+ * @return {number}
+ */
+var equalPairs = function (grid) {
+  const n = grid.length;
+  let cnt = 0;
+
+  for (let i = 0; i < n; i++) {
+    const row = grid[i];
+
+    for (let j = 0; j < n; j++) {
+      const col = new Array(n).fill(0).map((_, idx) => grid[idx][j]);
+      let flag = true;
+      for (let k = 0; k < n; k++) {
+        if (row[k] !== col[k]) {
+          flag = false;
+          break;
+        }
+      }
+      if (flag) cnt++;
+    }
+  }
+  return cnt;
+};
+/**
+ * @param {number[][]} grid
+ * @return {number}
+ */
+var equalPairs = function (grid) {
+  const n = grid.length;
+  const rowObj = {};
+  let cnt = 0;
+
+  for (let i = 0; i < n; i++) {
+    const row = grid[i];
+    const str = row.join(",");
+    rowObj[str] = (rowObj[str] || 0) + 1;
+  }
+
+  for (let i = 0; i < n; i++) {
+    let col = [];
+    for (let j = 0; j < n; j++) {
+      col.push(grid[j][i]);
+    }
+    const str = col.join(",");
+    if (rowObj[str]) cnt += rowObj[str];
+  }
+
+  return cnt;
+};
+
+/**
+ * @param {number} num
+ * @return {string}
+ */
+var intToRoman = function (num) {
+  const symbols = [
+    [1000, "M"],
+    [900, "CM"],
+    [500, "D"],
+    [400, "CD"],
+    [100, "C"],
+    [90, "XC"],
+    [50, "L"],
+    [40, "XL"],
+    [10, "X"],
+    [9, "IX"],
+    [5, "V"],
+    [4, "IV"],
+    [1, "I"],
+  ];
+
+  let result = "";
+  for (let [value, symbol] of symbols) {
+    while (num >= value) {
+      result += symbol;
+      num -= value;
+    }
+  }
+  return result;
+};
