@@ -503,29 +503,6 @@ var lengthOfLIS = function (nums) {
 };
 
 /**
- * @param {number[]} coins
- * @param {number} amount
- * @return {number}
- */
-// 다시
-var coinChange = function (coins, amount) {
-  const dp = new Array(amount + 1).fill(Number.MAX_SAFE_INTEGER);
-  dp[0] = 0;
-
-  for (let amnt = 1; amnt < dp.length; amnt++) {
-    coins.forEach((coin) => {
-      if (amnt < coin) {
-        return;
-      }
-      if (dp[amnt - coin] !== Number.MAX_SAFE_INTEGER) {
-        dp[amnt] = Math.min(dp[amnt], dp[amnt - coin] + 1);
-      }
-    });
-  }
-  return dp[amount] === Number.MAX_SAFE_INTEGER ? -1 : dp[amount];
-};
-
-/**
  * @param {number[]} nums
  * @return {void}
  */
@@ -1818,4 +1795,91 @@ var intToRoman = function (num) {
     }
   }
   return result;
+};
+
+/**
+ * @param {number[]} nums
+ * @param {number} k
+ * @return {number}
+ */
+var findMaxAverage = function (nums, k) {
+  const n = nums.length;
+  let sum = 0;
+  for (let i = 0; i < k; i++) {
+    sum += nums[i];
+  }
+  let ans = sum / k;
+  let i = k;
+  while (i < n) {
+    sum += nums[i];
+    sum -= nums[i - k];
+    ans = Math.max(ans, sum / k);
+    i++;
+  }
+  return ans;
+};
+
+/**
+ * @param {string} s
+ * @param {number} k
+ * @return {number}
+ */
+var maxVowels = function (s, k) {
+  const vowels = new Set(["a", "e", "i", "o", "u"]);
+  const n = s.length;
+  const arr = s.split("").map((v) => (vowels.has(v) ? 1 : 0));
+
+  let cnt = 0;
+  for (let i = 0; i < k; i++) {
+    cnt += arr[i];
+  }
+  let ans = cnt;
+  for (let i = k; i < n; i++) {
+    cnt += arr[i];
+    cnt -= arr[i - k];
+    ans = Math.max(ans, cnt);
+  }
+  return ans;
+};
+
+var coinChange = function (coins, amount) {
+  const dp = new Array(amount + 1).fill(Number.MAX_SAFE_INTEGER);
+  dp[0] = 0;
+
+  for (let i = 1; i <= amount; i++) {
+    for (let coin of coins) {
+      if (coin <= i) {
+        dp[i] = Math.min(dp[i], dp[i - coin] + 1);
+      }
+    }
+  }
+
+  return dp[amount] === Number.MAX_SAFE_INTEGER ? -1 : dp[amount];
+};
+
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {number[]}
+ */
+var rightSideView = function (root) {
+  const matrix = [];
+  const recur = (node, depth = 0) => {
+    if (!node) return;
+    if (!matrix[depth]) {
+      matrix[depth] = [];
+    }
+    matrix[depth].push(node.val);
+    recur(node.left, depth + 1);
+    recur(node.right, depth + 1);
+  };
+  recur(root);
+  return matrix.map((v) => v.pop());
 };
