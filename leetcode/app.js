@@ -8,19 +8,23 @@
  */
 /**
  * @param {TreeNode} root
- * @return {number[]}
+ * @return {boolean}
  */
-var rightSideView = function (root) {
-  const matrix = [];
-  const recur = (node, depth = 0) => {
-    if (!node) return;
-    if (!matrix[depth]) {
-      matrix[depth] = [];
+var isValidBST = function (root) {
+  function recur(node, min, max) {
+    if (node === null) {
+      return true;
     }
-    matrix[depth].push(node.val);
-    recur(node.left, depth + 1);
-    recur(node.right, depth + 1);
-  };
-  recur(root);
-  return matrix.map((v) => v.pop());
+
+    if (
+      (min !== null && node.val <= min) ||
+      (max !== null && node.val >= max)
+    ) {
+      return false;
+    }
+
+    return recur(node.left, min, node.val) && recur(node.right, node.val, max);
+  }
+
+  return recur(root, null, null);
 };

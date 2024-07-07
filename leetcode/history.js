@@ -1883,3 +1883,164 @@ var rightSideView = function (root) {
   recur(root);
   return matrix.map((v) => v.pop());
 };
+
+/**
+ * @param {number[][]} grid
+ * @return {number}
+ */
+var orangesRotting = function (grid) {
+  const m = grid.length;
+  const n = grid[0].length;
+
+  let q = [];
+  for (let i = 0; i < m; i++) {
+    for (let j = 0; j < n; j++) {
+      if (grid[i][j] === 2) {
+        q.push([i, j]);
+      }
+    }
+  }
+  const dy = [1, 0, -1, 0];
+  const dx = [0, 1, 0, -1];
+  let time = 0;
+  while (true) {
+    const tmp = [];
+    while (q.length > 0) {
+      const [y, x] = q.shift();
+
+      for (let i = 0; i < 4; i++) {
+        const ny = y + dy[i];
+        const nx = x + dx[i];
+
+        if (0 > ny || ny >= m || 0 > nx || nx >= n) continue;
+        if (grid[ny][nx] === 1) {
+          tmp.push([ny, nx]);
+          grid[ny][nx] = 2;
+        }
+      }
+    }
+    if (tmp.length === 0) break;
+    time++;
+    q = tmp;
+  }
+
+  for (let i = 0; i < m; i++) {
+    for (let j = 0; j < n; j++) {
+      if (grid[i][j] === 1) {
+        return -1;
+      }
+    }
+  }
+
+  return time;
+};
+
+/**
+ * @param {number} target
+ * @param {number[]} nums
+ * @return {number}
+ */
+var minSubArrayLen = function (target, nums) {
+  const n = nums.length;
+  let ans = Number.MAX_SAFE_INTEGER;
+
+  for (let left = 0, right = 0, curSum = 0; right < n; right++) {
+    curSum += nums[right];
+
+    while (curSum >= target) {
+      ans = Math.min(ans, right - left + 1);
+      curSum -= nums[left++];
+    }
+  }
+
+  return ans === Number.MAX_SAFE_INTEGER ? 0 : ans;
+};
+
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {number}
+ */
+var getMinimumDifference = function (root) {
+  const arr = [];
+  const recur = (node) => {
+    if (!node) {
+      return;
+    }
+    arr.push(node.val);
+    recur(node.left);
+    recur(node.right);
+  };
+  recur(root);
+  arr.sort((a, b) => a - b);
+  let ans = Number.MAX_SAFE_INTEGER;
+  for (let i = 1; i < arr.length; i++) {
+    ans = Math.min(ans, arr[i] - arr[i - 1]);
+  }
+  return ans;
+};
+
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @param {number} k
+ * @return {number}
+ */
+var kthSmallest = function (root, k) {
+  const arr = [];
+  const recur = (node) => {
+    if (!node) {
+      return;
+    }
+    recur(node.left);
+    arr.push(node.val);
+    recur(node.right);
+  };
+  recur(root);
+  return arr[k - 1];
+};
+
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {boolean}
+ */
+var isValidBST = function (root) {
+  function recur(node, min, max) {
+    if (node === null) {
+      return true;
+    }
+
+    if (
+      (min !== null && node.val <= min) ||
+      (max !== null && node.val >= max)
+    ) {
+      return false;
+    }
+
+    return recur(node.left, min, node.val) && recur(node.right, node.val, max);
+  }
+
+  return recur(root, null, null);
+};
