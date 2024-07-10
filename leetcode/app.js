@@ -1,30 +1,38 @@
 /**
- * Definition for a binary tree node.
- * function TreeNode(val, left, right) {
- *     this.val = (val===undefined ? 0 : val)
- *     this.left = (left===undefined ? null : left)
- *     this.right = (right===undefined ? null : right)
- * }
+ * @param {number[][]} board
+ * @return {number}
  */
-/**
- * @param {TreeNode} root
- * @return {boolean}
- */
-var isValidBST = function (root) {
-  function recur(node, min, max) {
-    if (node === null) {
-      return true;
-    }
+var snakesAndLadders = function (board) {
+  const n = board.length;
+  const row = [];
 
-    if (
-      (min !== null && node.val <= min) ||
-      (max !== null && node.val >= max)
-    ) {
-      return false;
+  for (let i = n - 1; i >= 0; i--) {
+    if ((n - 1 - i) % 2 === 0) {
+      row.push(...board[i]);
+    } else {
+      row.push(...board[i].reverse());
     }
-
-    return recur(node.left, min, node.val) && recur(node.right, node.val, max);
   }
+  const target = row.length;
+  const isVisited = new Array(target).fill(false);
+  const q = [[0, 0]];
+  isVisited[0] = true;
 
-  return recur(root, null, null);
+  while (q.length > 0) {
+    const [point, step] = q.shift();
+    if (point === target - 1) return step;
+
+    for (let i = 1; i <= 6; i++) {
+      const nextPoint = point + i;
+      if (nextPoint >= target || isVisited[nextPoint]) continue;
+
+      isVisited[nextPoint] = true;
+      if (row[nextPoint] !== -1) {
+        q.push([row[nextPoint] - 1, step + 1]);
+      } else {
+        q.push([nextPoint, step + 1]);
+      }
+    }
+  }
+  return -1;
 };
