@@ -2115,3 +2115,38 @@ var snakesAndLadders = function (board) {
   }
   return -1;
 };
+
+/**
+ * @param {number[]} nums
+ * @param {number} k
+ * @return {boolean}
+ */
+var containsNearbyDuplicate = function (nums, k) {
+  const n = nums.length;
+
+  for (let i = 0; i < n; i++) {
+    for (let j = i + 1; j < Math.min(i + k + 1, n); j++) {
+      if (nums[i] === nums[j]) return true;
+    }
+  }
+  return false;
+};
+
+/**
+ * @param {number[]} nums
+ * @param {number} k
+ * @return {boolean}
+ */
+var containsNearbyDuplicate = function (nums, k) {
+  const n = nums.length;
+  const map = new Map();
+  for (let i = 0; i < n; i++) {
+    if (map.has(nums[i])) {
+      if (i - map.get(nums[i]) <= k) {
+        return true;
+      }
+    }
+    map.set(nums[i], i);
+  }
+  return false;
+};
