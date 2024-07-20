@@ -2150,3 +2150,120 @@ var containsNearbyDuplicate = function (nums, k) {
   }
   return false;
 };
+
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var singleNumber = function (nums) {
+  return Array.from(
+    nums.reduce((set, cur) => {
+      if (set.has(cur)) {
+        set.delete(cur);
+      } else {
+        set.add(cur);
+      }
+      return set;
+    }, new Set())
+  )[0];
+};
+
+/**
+ * @param {number[]} nums
+ * @return {number[]}
+ */
+var productExceptSelf = function (nums) {
+  const n = nums.length;
+  let pre = 1;
+  let suf = 1;
+  const arr = new Array(n).fill(0);
+  for (let i = 0; i < n; i++) {
+    arr[i] = pre;
+    pre *= nums[i];
+  }
+  for (let i = n - 1; i >= 0; i--) {
+    arr[i] *= suf;
+    suf *= nums[i];
+  }
+  return arr;
+};
+
+/**
+ * @param {string} s
+ * @param {number} numRows
+ * @return {string}
+ */
+var convert = function (s, numRows) {
+  if (numRows === 1) {
+    return s;
+  }
+  const n = s.length;
+  if (numRows === 2) {
+    let str = "";
+    let i = 0,
+      j = 1;
+    while (i < n) {
+      str += s[i];
+      i += 2;
+    }
+    while (j < n) {
+      str += s[j];
+      j += 2;
+    }
+    return str;
+  }
+  const grid = Array.from({ length: numRows }, () => new Array(n).fill(""));
+
+  let type = 0;
+  let cnt = 0;
+  let i = 0;
+  let y = 0;
+  let x = 0;
+
+  while (i < n) {
+    if (type === 0) {
+      grid[cnt][x] = s[i];
+      cnt++;
+      if (cnt === numRows) {
+        type = 1;
+        cnt = 0;
+        x += 1;
+        y = numRows - 2;
+      }
+    } else if (type === 1) {
+      grid[y][x] = s[i];
+      cnt++;
+      x += 1;
+      y -= 1;
+      if (cnt === numRows - 2) {
+        type = 0;
+        cnt = 0;
+      }
+    }
+    i++;
+  }
+  return grid.map((v) => v.filter(Boolean).join("")).join("");
+};
+/**
+ * @param {string} s
+ * @param {number} numRows
+ * @return {string}
+ */
+var convert = function (s, numRows) {
+  if (numRows === 1) return s;
+
+  const rows = new Array(numRows).fill("");
+  let now = 0;
+  let step = 1;
+
+  for (let char of s) {
+    rows[now] += char;
+
+    if (now === 0) step = 1;
+    else if (now === numRows - 1) step = -1;
+
+    now += step;
+  }
+
+  return rows.join("");
+};

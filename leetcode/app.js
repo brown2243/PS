@@ -1,18 +1,23 @@
 /**
- * @param {number[]} nums
- * @param {number} k
- * @return {boolean}
+ * @param {string} s
+ * @param {number} numRows
+ * @return {string}
  */
-var containsNearbyDuplicate = function (nums, k) {
-  const n = nums.length;
-  const map = new Map();
-  for (let i = 0; i < n; i++) {
-    if (map.has(nums[i])) {
-      if (i - map.get(nums[i]) <= k) {
-        return true;
-      }
-    }
-    map.set(nums[i], i);
+var convert = function (s, numRows) {
+  if (numRows === 1) return s;
+
+  const rows = new Array(numRows).fill("");
+  let now = 0;
+  let step = 1;
+
+  for (let char of s) {
+    rows[now] += char;
+
+    if (now === 0) step = 1;
+    else if (now === numRows - 1) step = -1;
+
+    now += step;
   }
-  return false;
+
+  return rows.join("");
 };
