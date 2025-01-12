@@ -1,23 +1,70 @@
 /**
- * @param {string} s
- * @param {number} numRows
- * @return {string}
+ * @param {number[]} nums
+ * @return {number}
  */
-var convert = function (s, numRows) {
-  if (numRows === 1) return s;
-
-  const rows = new Array(numRows).fill("");
-  let now = 0;
-  let step = 1;
-
-  for (let char of s) {
-    rows[now] += char;
-
-    if (now === 0) step = 1;
-    else if (now === numRows - 1) step = -1;
-
-    now += step;
+var continuousSubarrays = function (nums) {
+  let ans = 0;
+  for (let min = 0, max = 0, i = 0, j = 0, n = nums.length; i < n; i++) {
+    const num = nums[i];
+    if (i === 0) {
+      min = num - 2;
+      max = num + 2;
+      ans += 1;
+    }
   }
-
-  return rows.join("");
+  // for (let cnt = 2; cnt <= n; cnt++) {
+  //   for (let start = 0; start <= n - cnt; start++) {
+  //     const num = nums[start];
+  //     let min = num;
+  //     let max = num;
+  //     let flag = true;
+  //     for (let end = start + 1; end < start + cnt; end++) {
+  //       const next = nums[end];
+  //       min = Math.min(min, next);
+  //       max = Math.max(max, next);
+  //       if (max - min > 2) {
+  //         flag = false;
+  //         break;
+  //       }
+  //     }
+  //     if (flag) ans++;
+  //   }
+  // }
+  return ans;
 };
+
+/**
+ * @param {string} start
+ * @param {string} target
+ * @return {boolean}
+ */
+var canChange = function (start, target) {
+  const n = target.length;
+
+  let i = 0,
+    j = 0;
+
+  while (i <= n && j <= n) {
+    while (i < n && start[i] === "_") i++;
+    while (j < n && target[j] === "_") j++;
+
+    if (i === n || j === n) {
+      return i === j;
+    }
+
+    if (start[i] !== target[j]) return false;
+
+    if (start[i] === "L") {
+      if (i < j) return false;
+    } else {
+      if (i > j) return false;
+    }
+
+    i++;
+    j++;
+  }
+  return true;
+};
+start = "_L";
+target = "LR";
+canChange(start, target);

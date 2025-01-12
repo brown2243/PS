@@ -2267,3 +2267,86 @@ var convert = function (s, numRows) {
 
   return rows.join("");
 };
+
+/**
+ * @param {string} s
+ * @return {number}
+ */
+var countPalindromicSubsequence = function (s) {
+  const n = s.length;
+  const set = new Set();
+  const checked = new Set();
+
+  for (let i = 0; i < n; i++) {
+    const char = s[i];
+    if (checked.has(char)) {
+      continue;
+    }
+    checked.add(char);
+    const start = i;
+    const last = s.lastIndexOf(char);
+
+    for (let j = start + 1; j < last; j++) {
+      set.add(`${char + s[j] + char}`);
+    }
+  }
+  return set.size;
+};
+
+/**
+ * @param {number[]} days
+ * @param {number[]} costs
+ * @return {number}
+ */
+var mincostTickets = function (days, costs) {
+  const lastDay = days[days.length - 1];
+  const dp = new Array(lastDay + 1).fill(0);
+  const set = new Set(days);
+
+  for (let i = 1; i <= lastDay; i++) {
+    if (!set.has(i)) {
+      dp[i] = dp[i - 1];
+      continue;
+    }
+    dp[i] = Math.min(
+      dp[Math.max(i - 1, 0)] + costs[0],
+      dp[Math.max(i - 7, 0)] + costs[1],
+      dp[Math.max(i - 30, 0)] + costs[2]
+    );
+  }
+
+  return dp[lastDay];
+};
+
+/**
+ * @param {string} start
+ * @param {string} target
+ * @return {boolean}
+ */
+var canChange = function (start, target) {
+  const n = target.length;
+
+  let i = 0,
+    j = 0;
+
+  while (i <= n && j <= n) {
+    while (i < n && start[i] === "_") i++;
+    while (j < n && target[j] === "_") j++;
+
+    if (i === n || j === n) {
+      return i === j;
+    }
+
+    if (start[i] !== target[j]) return false;
+
+    if (start[i] === "L") {
+      if (i < j) return false;
+    } else {
+      if (i > j) return false;
+    }
+
+    i++;
+    j++;
+  }
+  return true;
+};
