@@ -3,7 +3,42 @@
 
 ## MEDIUM
 
----
+### [3223. Minimum Length of String After Operations](https://leetcode.com/problems/minimum-length-of-string-after-operations/description/?envType=daily-question&envId=2025-01-13)
+
+```
+1.  3개 이상이면 계속 2개를 뺄 수 있음
+1 1
+2 2
+3 1
+4 2
+5 1
+6 2
+...
+```
+
+```javascript
+/**
+ * @param {string} s
+ * @return {number}
+ */
+var minimumLength = function (s) {
+  const arr = new Array(26).fill(0);
+  const aCode = "a".charCodeAt();
+
+  for (let i = 0; i < s.length; i++) {
+    const code = s[i].charCodeAt() - aCode;
+    arr[code] += 1;
+  }
+
+  let ans = 0;
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === 0) continue;
+    if (arr[i] % 2 === 0) ans += 2;
+    else ans += 1;
+  }
+  return ans;
+};
+```
 
 ### [2337. Move Pieces to Obtain a String](https://leetcode.com/problems/move-pieces-to-obtain-a-string/description/)
 
