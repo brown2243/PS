@@ -1,21 +1,30 @@
 /**
- * @param {string} s
- * @return {number}
+ * @param {number[]} A
+ * @param {number[]} B
+ * @return {number[]}
  */
-var minimumLength = function (s) {
-  const arr = new Array(26).fill(0);
-  const aCode = "a".charCodeAt();
+var findThePrefixCommonArray = function (A, B) {
+  const n = A.length;
+  const ans = new Array(n).fill(0);
+  const setA = new Set();
+  const setB = new Set();
+  let cnt = 0;
 
-  for (let i = 0; i < s.length; i++) {
-    const code = s[i].charCodeAt() - aCode;
-    arr[code] += 1;
+  for (let i = 0; i < A.length; i++) {
+    setA.add(A[i]);
+    setB.add(B[i]);
+
+    if (setB.has(A[i])) cnt++;
+    if (setA.has(B[i])) cnt++;
+
+    if (A[i] === B[i]) cnt--;
+
+    ans.push(cnt);
   }
 
-  let ans = 0;
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] === 0) continue;
-    if (arr[i] % 2 === 0) ans += 2;
-    else ans += 1;
-  }
   return ans;
 };
+
+A = [1, 3, 2, 4];
+B = [3, 1, 2, 4];
+findThePrefixCommonArray(A, B);

@@ -3,7 +3,49 @@
 
 ## MEDIUM
 
+### [2657. Find the Prefix Common Array of Two Arrays](https://leetcode.com/problems/find-the-prefix-common-array-of-two-arrays/description/?envType=daily-question&envId=2025-01-14)
+
+#### 해결 방법
+
+```
+순회하며 현재 값이 포함 되었는지, set으로 계속 체크
+set을 사용하는 이유는 해시테이블 기반이라 has(O(1))가 includes(O(N))보다 빠름
+```
+
+#### 구현 코드
+
+```javascript
+/**
+ * @param {number[]} A
+ * @param {number[]} B
+ * @return {number[]}
+ */
+var findThePrefixCommonArray = function (A, B) {
+  const n = A.length;
+  const ans = new Array(n).fill(0);
+
+  const setA = new Set();
+  const setB = new Set();
+  let cnt = 0;
+
+  for (let i = 0; i < A.length; i++) {
+    setA.add(A[i]);
+    setB.add(B[i]);
+
+    if (setB.has(A[i])) cnt++;
+    if (setA.has(B[i])) cnt++;
+
+    if (A[i] === B[i]) cnt--;
+
+    ans[i] = cnt;
+  }
+  return ans;
+};
+```
+
 ### [3223. Minimum Length of String After Operations](https://leetcode.com/problems/minimum-length-of-string-after-operations/description/?envType=daily-question&envId=2025-01-13)
+
+#### 해결 방법
 
 ```
 1.  3개 이상이면 계속 2개를 뺄 수 있음
@@ -15,6 +57,8 @@
 6 2
 ...
 ```
+
+#### 구현 코드
 
 ```javascript
 /**
