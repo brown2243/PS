@@ -8,8 +8,11 @@
 #### 해결 방법
 
 ```
-순회하며 현재 값이 포함 되었는지, set으로 계속 체크
-set을 사용하는 이유는 해시테이블 기반이라 has(O(1))가 includes(O(N))보다 빠름
+1. num2의 이진수의 1 의 갯수 세기
+2. XOR 연산  1 1, 0 0 -> 0,
+3. 1갯수만 큼 1을 추가
+  1. xor 고려 추가
+  2. 가장 작은 수가 되도록 뒤에서 부터 추가
 ```
 
 #### 구현 코드
@@ -57,10 +60,6 @@ var minimizeXor = function (num1, num2) {
   }
   return parseInt(ans.join(""), 2);
 };
-
-num1 = 65;
-num2 = 84;
-minimizeXor(num1, num2);
 ```
 
 ### [2657. Find the Prefix Common Array of Two Arrays](https://leetcode.com/problems/find-the-prefix-common-array-of-two-arrays/description/?envType=daily-question&envId=2025-01-14)

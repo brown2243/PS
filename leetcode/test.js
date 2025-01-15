@@ -1,4 +1,3 @@
-[2429. Minimize XOR](https://leetcode.com/problems/minimize-xor/submissions/1509456404/?envType=daily-question&envId=2025-01-15)
 /**
  * @param {number} num1
  * @param {number} num2
