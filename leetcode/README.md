@@ -3,6 +3,66 @@
 
 ## MEDIUM
 
+### [2429. Minimize XOR](https://leetcode.com/problems/minimize-xor/submissions/1509456404/?envType=daily-question&envId=2025-01-15)
+
+#### 해결 방법
+
+```
+순회하며 현재 값이 포함 되었는지, set으로 계속 체크
+set을 사용하는 이유는 해시테이블 기반이라 has(O(1))가 includes(O(N))보다 빠름
+```
+
+#### 구현 코드
+
+```javascript
+/**
+ * @param {number} num1
+ * @param {number} num2
+ * @return {number}
+ */
+var minimizeXor = function (num1, num2) {
+  const binery1 = num1.toString(2);
+  const binery2 = num2.toString(2);
+
+  let cnt = 0;
+  for (let i = 0; i < binery2.length; i++) {
+    if (binery2[i] === "1") cnt++;
+  }
+
+  const ans = [];
+  for (let i = 0; i < binery1.length; i++) {
+    if (cnt === 0) {
+      ans.push(..."0".repeat(binery1.length - i).split(""));
+      break;
+    }
+    if (binery1[i] === "1") {
+      ans.push("1");
+      cnt--;
+    } else {
+      ans.push("0");
+    }
+  }
+
+  for (let i = ans.length - 1; i >= 0; i--) {
+    if (cnt === 0) {
+      break;
+    }
+    if (ans[i] === "0") {
+      ans[i] = "1";
+      cnt--;
+    }
+  }
+  if (cnt > 0) {
+    ans.push(..."1".repeat(cnt).split(""));
+  }
+  return parseInt(ans.join(""), 2);
+};
+
+num1 = 65;
+num2 = 84;
+minimizeXor(num1, num2);
+```
+
 ### [2657. Find the Prefix Common Array of Two Arrays](https://leetcode.com/problems/find-the-prefix-common-array-of-two-arrays/description/?envType=daily-question&envId=2025-01-14)
 
 #### 해결 방법

@@ -1,30 +1,47 @@
+[2429. Minimize XOR](https://leetcode.com/problems/minimize-xor/submissions/1509456404/?envType=daily-question&envId=2025-01-15)
 /**
- * @param {number[]} A
- * @param {number[]} B
- * @return {number[]}
+ * @param {number} num1
+ * @param {number} num2
+ * @return {number}
  */
-var findThePrefixCommonArray = function (A, B) {
-  const n = A.length;
-  const ans = new Array(n).fill(0);
-  const setA = new Set();
-  const setB = new Set();
+var minimizeXor = function (num1, num2) {
+  const binery1 = num1.toString(2);
+  const binery2 = num2.toString(2);
+
   let cnt = 0;
-
-  for (let i = 0; i < A.length; i++) {
-    setA.add(A[i]);
-    setB.add(B[i]);
-
-    if (setB.has(A[i])) cnt++;
-    if (setA.has(B[i])) cnt++;
-
-    if (A[i] === B[i]) cnt--;
-
-    ans.push(cnt);
+  for (let i = 0; i < binery2.length; i++) {
+    if (binery2[i] === "1") cnt++;
   }
 
-  return ans;
+  const ans = [];
+  for (let i = 0; i < binery1.length; i++) {
+    if (cnt === 0) {
+      ans.push(..."0".repeat(binery1.length - i).split(""));
+      break;
+    }
+    if (binery1[i] === "1") {
+      ans.push("1");
+      cnt--;
+    } else {
+      ans.push("0");
+    }
+  }
+
+  for (let i = ans.length - 1; i >= 0; i--) {
+    if (cnt === 0) {
+      break;
+    }
+    if (ans[i] === "0") {
+      ans[i] = "1";
+      cnt--;
+    }
+  }
+  if (cnt > 0) {
+    ans.push(..."1".repeat(cnt).split(""));
+  }
+  return parseInt(ans.join(""), 2);
 };
 
-A = [1, 3, 2, 4];
-B = [3, 1, 2, 4];
-findThePrefixCommonArray(A, B);
+num1 = 65;
+num2 = 84;
+minimizeXor(num1, num2);
