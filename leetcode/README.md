@@ -3,6 +3,95 @@
 
 ## MEDIUM
 
+<!-- ### []()
+
+
+```
+```
+
+
+```javascript
+
+``` -->
+
+### [2425. Bitwise XOR of All Pairings](https://leetcode.com/problems/bitwise-xor-of-all-pairings/description/)
+
+```
+XOR의 성질
+교환 법칙: a ^ b = b ^ a
+결합 법칙: (a ^ b) ^ c = a ^ (b ^ c)
+자기 자신과의 XOR: a ^ a = 0
+0과의 XOR: a ^ 0 = a
+
+1. 두 배열의 모든 순열 XOR 값의 XOR 연산
+
+
+Input: nums1 = [1,2], nums2 = [3,4]
+num3[0] = nums1[0] ^ nums2[0]
+num3[1] = nums1[0] ^ nums2[1]
+num3[2] = nums1[1] ^ nums2[0]
+num3[3] = nums1[1] ^ nums2[1]
+
+ans = num3[0] ^ num3[1] ^ num3[2] ^ num3[3]
+
+nums1_XOR은 nums2.length번 포함
+nums2_XOR은 nums1.length번 포함
+
+- nums3 를 만들어서 계산하려니 memory 에러 발생
+- 하나의 변수에 ^ 연산을 해주니 시간초과
+
+```
+
+```javascript
+/**
+ * @param {number[]} nums1
+ * @param {number[]} nums2
+ * @return {number}
+ */
+var xorAllNums = function (nums1, nums2) {
+  return (
+    (nums2.length % 2 === 0 ? 0 : nums1.reduce((acc, cur) => acc ^ cur)) ^
+    (nums1.length % 2 === 0 ? 0 : nums2.reduce((acc, cur) => acc ^ cur))
+  );
+};
+```
+
+### [2683. Neighboring Bitwise XOR](https://leetcode.com/problems/neighboring-bitwise-xor/?envType=daily-question&envId=2025-01-17)
+
+```
+1. original로 파생된 derived 배열을 받아
+2. derived[i] = original[i] ⊕ original[i + 1] 로 original 유추
+3. 적절한 original이 있는지 return
+
+- 이진 배열이니 엘리먼트는 0 or 1
+- 0으로 만들어서 검증
+- 1로 만들어서 검증
+```
+
+```javascript
+/**
+ * @param {number[]} derived
+ * @return {boolean}
+ */
+var doesValidArrayExist = function (derived) {
+  const n = derived.length;
+
+  const original1 = [0];
+  for (let i = 0; i < n; i++) {
+    original1.push(original1[i] ^ derived[i]);
+  }
+  if (original1[0] === original1[n]) return true;
+
+  const original2 = [1];
+  for (let i = 0; i < n; i++) {
+    original2.push(original2[i] ^ derived[i]);
+  }
+  if (original2[0] === original2[n]) return true;
+
+  return false;
+};
+```
+
 ### [2429. Minimize XOR](https://leetcode.com/problems/minimize-xor/submissions/1509456404/?envType=daily-question&envId=2025-01-15)
 
 #### 해결 방법
