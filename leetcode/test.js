@@ -1,33 +1,15 @@
 /**
  * @param {number[]} nums
- * @return {number}
+ * @return {boolean}
  */
-var longestMonotonicSubarray = function (nums) {
-  let globalAsc = 1;
-  let globalDesc = 1;
-  let localAsc = 1;
-  let localDesc = 1;
+var check = function (nums) {
+  const n = nums.length;
+  let cnt = 0;
 
-  for (let i = 1; i < nums.length; i++) {
-    const prev = nums[i - 1];
-    const now = nums[i];
-
-    if (prev < now) {
-      localAsc += 1;
-    } else {
-      localAsc = 1;
-    }
-    if (prev > now) {
-      localDesc += 1;
-    } else {
-      localDesc = 1;
-    }
-    if (globalAsc < localAsc) {
-      globalAsc = localAsc;
-    }
-    if (globalDesc < localDesc) {
-      globalDesc = localDesc;
-    }
+  for (let i = 1; i < n; i++) {
+    if (nums[i - 1] > nums[i]) cnt++;
   }
-  return Math.max(globalAsc, globalDesc);
+  if (nums[n - 1] > nums[0]) cnt++;
+
+  return cnt <= 1;
 };

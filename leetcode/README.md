@@ -333,6 +333,63 @@ var canChange = function (start, target) {
 
 ``` -->
 
+### [1752. Check if Array Is Sorted and Rotated](https://leetcode.com/problems/check-if-array-is-sorted-and-rotated/submissions/1530994858/?envType=daily-question&envId=2025-02-02)
+
+```
+쉬운 문제라고 생각했는데, 생각보다 삽질했다.
+```
+
+```javascript
+// 내 삽질코드...
+/**
+ * @param {number[]} nums
+ * @return {boolean}
+ */
+var check = function (nums) {
+  let min = Number.MAX_SAFE_INTEGER;
+  let max = Number.MIN_SAFE_INTEGER;
+  const n = nums.length;
+  let rotated = false;
+  const start = nums[0];
+  for (let i = 0; i < n; i++) {
+    min = Math.min(min, nums[i]);
+    max = Math.max(max, nums[i]);
+  }
+
+  for (let i = 1; i < n; i++) {
+    if (nums[i - 1] > nums[i]) {
+      if (nums[i - 1] === max && nums[i] === min) {
+        rotated = true;
+        continue;
+      } else {
+        return false;
+      }
+    }
+    if (rotated && nums[i] > start) {
+      return false;
+    }
+  }
+  return true;
+};
+// 남들 코드
+/**
+ * @param {number[]} nums
+ * @return {boolean}
+ */
+var check = function (nums) {
+  const n = nums.length;
+  let cnt = 0;
+
+  for (let i = 1; i < n; i++) {
+    if (nums[i - 1] > nums[i]) cnt++;
+  }
+
+  if (nums[n - 1] > nums[0]) cnt++;
+
+  return cnt <= 1;
+};
+```
+
 ### [3105. Longest Strictly Increasing or Strictly Decreasing Subarray](https://leetcode.com/problems/longest-strictly-increasing-or-strictly-decreasing-subarray/description/?envType=daily-question&envId=2025-02-03)
 
 ```
