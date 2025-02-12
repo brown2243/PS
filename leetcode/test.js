@@ -1,15 +1,24 @@
 /**
  * @param {number[]} nums
- * @return {boolean}
+ * @return {number}
  */
-var check = function (nums) {
-  const n = nums.length;
-  let cnt = 0;
+var maximumSum = function (nums) {
+  const max = new Array(82).fill(0);
+  let ans = -1;
 
-  for (let i = 1; i < n; i++) {
-    if (nums[i - 1] > nums[i]) cnt++;
+  for (let i = 0; i < nums.length; i++) {
+    const num = nums[i];
+
+    let key = 0,
+      temp = x;
+
+    while (temp !== 0) {
+      key += temp % 10;
+      temp = Math.floor(temp / 10);
+    }
+
+    if (max[key] !== 0) ans = Math.max(ans, num + max[key]);
+    max[key] = Math.max(max[key], num);
   }
-  if (nums[n - 1] > nums[0]) cnt++;
-
-  return cnt <= 1;
+  return ans;
 };

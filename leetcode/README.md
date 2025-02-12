@@ -11,6 +11,73 @@
 
 ``` -->
 
+### [2342. Max Sum of a Pair With Equal Sum of Digits](https://leetcode.com/problems/max-sum-of-a-pair-with-equal-sum-of-digits/description/?envType=daily-question&envId=2025-02-12)
+
+```
+단순한 구현 문제이다. 더 잘 풀고 싶었는데 아이디어가 잘 안떠올랐다.
+
+```
+
+```javascript
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var maximumSum = function (nums) {
+  const obj = {};
+
+  for (let i = 0; i < nums.length; i++) {
+    const num = nums[i];
+    const key = num
+      .toString()
+      .split("")
+      .reduce((acc, cur) => acc + Number(cur), 0);
+
+    if (obj[key]) {
+      obj[key].push(num);
+    } else {
+      obj[key] = [num];
+    }
+  }
+
+  let ans = -1;
+  const keys = Object.keys(obj);
+  for (let i = 0; i < keys.length; i++) {
+    const target = obj[keys[i]];
+    target.sort((a, b) => b - a);
+    if (target.length > 1) {
+      ans = Math.max(ans, target[0] + target[1]);
+    }
+  }
+  return ans;
+};
+//
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var maximumSum = function (nums) {
+  const max = new Array(82).fill(0);
+  let ans = -1;
+
+  for (let i = 0; i < nums.length; i++) {
+    const num = nums[i];
+
+    let key = 0,
+      temp = num;
+
+    while (temp !== 0) {
+      key += temp % 10;
+      temp = Math.floor(temp / 10);
+    }
+
+    if (max[key] !== 0) ans = Math.max(ans, num + max[key]);
+    max[key] = Math.max(max[key], num);
+  }
+  return ans;
+};
+```
+
 ### [2661. First Completely Painted Row or Column](https://leetcode.com/problems/first-completely-painted-row-or-column/description/?envType=daily-question&envId=2025-01-20)
 
 ```
