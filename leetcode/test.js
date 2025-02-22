@@ -1,24 +1,40 @@
 /**
- * @param {number[]} nums
- * @return {number}
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
  */
-var maximumSum = function (nums) {
-  const max = new Array(82).fill(0);
-  let ans = -1;
+/**
+ * @param {TreeNode} root
+ */
+var FindElements = function (root) {
+  this.obj = {};
+  root.val = 0;
 
-  for (let i = 0; i < nums.length; i++) {
-    const num = nums[i];
-
-    let key = 0,
-      temp = x;
-
-    while (temp !== 0) {
-      key += temp % 10;
-      temp = Math.floor(temp / 10);
+  const dfs = (node, x) => {
+    this.obj[x] = true;
+    if (node.left) {
+      dfs(node.left, 2 * x + 1);
     }
-
-    if (max[key] !== 0) ans = Math.max(ans, num + max[key]);
-    max[key] = Math.max(max[key], num);
-  }
-  return ans;
+    if (node.right) {
+      dfs(node.right, 2 * x + 2);
+    }
+  };
+  dfs(root, 0);
 };
+
+/**
+ * @param {number} target
+ * @return {boolean}
+ */
+FindElements.prototype.find = function (target) {
+  return this.obj[target] || false;
+};
+
+/**
+ * Your FindElements object will be instantiated and called as such:
+ * var obj = new FindElements(root)
+ * var param_1 = obj.find(target)
+ */

@@ -11,6 +11,60 @@
 
 ``` -->
 
+### [1261. Find Elements in a Contaminated Binary Tree](https://leetcode.com/problems/find-elements-in-a-contaminated-binary-tree/?envType=daily-question&envId=2025-02-21)
+
+```
+간만에 풀어본 노드 관련문제
+
+처음에 node가 가진 value를 변경하는 로직을 사용했는데, 변경이 안되더라
+그래서 함수의 인자로 넘겨주도록 변경했다.
+
+소요시간이 더 짧은 답변도 로직은 동일한데, set과 obj의 차이이다.
+```
+
+```javascript
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ */
+var FindElements = function (root) {
+  this.obj = {};
+  root.val = 0;
+
+  const dfs = (node, x) => {
+    this.obj[x] = true;
+    if (node.left) {
+      dfs(node.left, 2 * x + 1);
+    }
+    if (node.right) {
+      dfs(node.right, 2 * x + 2);
+    }
+  };
+  dfs(root, 0);
+};
+
+/**
+ * @param {number} target
+ * @return {boolean}
+ */
+FindElements.prototype.find = function (target) {
+  return this.obj[target] || false;
+};
+
+/**
+ * Your FindElements object will be instantiated and called as such:
+ * var obj = new FindElements(root)
+ * var param_1 = obj.find(target)
+ */
+```
+
 ### [2342. Max Sum of a Pair With Equal Sum of Digits](https://leetcode.com/problems/max-sum-of-a-pair-with-equal-sum-of-digits/description/?envType=daily-question&envId=2025-02-12)
 
 ```
