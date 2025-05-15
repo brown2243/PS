@@ -1,5 +1,31 @@
 # 구름
 
+## 유형 트레이닝
+
+### 구현
+
+```javascript
+
+```
+
+### 자료 구조
+
+```javascript
+
+```
+
+### DP
+
+```javascript
+
+```
+
+### 탐색
+
+```javascript
+
+```
+
 ## 기초 트레이닝
 
 ```javascript
