@@ -421,8 +421,197 @@ for await (const line of rl) {
 }
 
 // 보드 게임
+// 처음에 재귀적으로 풀려고 했는데, 문제 요구사항을 보면 콜스텍이 터짐(콜스텍 사이즈 10000 ~ 12000)
+const recursive = (point) => {
+  if(n < point) return
+  cells[point] = (cells[point] + 1) % MOD
+  recursive(point + 1)
+  recursive(point + 3)
+}
+recursive(0)
+// 정답
+let n = 0
+for await (const line of rl) {
+  n = Number(line)
+  rl.close();
+}
+const MOD = 1_000_000_007
+const cells = new Array(n + 1).fill(0)
+cells[0] = 1
+
+for(let i = 0; i <= n; i++){
+  if(i + 1 <= n) cells[i + 1] = (cells[i + 1] + cells[i]) % MOD
+  if(i + 3 <= n) cells[i + 3] = (cells[i + 3] + cells[i]) % MOD
+}
+console.log(cells[n])
+
 // 뭉친 K
+// 재귀는 스택오버플로우 나서 큐 형식으로 변경
+let lineCount = 0
+let point = [0,0]
+const matrix = []
+for await (const line of rl) {
+  lineCount++
+  if(lineCount === 1)continue
+  if(lineCount === 2){
+    point = line.split(" ").map(Number)
+    continue
+  }
+  matrix.push(line.split(" ").map(Number))
+}
+rl.close();
+const target = matrix[point[0] - 1][point[1] - 1]
+const m = matrix.length
+const n = matrix[0].length
+const isVisited = Array.from({length: m}, () => new Array(n).fill(false))
+let ans = 0
+const check = (startY, startX) => {
+  let count = 0
+  const q = [[startY, startX]]
+  while (q.length > 0) {
+    const [y,x] = q.shift()
+    if(y < 0 || y >= m || x < 0 || x >= n) continue
+    if(isVisited[y][x] || matrix[y][x] !== target) continue
+    count++
+    isVisited[y][x] = true
+    q.push([y + 1, x])
+    q.push([y - 1, x])
+    q.push([y, x + 1])
+    q.push([y, x - 1])
+  }
+  ans = Math.max(ans, count)
+}
+
+for(let y = 0; y < m; y++){
+  for(let x = 0 ; x < n ; x++){
+    if(matrix[y][x] === target) check(y, x)
+  }
+}
+console.log(ans)
+
 // Stack
+// 위 queue 문제에서 빼내는 부분만 수정 - 왜 난이도가 다를까?
+let lineCount = 0
+let size = 0
+let orders = []
+for await (const line of rl) {
+  lineCount++
+  if(lineCount === 1){
+    size = Number(line.split(" ")[1])
+    continue
+  }
+  orders.push(line)
+}
+rl.close();
+const outputs = []
+const q = []
+for(let order of orders){
+  const [o, v] = order.split(" ")
+  if(o === "push"){
+    if(q.length < size){
+      q.push(v)
+    } else {
+      outputs.push("Overflow")
+    }
+  }
+  if(o === "pop"){
+    outputs.push(q.pop() || "Underflow")
+  }
+}
+console.log(outputs.join("\n"))
+
 // RGB 주차장
+// MOD 값이 다를 꺼라 생각 못해 헤맸다...
+let n = 0
+for await (const line of rl) {
+  n = Number(line)
+}
+rl.close();
+const MOD = 100_000_007;
+let ans = 3
+for(let i = 1; i < n ; i++){
+  ans = (ans * 2) % MOD;
+}
+console.log(ans)
+
 // 규칙 숫자 야구
+// 8, 18 테스트 케이스 통과 안되어 질답 보고 알았다.
+// 첫 번째 자리와 두 번째 자리도 같이 옮겨져야 합니다. 그래서 칸을 옮긴 뒤에는 2498 → 8249가 되어야 한다는데 그러면 strike인 부분도 움직이는거 아닌가 싶긴하지만...
+// 결국 8번 통과 못하고 패스
+const readline = require('readline');
+
+(async () => {
+let rl = readline.createInterface({ input: process.stdin });
+let lineCount = 0
+let answer = []
+let input = []
+for await (const line of rl) {
+  lineCount++
+  if(lineCount === 1){
+    answer = line.split("").map(Number)
+  }
+  if(lineCount === 2){
+    input = line.split("").map(Number)
+  }
+}
+rl.close();
+const state = []
+let count = 0
+const valid = () => {
+  for(let i = 0 ; i < 4; i++){
+    if(answer[i] === input[i]) state[i] = 2
+    else if(answer.includes(input[i])) state[i] = 1
+    else state[i] = 0
+  }
+}
+while (true) {
+  count++
+  // 1
+  valid()
+  if(state.every((v) => v === 2)) break;
+  // 2
+  for(let i = 0; i < 4; i++){
+    if(state[i] === 0) {
+      const others = [...input.slice(0,i), ...input.slice(i + 1)]
+      let next = (input[i] + 1) % 10
+      while (others.includes(next)) {
+        next = (next + 1) % 10
+      }
+      input[i] = next
+    }
+  }
+
+  valid()
+  // 3
+  for(let i = 0; i < 4; i++){
+    // 회전은 회차별 한번만 수행
+    if(state[i] === 1){
+      let last = input[i]
+      let tmp = -1
+      // 여기서 인덱스 %로 넘기면 18번까진 통과
+      for(let j = i + 1; j < 4; j++){
+        if(state[j] === 2) continue
+        tmp = last
+        last = input[j]
+        input[j] = tmp
+      }
+      if(tmp !== -1){
+        input[i] = last
+      } else {
+        for(let j = 0; j < i; j++){
+          if(state[j] === 2) continue
+          let tmp = input[i]
+          input[i] = input[j]
+          input[j] = tmp
+          break
+        }
+      }
+      break
+    }
+  }
+}
+console.log(count)
+})();
+
+
 ```
