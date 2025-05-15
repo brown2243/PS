@@ -5,6 +5,220 @@
 ### 구현
 
 ```javascript
+// 인공지능 청소기
+// 타임 아웃 떠서 보니, 맨해튼 거리로 푸는 문제라함
+// distance = |x| + |y|
+// 오답
+let lineCount = 0
+rl.on("line", function(line) {
+lineCount++
+if(lineCount === 1) return
+const [X,Y,time] = line.split(" ").map(Number)
+let flag = false
+const q = [[0,0,0]]
+while (q.length > 0){
+  const [x, y, depth] = q.shift()
+  if(time === depth){
+    if(x === X && y === Y) {
+      flag = true
+      break
+    }
+    continue
+  }
+  q.push([x + 1, y, depth + 1])
+  q.push([x - 1, y, depth + 1])
+  q.push([x , y + 1, depth + 1])
+  q.push([x , y - 1, depth + 1])
+}
+console.log(flag ? "YES" : "NO")
+// 정답
+let lineCount = 0
+rl.on("line", function(line) {
+	lineCount++
+	if(lineCount === 1) return
+	const [X,Y,time] = line.split(" ").map(Number)
+  const distance = Math.abs(X) + Math.abs(Y)
+  const isPossible = time >= distance && ((time - distance) % 2 === 0)
+	console.log(isPossible ? "YES" : "NO")
+})
+
+// 소금물의 농도 구하기
+const [N, M] = line.split(" ").map(Number)
+const salt = N * 7 / 100
+console.log((salt / (N + M) * 100).toFixed(3).slice(0, -1))
+
+
+// [KOI 2017] 딱지놀이
+// 마지막 공백까지 ㅋㅋ;;
+let rl = readline.createInterface({ input: process.stdin });
+let lineCount = 0
+let A = []
+let B = []
+for await (const line of rl) {
+  lineCount++
+  if(lineCount === 1) continue;
+  const card = line.split(" ").map(Number).slice(1).sort((a,b) => b - a)
+  if(lineCount % 2 === 0) A.push(card)
+  else B.push(card)
+}
+
+for(let i = 0 ; i < A.length; i++){
+  const a = A[i]
+  const b = B[i]
+  const max = Math.max(a.length , b.length);
+  let isDraw = true
+  for(let j = 0 ; j < max; j++){
+    const aValue = a[j] || 0
+    const bValue = b[j] || 0
+    if(aValue === bValue) continue
+
+    if(aValue > bValue) {
+      console.log("A")
+    } else {
+      console.log("B")
+    }
+    isDraw = false
+    break;
+
+  }
+  if(isDraw) console.log("D")
+}
+console.log("")
+
+// 장마
+let lineCount = 0
+let rains = []
+let houses = []
+for await (const line of rl) {
+  lineCount++
+  if(lineCount === 1) continue
+  const input = line.split(" ").map(Number)
+  if(lineCount === 2) {
+    houses = input
+  } else {
+    rains.push(input)
+  }
+}
+// 물 빼는게 집보다 낮아질 수 없음
+const n = houses.length
+const twodays = new Array(n).fill(0)
+
+for(let day = 1; day <= rains.length; day++){
+  for(let i = 0; i < n; i++) {
+    twodays[i] = twodays[i] - 1 > 0 ? twodays[i] - 1 : 0
+  }
+  const [start, end] = rains[day - 1]
+  for(let i = start - 1;  i < end; i++){
+    houses[i] += 1
+    twodays[i] = 3
+  }
+  if(day % 3 === 0){
+      for(let i = 0 ; i < n; i++){
+        if(twodays[i] > 0) houses[i] -= 1
+      }
+  }
+}
+console.log(houses.join(" "))
+
+// 계수기 만들기
+// https://velog.io/@chocopi21221/%EA%B5%AC%EB%A6%84-LEVEL-%EA%B3%84%EC%88%98%EA%B8%B0-%EB%A7%8C%EB%93%A4%EA%B8%B0-Python
+// 참고했다 모듈러 연산으로 하는 방식 생각했는데 값이 안맞네...
+const readline = require("readline");
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+
+let lineCount = 0;
+let maxValues = [];
+let initialValues = [];
+
+rl.on("line", function (line) {
+  lineCount++;
+  if (lineCount === 1) {
+    return;
+  }
+  const inputs = line.split(" ").map(Number);
+  if (lineCount === 2) {
+    maxValues = inputs;
+    return;
+  }
+  if (lineCount === 3) {
+    initialValues = inputs;
+    return;
+  }
+
+  const n = maxValues.length;
+  let k = inputs[0];
+
+  initialValues.reverse();
+  maxValues.reverse();
+
+  const result = [];
+  for (let i = 0; i < n; i++) {
+    k += initialValues[i];
+    result.push(k % (maxValues[i] + 1));
+    k = Math.floor(k / (maxValues[i] + 1));
+  }
+  result.reverse();
+  console.log(result.join(""));
+  rl.close();
+}).on("close", function () {
+  process.exit();
+});
+
+// 어려운 문제
+// digitalRoot는 처음 알았음
+const n = Number(line);
+const dp = new Array(n + 1).fill(1n);
+for (let i = 2; i < n + 1; i++) {
+  dp[i] = (BigInt(i) * dp[i - 1])
+}
+if(dp[n] > 9){
+  const digitalRoot = 1n + (dp[n] - 1n) % 9n
+  console.log(digitalRoot.toString())
+} else {
+  console.log(dp[n].toString());
+}
+
+
+// 단풍나무
+// 1트 이게 위 문제들보다 쉬운 듯...
+let lineCount = 0
+const matrix = []
+for await (const line of rl) {
+  lineCount++
+  if(lineCount === 1) continue
+  matrix.push(line.split(" ").map(Number))
+}
+const n = matrix.length
+let days = 0
+while (true) {
+  const arr = []
+  for(let i = 0; i < n;i++){
+    for(let j = 0; j < n; j++){
+      if(matrix[i][j] > 0){
+        let cnt = 0
+        if(matrix[i - 1]?.[j] === 0) cnt++
+        if(matrix[i + 1]?.[j] === 0) cnt++
+        if(matrix[i]?.[j - 1] === 0) cnt++
+        if(matrix[i]?.[j + 1] === 0) cnt++
+        if(cnt > 0) arr.push([i,j, cnt])
+      }
+    }
+  }
+  for(let k = 0; k < arr.length; k++){
+    const [i, j ,cnt] = arr[k]
+    matrix[i][j] = Math.max(matrix[i][j] - cnt , 0)
+  }
+  if(arr.length === 0) break
+  days++
+}
+console.log(days)
+
+
+
+
 
 ```
 
