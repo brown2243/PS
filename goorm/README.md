@@ -215,17 +215,232 @@ while (true) {
   days++
 }
 console.log(days)
-
-
-
-
-
 ```
 
 ### 자료 구조
 
 ```javascript
+// 0커플
+lineCount++
+if(lineCount === 1) continue
 
+const obj = line.split(" ").map(Number).reduce((acc,cur) => {
+  const key = Math.abs(cur)
+  if(acc[key]) acc[key] += cur
+  else acc[key] = cur
+  return acc
+} , {})
+
+const ans = Object.values(obj).reduce((acc,cur) => acc + cur)
+console.log(ans);
+
+// 블록 게임
+let lineCount = 0
+let n = 0
+let types = ""
+let scores = []
+for await (const line of rl) {
+  lineCount++
+  if(lineCount === 1) n = Number(line)
+  if(lineCount === 2) types = line
+  if(lineCount === 3) {
+    scores = line.split(" ").map(Number)
+    rl.close()
+  }
+}
+const stack = [[0,0,1]]
+const pointMap = new Map()
+pointMap.set(`0,0`, true)
+
+for(let i = 0; i < n; i++){
+  const lastPoint = stack[stack.length - 1].slice(0, 2)
+  const type = types[i]
+
+  if(type === "L") lastPoint[0] -= 1
+  if(type === "R") lastPoint[0] += 1
+  if(type === "U") lastPoint[1] += 1
+  if(type === "D") lastPoint[1] -= 1
+  const nextKey = lastPoint.join(",")
+
+
+  while (pointMap.has(nextKey) && stack.length > 0 ) {
+    const last = stack.pop()
+    const lastKey = last.slice(0,2).join(",")
+    pointMap.delete(lastKey)
+  }
+
+  lastPoint.push(scores[i])
+  stack.push(lastPoint)
+  pointMap.set(nextKey,true)
+}
+const total = stack.reduce((acc,cur) =>  acc + cur[2], 0)
+console.log(total)
+
+// ADAS 시스템
+// 우선순위 큐 문제로 패스
+// https://level.goorm.io/exam/152116/%ED%98%84%EB%8C%80%EB%AA%A8%EB%B9%84%EC%8A%A4-%EC%98%88%EC%84%A0-adas-%EC%8B%9C%EC%8A%A4%ED%85%9C/quiz/1
+
+
+// 불이야!!
+// 구현한 코드 하나의 테케에서 타임아웃이 났다, set으로 처리한건데도 안되나...
+const readline = require('readline');
+(async () => {
+	let rl = readline.createInterface({ input: process.stdin });
+	let lineCount = 0
+	let C = 0
+	const matrix = []
+	for await (const line of rl) {
+		lineCount++
+		if(lineCount === 1){
+			C = line.split(" ").map(Number)[1]
+			continue
+		}
+		matrix.push(line.split(""))
+		if(lineCount - 1 === C) rl.close();
+	}
+	const N = matrix.length
+	let time = 0
+	let flag = true
+	outer: while (true) {
+		const nextFirePoints = new Set()
+		// 불 찾기
+		for(let i = 0; i < N; i++){
+			for(let j =  0 ; j < N; j++){
+				if(matrix[i][j] === "@"){
+					if(matrix[i + 1]?.[j] === "&") break outer;
+					if(matrix[i - 1]?.[j] === "&") break outer;
+					if(matrix[i]?.[j + 1] === "&") break outer;
+					if(matrix[i]?.[j - 1] === "&") break outer;
+
+					if(matrix[i + 1]?.[j] === ".") nextFirePoints.add(`${i + 1},${j}`);
+					if(matrix[i - 1]?.[j] === ".") nextFirePoints.add(`${i - 1},${j}`);
+					if(matrix[i]?.[j + 1] === ".") nextFirePoints.add(`${i},${j + 1}`);
+					if(matrix[i]?.[j - 1] === ".") nextFirePoints.add(`${i},${j - 1}`);
+				}
+			}
+		}
+		// 더이상 번질 곳 없음
+		if(nextFirePoints.size === 0){
+			flag = false
+			break
+		}
+		for(let point of nextFirePoints){
+			const [i,j] = point.split(",")
+			matrix[i][j] = "@"
+		}
+		time++
+	}
+	console.log(flag ? time : - 1)
+})();
+// bfs 형식으로 변경해도 10에서 타임아웃 발생
+const readline = require('readline');
+(async () => {
+	let rl = readline.createInterface({ input: process.stdin });
+	let lineCount = 0
+	let C = 0
+	const matrix = []
+	for await (const line of rl) {
+		lineCount++
+		if(lineCount === 1){
+			C = line.split(" ").map(Number)[1]
+			continue
+		}
+		matrix.push(line.split(""))
+		if(lineCount - 1 === C) rl.close();
+	}
+	const N = matrix.length
+	let time = 0
+	let flag = true
+	const nextFirePoints = []
+	for(let i = 0; i < N; i++){
+			for(let j =  0 ; j < N; j++){
+				if(matrix[i][j] === "@") nextFirePoints.push([i, j, 0])
+			}
+	}
+
+	const dy = [1,0,-1,0]
+	const dx = [0,1,0,-1]
+
+	outer: while (nextFirePoints.length > 0) {
+		const [y, x, time] = nextFirePoints.shift()
+
+		for(let k = 0; k < 4; k++){
+			const ny = y + dy[k]
+			const nx = x + dx[k]
+
+			if(0 > ny || ny >= N || 0 > nx || nx >= N) continue
+			if(matrix[ny][nx] === "&") {
+				flag = false
+				console.log(time)
+				break outer;
+			}
+			if(matrix[ny][nx] === "."){
+				matrix[ny][nx] = "@"
+				nextFirePoints.push([ny, nx, time + 1])
+			}
+		}
+	}
+
+	if(flag){
+		console.log(-1)
+	}
+})();
+
+// https://1119wj.tistory.com/17
+// 구름이가 불을 찾도록 해서 타임초과 통과했는데
+// 실험실이 정방향이라고 착각해서 헤맸다...
+const readline = require('readline');
+(async () => {
+	let rl = readline.createInterface({ input: process.stdin });
+	let lineCount = 0
+  let N, M;
+	const matrix = []
+	for await (const line of rl) {
+		lineCount++
+		if(lineCount === 1){
+      [N, M] = line.split(" ").map(Number);
+			continue
+		}
+		matrix.push(line.split(""))
+	}
+
+  let ans = -1
+	const q = []
+	const isVisited = Array.from({length:N} , () => new Array(M).fill(0))
+
+	for(let i = 0; i < N; i++){
+			for(let j =  0 ; j < M; j++){
+				if(matrix[i][j] === "&") {
+          q.push([i, j])
+					isVisited[i][j] = 1
+          break
+        }
+			}
+	}
+
+	const dy = [1,0,-1,0]
+	const dx = [0,1,0,-1]
+
+	outer: while (q.length > 0) {
+		const [y, x] = q.shift()
+
+		for(let k = 0; k < 4; k++){
+			const ny = y + dy[k]
+			const nx = x + dx[k]
+
+			if(0 > ny || ny >= N || 0 > nx || nx >= M) continue
+			if(matrix[ny][nx] === "@") {
+				ans = isVisited[y][x] - 1
+				break outer;
+			}
+			if(matrix[ny][nx] === "." && isVisited[ny][nx] === 0){
+				isVisited[ny][nx] = isVisited[y][x] + 1
+				q.push([ny, nx])
+			}
+		}
+	}
+		console.log(ans)
+})();
 ```
 
 ### DP
