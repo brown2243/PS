@@ -512,7 +512,86 @@ console.log(Math.min(...dp.slice(n - 3, n)));
 ### 탐색
 
 ```javascript
+// 개미 집합의 지름
+// 거의 2중 반복으로 풀고, 개선한 코드
+let N, D;
+let ants = [];
+let lineCount = 0;
+for await (const line of rl) {
+  lineCount++;
+  const input = line.split(" ").map(Number);
+  if (lineCount === 1) {
+    [N, D] = input;
+    continue;
+  }
+  ants = input;
+  ants.sort((a, b) => a - b);
 
+  let maxRange = 0;
+  let left = 0;
+  for (let right = 1; right < N; right++) {
+    while (ants[right] - ants[left] > D) {
+      left++;
+    }
+    maxRange = Math.max(maxRange, right - left + 1);
+  }
+  console.log(N - maxRange);
+  rl.close();
+}
+
+// 동전 퍼즐
+// 새로보는 유형의 문제인데, 봐도 이해가 안되서 패스
+// https://wnsdlfkrhqnffjwnj.tistory.com/133
+
+// 심리적 거리감
+// 구현을 80%는 하고 마무리는 못한...
+let N, M, K;
+let bridges = [];
+let lineCount = 0;
+for await (const line of rl) {
+  lineCount++;
+  const input = line.split(" ").map(Number);
+  if (lineCount === 1) {
+    [N, M, K] = input;
+    continue;
+  }
+  bridges.push(input);
+  if (lineCount === M + 1) rl.close();
+}
+
+const graph = Array.from({ length: N + 1 }, () => new Array());
+const visited = Array(N + 1).fill(false);
+const dist = Array(N + 1).fill(Infinity);
+const q = [[K, 0]];
+visited[K] = true;
+dist[K] = 0;
+bridges.forEach(([start, end]) => {
+  graph[start].push(end);
+});
+
+while (q.length > 0) {
+  const [node, d] = q.shift();
+  for (let next of graph[node]) {
+    if (visited[next]) continue;
+    visited[next] = true;
+    dist[next] = d + 1;
+    q.push([next, d + 1]);
+  }
+}
+
+let maxGap = -1;
+let idx = -1;
+
+for (let i = 1; i <= N; i++) {
+  if (i === K || dist[i] === Infinity) continue;
+
+  const gap = dist[i] + Math.abs(K - i);
+  if (gap > maxGap || (gap === maxGap && i > idx)) {
+    maxGap = gap;
+    idx = i;
+  }
+}
+console.log(idx);
 ```
 
 ## 기초 트레이닝
