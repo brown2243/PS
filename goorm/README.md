@@ -446,7 +446,67 @@ const readline = require('readline');
 ### DP
 
 ```javascript
+// 거리두기
+// https://kwang2134.tistory.com/1
+// 풀이 + 점화식 보고 구현...
+for await (const line of rl) {
+  const N = Number(line);
+  const MOD = 100_000_007;
+  // 0 - 0
+  // 1 - 1
+  // 2 - 2
+  // 3 - 3
+  // 4 - 1, 3
+  const dp = Array.from({ length: N }, () => new Array(5).fill(1));
+  for (let i = 1; i < N; i++) {
+    dp[i][0] =
+      (dp[i - 1][0] +
+        dp[i - 1][1] +
+        dp[i - 1][2] +
+        dp[i - 1][3] +
+        dp[i - 1][4]) %
+      MOD;
+    dp[i][1] = (dp[i - 1][0] + dp[i - 1][2] + dp[i - 1][3]) % MOD;
+    dp[i][2] =
+      (dp[i - 1][0] + dp[i - 1][1] + dp[i - 1][3] + dp[i - 1][4]) % MOD;
+    dp[i][3] = (dp[i - 1][0] + dp[i - 1][1] + dp[i - 1][2]) % MOD;
+    dp[i][4] = (dp[i - 1][0] + dp[i - 1][2]) % MOD;
+  }
+  console.log(dp[N - 1].reduce((acc, cur) => (acc + cur) % MOD, 0));
+  rl.close();
+}
 
+process.exit();
+
+// 경쟁 배타의 원리 제출 수 보고 패스
+
+// 징검다리 건너기
+// 의외로 한큐에 풀림
+let lineCount = 0;
+let stones = [];
+for await (const line of rl) {
+  lineCount++;
+  if (lineCount === 1) continue;
+  stones = line.split(" ").map(Number);
+  rl.close();
+}
+const n = stones.length;
+const dp = new Array(n).fill(0);
+if (n < 2) {
+  console.log(0);
+  process.exit();
+}
+dp[0] = stones[0];
+dp[1] = stones[1];
+dp[2] = stones[2];
+
+for (let i = 3; i < n; i++) {
+  dp[i] = stones[i] + Math.min(dp[i - 1], dp[i - 2], dp[i - 3]);
+}
+
+console.log(Math.min(...dp.slice(n - 3, n)));
+
+// 인덕션 제출 수 보고 패스
 ```
 
 ### 탐색
