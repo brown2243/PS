@@ -478,7 +478,107 @@ for await (const line of rl) {
 
 process.exit();
 
-// 경쟁 배타의 원리 제출 수 보고 패스
+// 경쟁 배타의 원리
+// 테케 4개 맞추고 https://codingbutterfly.tistory.com/39 대박...
+let N,
+  K,
+  lineCount = 0;
+const living = [];
+for await (const line of rl) {
+  lineCount++;
+  const row = line.split(" ").map(Number);
+  if (lineCount === 1) {
+    [N, K] = row;
+    continue;
+  }
+  living.push(row);
+  if (N + 1 === lineCount) rl.close();
+}
+
+let minX = Infinity,
+  minY = Infinity,
+  maxX = 0,
+  maxY = 0;
+for (let i = 0; i < N; i++) {
+  const [x1, y1, x2, y2] = living[i];
+  minX = Math.min(minX, x1);
+  minY = Math.min(minY, y1);
+  maxX = Math.max(maxX, x2);
+  maxY = Math.max(maxY, y2);
+}
+
+const matrix = Array.from({ length: maxY + 1 - minY }, () =>
+  new Array(maxX + 1 - minX).fill(0)
+);
+
+living.forEach(([x1, y1, x2, y2]) => {
+  for (let y = y1; y < y2; y++) {
+    for (let x = x1; x < x2; x++) {
+      matrix[y][x] += 1;
+    }
+  }
+});
+
+let cnt = 0;
+for (let y = 0; y < maxY - minY; y++) {
+  for (let x = 0; x < maxX - minX; x++) {
+    if (matrix[y][x] === K) cnt++;
+  }
+}
+
+console.log(cnt);
+
+// 정답
+// 2차원 누적합...
+let N,
+  K,
+  lineCount = 0;
+const matrix = Array.from({ length: 1001 }, () => new Array(1001).fill(0));
+let minX = Infinity,
+  minY = Infinity,
+  maxX = 0,
+  maxY = 0;
+
+for await (const line of rl) {
+  lineCount++;
+  const row = line.split(" ").map(Number);
+  if (lineCount === 1) {
+    [N, K] = row;
+    continue;
+  }
+
+  const [x1, y1, x2, y2] = row;
+  minX = Math.min(minX, x1);
+  minY = Math.min(minY, y1);
+  maxX = Math.max(maxX, x2);
+  maxY = Math.max(maxY, y2);
+  matrix[y1][x1] += 1;
+  matrix[y2][x2] += 1;
+  matrix[y1][x2] -= 1;
+  matrix[y2][x1] -= 1;
+  if (N + 1 === lineCount) rl.close();
+}
+
+for (let y = minY; y < maxY; y++) {
+  for (let x = minX; x < maxX; x++) {
+    matrix[y][x + 1] += matrix[y][x];
+  }
+}
+
+for (let x = minX; x < maxX; x++) {
+  for (let y = minY; y < maxY; y++) {
+    matrix[y + 1][x] += matrix[y][x];
+  }
+}
+
+let cnt = 0;
+for (let y = minY; y < maxY; y++) {
+  for (let x = minX; x < maxX; x++) {
+    if (matrix[y][x] === K) cnt++;
+  }
+}
+
+console.log(cnt);
 
 // 징검다리 건너기
 // 의외로 한큐에 풀림
@@ -542,6 +642,68 @@ for await (const line of rl) {
 // 동전 퍼즐
 // 새로보는 유형의 문제인데, 봐도 이해가 안되서 패스
 // https://wnsdlfkrhqnffjwnj.tistory.com/133
+
+// [현대모비스][예선] 주차시스템
+// 그래프문제가 lv에 비해 타문제보다 유독 쉬운거 같다.
+// DFS는 스택터짐 구름은 그냥 다 BFS
+let N,
+  M,
+  lineCount = 0;
+
+const park = [];
+for await (const line of rl) {
+  lineCount++;
+  const row = line.split(" ").map(Number);
+  if (lineCount === 1) {
+    [N, M] = row;
+    continue;
+  }
+  park.push(row);
+  if (lineCount === N + 1) rl.close();
+}
+
+const visited = Array.from({ length: N }, () => new Array(M).fill(false));
+let point = 0;
+const dy = [1, 0, -1, 0];
+const dx = [0, 1, 0, -1];
+const getPoint = (x) => (x === 2 ? -2 : 1);
+
+const bfs = (i, j) => {
+  let point = 0;
+  if (visited[i][j]) {
+    return point;
+  }
+  visited[i][j] = true;
+  point += getPoint(park[i][j]);
+  const q = [[i, j]];
+  while (q.length > 0) {
+    const [y, x] = q.shift();
+    for (let k = 0; k < 4; k++) {
+      const ny = y + dy[k];
+      const nx = x + dx[k];
+      if (
+        0 <= ny &&
+        ny < N &&
+        0 <= nx &&
+        nx < M &&
+        !visited[ny][nx] &&
+        park[ny][nx] !== 1
+      ) {
+        visited[ny][nx] = true;
+        point += getPoint(park[ny][nx]);
+        q.push([ny, nx]);
+      }
+    }
+  }
+  return point;
+};
+
+for (let i = 0; i < N; i++) {
+  for (let j = 0; j < M; j++) {
+    if (park[i][j] !== 1) point = Math.max(point, bfs(i, j));
+  }
+}
+console.log(point);
 
 // 심리적 거리감
 // 구현을 80%는 하고 마무리는 못한...
