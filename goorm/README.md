@@ -479,7 +479,7 @@ for await (const line of rl) {
 process.exit();
 
 // 경쟁 배타의 원리
-// 테케 4개 맞추고 https://codingbutterfly.tistory.com/39 대박...
+// 내가 작성한 코드, 테케 4개 맞춤
 let N,
   K,
   lineCount = 0;
@@ -528,7 +528,7 @@ for (let y = 0; y < maxY - minY; y++) {
 
 console.log(cnt);
 
-// 정답
+// 정답 https://codingbutterfly.tistory.com/39 대박...
 // 2차원 누적합...
 let N,
   K,
@@ -915,45 +915,6 @@ for(let i = 0; i < cards.length; i++){
 }
 console.log(ans);
 process.exit();
-// rl.close 때문에 오답인데 착각해서 검색해서 구현한 슬라이딩 윈도우로 최소 카드 수 구하는 로직
-const readline = require('readline');
-(async () => {
-	let rl = readline.createInterface({ input: process.stdin });
-	const cards = []
-	let lineCount = 0
-	let k = 0
-	for await (const line of rl) {
-		if(++lineCount === 1) {
-			k = Number(line.split(" ")[0])
-			continue
-		}
-		cards.push(Number(line))
-		rl.close();
-	}
-	const hand = new Map();
-	let ans = Number.MAX_SAFE_INTEGER;
-
-	for (let left = 0, right = 0; right < cards.length; right++){
-		const card = cards[right];
-		hand.set(card, hand.has(card) ? hand.get(card) + 1 : 1);
-
-		while(hand.size === k && left <= right){
-      ans = Math.min(ans, right - left + 1);
-			const removeCard = cards[left];
-			const removeCardCnt = hand.get(removeCard);
-
-			if(removeCardCnt > 1){
-				hand.set(removeCard, removeCardCnt - 1);
-			} else {
-        hand.delete(removeCard);
-			}
-			left++
-		}
-	}
-	console.log(ans === Number.MAX_SAFE_INTEGER  ? -1 : ans);
-	process.exit();
-})();
-
 
 // 숫자 배열
 let n = 0
@@ -1368,6 +1329,5 @@ while (true) {
 }
 console.log(count)
 })();
-
 
 ```
