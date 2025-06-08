@@ -11,6 +11,41 @@
 
 ``` -->
 
+### [386. Lexicographical Numbers](https://leetcode.com/problems/lexicographical-numbers/description/)
+
+```
+JS의 sort는 아무런 인자 없으면 코드순으로 정렬한다.
+- 즉, 첫 글자가 같으면 다음 글자, 그다음 글자... 이런 식으로 계속 비교
+```
+
+```javascript
+/**
+ * @param {number} n
+ * @return {number[]}
+ */
+var lexicalOrder = function (n) {
+  return new Array(n)
+    .fill(0)
+    .map((v, i) => i + 1)
+    .sort();
+};
+var lexicalOrder = function (n) {
+  const ans = [];
+  for (let i = 1; i < 10; i++) {
+    dfs(i);
+  }
+  function dfs(current) {
+    if (current > n) return;
+    ans.push(current);
+    for (let i = 0; i < 10; i++) {
+      if (current * 10 + i > n) return;
+      dfs(current * 10 + i);
+    }
+  }
+  return ans;
+};
+```
+
 ### [1261. Find Elements in a Contaminated Binary Tree](https://leetcode.com/problems/find-elements-in-a-contaminated-binary-tree/?envType=daily-question&envId=2025-02-21)
 
 ```

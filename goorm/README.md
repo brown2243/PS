@@ -1049,6 +1049,97 @@ const leftValue = Number(leftLogic[0])
 const rightValue = Number(rightLogic[0])
 console.log(leftValue > rightValue ? leftValue : rightValue)
 
+
+// 큰 수식 찾기
+// 후위연산방식
+let input = ""
+for await (const line of rl) {
+  input = line
+}
+rl.close();
+
+// Convert infix to postfix notation
+const toPostfix = (str) => {
+  const operators = { '+': 1, '-': 1, '*': 2 }  // Added '-' operator
+  const output = []
+  const stack = []
+
+  const tokens = []
+  let number = ''
+
+  // Tokenize the input string
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i]
+    if (['+', '-', '*'].includes(char)) {  // Added '-' operator
+      if (number) {
+        tokens.push(number)
+        number = ''
+      }
+      tokens.push(char)
+    } else {
+      number += char
+    }
+  }
+  if (number) tokens.push(number)
+
+  // Convert to postfix
+  for (const token of tokens) {
+    if (token in operators) {
+      while (
+        stack.length > 0 &&
+        stack[stack.length - 1] in operators &&
+        operators[stack[stack.length - 1]] >= operators[token]
+      ) {
+        output.push(stack.pop())
+      }
+      stack.push(token)
+    } else {
+      output.push(token)
+    }
+  }
+
+  while (stack.length > 0) {
+    output.push(stack.pop())
+  }
+
+  return output
+}
+
+// Evaluate postfix expression
+const evaluatePostfix = (postfix) => {
+  const stack = []
+
+  for (const token of postfix) {
+    if (token === '+') {
+      const b = Number(stack.pop())
+      const a = Number(stack.pop())
+      stack.push(a + b)
+    } else if (token === '-') {  // Added '-' operator support
+      const b = Number(stack.pop())
+      const a = Number(stack.pop())
+      stack.push(a - b)
+    } else if (token === '*') {
+      const b = Number(stack.pop())
+      const a = Number(stack.pop())
+      stack.push(a * b)
+    } else {
+      stack.push(token)
+    }
+  }
+
+  return stack[0]
+}
+
+const [left, right] = input.split(" ")
+const leftPostfix = toPostfix(left)
+const rightPostfix = toPostfix(right)
+
+const leftValue = evaluatePostfix(leftPostfix)
+const rightValue = evaluatePostfix(rightPostfix)
+
+console.log(leftValue > rightValue ? leftValue : rightValue)
+
+
 // M배 배열
 // 통과 못해서 댓글보니, process.exit(); 를 지워야 통과 가능한 이상한 문제
 let lineCount = 0
