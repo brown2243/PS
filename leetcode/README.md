@@ -11,6 +11,51 @@
 
 ``` -->
 
+### [2616. Minimize the Maximum Difference of Pairs](https://leetcode.com/problems/minimize-the-maximum-difference-of-pairs/description/?envType=daily-question&envId=2025-06-13)
+
+```
+답을 보고 품 - 이해하는데도 시간이 좀 걸림...
+풀이방식은 해당 문제의 답의 범위는 0 ~ 최대값 - 최소값 사이에 있는데, 값의 범위를 이진 탐색으로 줄여나간다.
+해당 값을 기준으로 p개 이상의 페어를 만들 수 있으면 ok
+```
+
+```javascript
+/**
+ * @param {number[]} nums
+ * @param {number} p
+ * @return {number}
+ */
+var minimizeMax = function (nums, p) {
+  nums.sort((a, b) => a - b);
+  let low = 0,
+    high = nums[nums.length - 1] - nums[0];
+
+  const canMakePairs = (mid) => {
+    let count = 0;
+    for (let i = 0; i < nums.length - 1 && count < p; ) {
+      if (nums[i + 1] - nums[i] <= mid) {
+        count++;
+        i += 2;
+      } else {
+        i++;
+      }
+    }
+    return count >= p;
+  };
+
+  while (low < high) {
+    let mid = Math.floor((low + high) / 2);
+    if (canMakePairs(mid)) {
+      high = mid;
+    } else {
+      low = mid + 1;
+    }
+  }
+
+  return low;
+};
+```
+
 ### [386. Lexicographical Numbers](https://leetcode.com/problems/lexicographical-numbers/description/)
 
 ```
