@@ -11,10 +11,56 @@
 
 ``` -->
 
+### [2566. Maximum Difference by Remapping a Digit](https://leetcode.com/problems/maximum-difference-by-remapping-a-digit/?envType=daily-question&envId=2025-06-14)
+
+```javascript
+/**
+ * @param {number} num
+ * @return {number}
+ */
+var minMaxDifference = function (num) {
+  const strNum = String(num);
+  let maxTarget = 0;
+  for (let i = 0; i < strNum.length; i++) {
+    if (strNum[i] === "9") continue;
+    maxTarget = strNum[i];
+    break;
+  }
+  const max = Number(
+    strNum
+      .split("")
+      .map((v, i, arr) => (v === maxTarget ? "9" : v))
+      .join("")
+  );
+  const min = Number(
+    strNum
+      .split("")
+      .map((v, i, arr) => (v === arr[0] ? "0" : v))
+      .join("")
+  );
+  return max - min;
+};
+
+/**
+ * @param {number} num
+ * @return {number}
+ */
+var minMaxDifference = function (num) {
+  let arr = num.toString().split("");
+  let nonNine = arr.find((a) => a !== "9");
+  let nonZero = arr.find((a) => a !== "0");
+  let max = arr.map((v) => (nonNine === v ? "9" : v));
+  let min = arr.map((v) => (nonZero === v ? "0" : v));
+  return Number(max.join("")) - Number(min.join(""));
+};
+```
+
 ### [2616. Minimize the Maximum Difference of Pairs](https://leetcode.com/problems/minimize-the-maximum-difference-of-pairs/description/?envType=daily-question&envId=2025-06-13)
 
 ```
-답을 보고 품 - 이해하는데도 시간이 좀 걸림...
+추천 솔루션: https://leetcode.com/problems/minimize-the-maximum-difference-of-pairs/solutions/3395750/java-c-python-binary-search/?envType=daily-question&envId=2025-06-13
+
+답을 봐도 이해 하는데 시간이 좀 걸렸다.
 풀이방식은 해당 문제의 답의 범위는 0 ~ 최대값 - 최소값 사이에 있는데, 값의 범위를 이진 탐색으로 줄여나간다.
 해당 값을 기준으로 p개 이상의 페어를 만들 수 있으면 ok
 ```
