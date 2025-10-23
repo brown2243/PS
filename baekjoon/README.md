@@ -8,6 +8,88 @@
 
 ```
 
+### 1620 나는야 포켓몬 마스터 이다솜
+
+- 문제가 너무 길다...
+- 맵 2개 만들어서 풀었다.
+- 입력값을 문자, 숫자 구분할때 try catch를 사용했는데, 다른 답변에는 아스키코드를 활용한게 보인다.
+
+```java
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+String[] line = br.readLine().split(" ");
+int N = Integer.parseInt(line[0]);
+int M = Integer.parseInt(line[1]);
+StringBuilder sb = new StringBuilder();
+Map<Integer, String> indexMap = new HashMap<>();
+Map<String, Integer> nameMap = new HashMap<>();
+
+for (int i = 1; i < N + 1; i++) {
+  String name = br.readLine();
+  indexMap.put(i, name);
+  nameMap.put(name, i);
+}
+for (int i = 0; i < M; i++) {
+  String tmp = br.readLine();
+  try {
+    int num = Integer.parseInt(tmp);
+    sb.append(indexMap.get(num)).append("\n");
+  } catch (NumberFormatException e) {
+    sb.append(nameMap.get(tmp)).append("\n");
+  }
+}
+System.out.println(sb);
+```
+
+### 2559 수열
+
+첫 수열의 합을 구하고 배열을 순회하며 좌측은 빼고 우측은 더해서 최대값 비교했다.
+
+```java
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+String[] line = br.readLine().split(" ");
+int N = Integer.parseInt(line[0]);
+int K = Integer.parseInt(line[1]);
+int[] nums = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+int local = 0;
+int global;
+for (int i = 0; i < K; i++) {
+  local += nums[i];
+}
+global = local;
+for (int i = 0; i < N - K; i++) {
+  local -= nums[i];
+  local += nums[i + K];
+  global = Integer.max(local, global);
+}
+System.out.println(global);
+```
+
+### 9996 한국이 그리울 땐 서버에 접속하지
+
+java split은 정규식이라 \* 이스케이프 필요
+
+```java
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+StringBuilder sb = new StringBuilder();
+int n = Integer.parseInt(br.readLine());
+String[] patterns = br.readLine().split("\\*");
+int patternLength = patterns[0].length() + patterns[1].length();
+
+for (int i = 0; i < n; i++) {
+  String text = br.readLine();
+  if (text.length() < patternLength) {
+    sb.append("NE\n");
+    continue;
+  }
+  if (text.startsWith(patterns[0]) && text.endsWith(patterns[1])) {
+    sb.append("DA\n");
+  } else {
+    sb.append("NE\n");
+  }
+}
+System.out.println(sb);
+```
+
 ### 11655 ROT13
 
 - 정적블록으로 테이블을 만드는 풀이는 기발하다.
