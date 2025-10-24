@@ -8,6 +8,94 @@
 
 ```
 
+### 1940 주몽
+
+```java
+int N = Integer.parseInt(br.readLine());
+int M = Integer.parseInt(br.readLine());
+int[] nums = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).sorted().toArray();
+int count = 0;
+int left = 0, right = nums.length - 1;
+while (left < right) {
+  int sum = nums[left] + nums[right];
+  if (sum == M) {
+    count++;
+    left++;
+    right--;
+  } else if (sum < M) {
+    left++;
+  } else {
+    right--;
+  }
+}
+System.out.println(count);
+```
+
+### 1213 팰린드롬 만들기
+
+repeat에 나머지 연산을 주는 실수를 해서 삽질...
+
+```java
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+StringBuilder sb = new StringBuilder();
+char[] charArray = br.readLine().toCharArray();
+int[] codes = new int[26];
+for (char c : charArray) {
+  codes[c - 'A']++;
+}
+int oddIdx = -1;
+boolean flag = true;
+for (int code = 0; code < codes.length; code++) {
+  int value = codes[code];
+  if (value % 2 == 1) {
+    if (oddIdx != -1) {
+      flag = false;
+      break;
+    }
+    oddIdx = code;
+  }
+  char c = (char) (code + 'A');
+  sb.append(String.valueOf(c).repeat(value / 2));
+}
+
+if (!flag) {
+  System.out.println("I'm Sorry Hansoo");
+} else {
+  StringBuilder reversed = new StringBuilder(sb).reverse();
+  if (oddIdx != -1) {
+    sb.append((char) (oddIdx + 'A'));
+  }
+  sb.append(reversed);
+  System.out.println(sb);
+}
+```
+
+### 9375 패션왕 신해빈
+
+`map.getOrDefault` 메서드로 조건문 제거가능
+
+```java
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+int N = Integer.parseInt(br.readLine());
+StringBuilder sb = new StringBuilder();
+Map<String, Integer> map = new HashMap<>();
+
+for (int i = 0; i < N; i++) {
+  int M = Integer.parseInt(br.readLine());
+  for (int j = 0; j < M; j++) {
+    String[] split = br.readLine().split(" ");
+    if (map.containsKey(split[1])) {
+      map.put(split[1], map.get(split[1]) + 1);
+    } else {
+      map.put(split[1], 1);
+    }
+  }
+  sb.append(map.values().stream().reduce(1, (acc, cur) -> acc * (cur + 1)) - 1).append("\n");
+  map.clear();
+}
+System.out.println(sb);
+```
+
 ### 1620 나는야 포켓몬 마스터 이다솜
 
 - 문제가 너무 길다...
