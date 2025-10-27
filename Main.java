@@ -1,28 +1,22 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 public class Main {
   public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    int N = Integer.parseInt(br.readLine());
-    int M = Integer.parseInt(br.readLine());
-    int[] nums = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).sorted().toArray();
-    int count = 0;
-    int left = 0, right = nums.length - 1;
-    while (left < right) {
-      int sum = nums[left] + nums[right];
-      if (sum == M) {
+    StringBuilder sb = new StringBuilder();
+    String line;
+    while ((line = br.readLine()) != null) {
+      int num = Integer.parseInt(line);
+      int expect = 1;
+      int count = 1;
+      while (expect % num != 0) {
+        expect = (expect * 10 + 1) % num;
         count++;
-        left++;
-        right--;
-      } else if (sum < M) {
-        left++;
-      } else {
-        right--;
       }
+      sb.append(count).append("\n");
     }
-    System.out.println(count);
+    System.out.println(sb);
   }
 }

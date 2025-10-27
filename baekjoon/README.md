@@ -1,11 +1,89 @@
 # 10주완성 C++ 코딩테스트
 
-## 1주차
+## 2주차
 
 ###
 
 ```java
 
+```
+
+## 1주차
+
+### 4375 1
+
+- lines() 메서드 사용 시, 사용자가 종료를 눌러야 입력완료
+- 모듈연산으로 예상값을 계속 줄여줘야함
+
+```java
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+StringBuilder sb = new StringBuilder();
+String line;
+while ((line = br.readLine()) != null) {
+  int num = Integer.parseInt(line);
+  int expect = 1;
+  int count = 1;
+  while (expect % num != 0) {
+    expect = (expect * 10 + 1) % num;
+    count++;
+  }
+  sb.append(count).append("\n");
+}
+System.out.println(sb);
+```
+
+### 1629 곱셈
+
+- 재귀
+
+```java
+static long A, B, C;
+
+public static void main(String[] args) throws IOException {
+  BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+  StringTokenizer stringTokenizer = new StringTokenizer(br.readLine());
+  A = Long.parseLong(stringTokenizer.nextToken());
+  B = Long.parseLong(stringTokenizer.nextToken());
+  C = Long.parseLong(stringTokenizer.nextToken());
+  System.out.println(recur(B));
+}
+
+private static long recur(long b) {
+  if (b == 1) {
+    return A % C;
+  }
+  long half = recur(b / 2);
+  if (b % 2 == 0) {
+    return half * half % C;
+  } else {
+    return (half * half % C) * A % C;
+  }
+}
+```
+
+### 3986 좋은 단어
+
+```java
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+int N = Integer.parseInt(br.readLine());
+int count = 0;
+List<Character> stack = new ArrayList<>();
+for (int i = 0; i < N; i++) {
+  char[] charArray = br.readLine().toCharArray();
+  for (char c : charArray) {
+    int last = stack.size() - 1;
+    if (stack.isEmpty() || stack.get(last) != c) {
+      stack.add(c);
+    } else if (!stack.isEmpty() && stack.get(last) == c) {
+      stack.remove(last);
+    }
+  }
+  if (stack.size() == 0) {
+    count++;
+  }
+  stack.clear();
+}
+System.out.println(count);
 ```
 
 ### 1940 주몽
