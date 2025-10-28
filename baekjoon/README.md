@@ -8,6 +8,201 @@
 
 ```
 
+### 2468 안전 영역
+
+```java
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+int N = Integer.parseInt(br.readLine());
+int[][] matrix = new int[N][N];
+
+for (int i = 0; i < N; i++) {
+  matrix[i] = Stream.of(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+}
+
+Deque<int[]> queue = new ArrayDeque<>();
+int[] dy = { 1, 0, -1, 0 };
+int[] dx = { 0, 1, 0, -1 };
+int ans = 1;
+
+for (int depth = 1; depth < 100; depth++) {
+  boolean[][] isVisited = new boolean[N][N];
+  int count = 0;
+  for (int i = 0; i < N; i++) {
+    for (int j = 0; j < N; j++) {
+      if (!isVisited[i][j] && matrix[i][j] > depth) {
+        count++;
+        isVisited[i][j] = true;
+        queue.add(new int[] { i, j });
+
+        while (queue.size() > 0) {
+          int[] pop = queue.poll();
+          int y = pop[0];
+          int x = pop[1];
+          for (int z = 0; z < 4; z++) {
+            int ny = y + dy[z];
+            int nx = x + dx[z];
+            if (0 <= ny && ny < N && 0 <= nx && nx < N && !isVisited[ny][nx] && matrix[ny][nx] > depth) {
+              isVisited[ny][nx] = true;
+              queue.add(new int[] { ny, nx });
+            }
+          }
+        }
+      }
+    }
+  }
+  if (count == 0) {
+    break;
+  }
+  ans = Math.max(ans, count);
+}
+System.out.println(ans);
+```
+
+### 1012 유기농 배추
+
+```java
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+StringBuilder sb = new StringBuilder();
+int T = Integer.parseInt(br.readLine());
+
+Deque<int[]> queue = new ArrayDeque<>();
+int[] dy = { 1, 0, -1, 0 };
+int[] dx = { 0, 1, 0, -1 };
+
+for (int t = 0; t < T; t++) {
+  String[] split = br.readLine().split(" ");
+  int M = Integer.parseInt(split[0]);
+  int N = Integer.parseInt(split[1]);
+  int K = Integer.parseInt(split[2]);
+
+  int count = 0;
+  int[][] matrix = new int[N][M];
+  for (int i = 0; i < K; i++) {
+    String[] point = br.readLine().split(" ");
+    int x = Integer.parseInt(point[0]);
+    int y = Integer.parseInt(point[1]);
+    matrix[y][x] = 1;
+  }
+
+  for (int i = 0; i < N; i++) {
+    for (int j = 0; j < M; j++) {
+      if (matrix[i][j] == 1) {
+        count++;
+        matrix[i][j] = 0;
+        queue.add(new int[] { i, j });
+
+        while (queue.size() > 0) {
+          int[] pop = queue.poll();
+          int y = pop[0];
+          int x = pop[1];
+          for (int z = 0; z < 4; z++) {
+            int ny = y + dy[z];
+            int nx = x + dx[z];
+            if (0 <= ny && ny < N && 0 <= nx && nx < M && matrix[ny][nx] == 1) {
+              matrix[ny][nx] = 0;
+              queue.add(new int[] { ny, nx });
+            }
+          }
+        }
+      }
+    }
+  }
+  sb.append(count).append("\n");
+}
+System.out.println(sb);
+```
+
+### 2178 미로 탐색
+
+- 인풋을 받아 matrix 만드는게 번거롭다.
+  네, 실무와 문제 해결(PS)에서 가장 핵심적으로 사용되는 자바의 자료구조 인터페이스와 클래스를 정리해 드릴게요.
+
+#### **`List` 계열**
+
+- **`ArrayList` (★★★★★)**
+
+  - **특징**: **내부적으로 배열**을 사용합니다. 인덱스를 통한 **데이터 조회(`get`)가 매우 빠릅니다.**
+  - **단점**: 데이터 추가/삭제 시, 특히 중간에 삽입/삭제할 때 다른 데이터들을 밀거나 당겨야 해서 느립니다.
+  - **선택 기준**: **조회가 압도적으로 많고, 추가/삭제는 드물거나 리스트의 맨 뒤에서만 일어날 때** 사용합니다. 실무에서 가장 흔하게 사용됩니다.
+
+- **`LinkedList`**
+  - **특징**: **내부적으로 노드(Node)들의 연결**로 이루어져 있습니다. **데이터 추가/삭제가 매우 빠릅니다.**
+  - **단점**: 특정 인덱스의 데이터를 찾으려면 처음부터 순서대로 찾아가야 해서 조회가 느립니다.
+  - **선택 기준**: 데이터의 **추가/삭제가 조회보다 훨씬 빈번할 때** 사용합니다.
+
+#### **`Set` 계열**
+
+- **`HashSet` (★★★★★)**
+
+  - **특징**: `HashMap`을 기반으로 만들어져 **검색(`contains`), 추가, 삭제 속도가 매우 빠릅니다.** 순서를 전혀 보장하지 않습니다.
+  - **선택 기준**: **순서는 상관없고, 오직 중복 제거와 빠른 검색**이 필요할 때 사용합니다.
+
+- **`TreeSet`**
+  - **특징**: 데이터를 **자동으로 정렬**된 상태로 저장합니다.
+  - **단점**: `HashSet`보다 추가/삭제/검색 속도가 느립니다.
+  - **선택 기준**: **중복 제거와 동시에 정렬된 상태를 유지**해야 할 때 사용합니다.
+
+#### **`Map` 계열**
+
+- **`HashMap` (★★★★★)**
+
+  - **특징**: **Key를 통한 Value 검색 속도가 가장 빠릅니다.** 순서를 보장하지 않습니다.
+  - **선택 기준**: **순서는 상관없고, 가장 빠른 속도로 데이터를 저장하고 조회**하고 싶을 때 사용합니다. 실무에서 압도적으로 많이 쓰입니다.
+
+- **`TreeMap`**
+  - **특징**: Key를 기준으로 **자동으로 정렬**된 상태를 유지합니다.
+  - **단점**: `HashMap`보다 성능이 느립니다.
+  - **선택 기준**: **Key를 기준으로 정렬된 맵이 필요할 때** (e.g., 특정 범위의 Key를 검색할 때) 사용합니다.
+
+---
+
+### ## PS(알고리즘)에서 특히 유용한 자료구조
+
+실무에서도 쓰이지만, 알고리즘 문제 풀이에서 빛을 발하는 자료구조들입니다. ✨
+
+- **`PriorityQueue` (우선순위 큐)**
+
+  - **특징**: 들어간 순서와 상관없이, **가장 우선순위가 높은 데이터(기본적으로 가장 작은 값)가 먼저 나옵니다.**
+  - **언제 쓸까?**: **다익스트라(Dijkstra) 알고리즘**처럼 '가장 비용이 적은 노드'를 계속해서 뽑아야 하는 경우에 필수적입니다.
+
+- **`Stack`**
+  - **특징**: **LIFO(Last-In, First-Out)**, 즉 가장 나중에 들어온 데이터가 가장 먼저 나가는 구조입니다. 프링글스 통을 생각하면 쉽습니다.
+  - **언제 쓸까?**: 깊이 우선 탐색(DFS), 괄호 짝 맞추기, 웹 브라우저의 '뒤로 가기' 기능 구현 등에 사용됩니다. `Deque` 인터페이스의 구현체인 `ArrayDeque`를 스택처럼 사용하는 것이 권장됩니다. (`Stack<E> stack = new ArrayDeque<>();`)
+
+```java
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+String[] split = br.readLine().split(" ");
+int N = Integer.parseInt(split[0]);
+int M = Integer.parseInt(split[1]);
+int[][] matrix = new int[N + 1][M + 1];
+for (int i = 1; i <= N; i++) {
+  String line = br.readLine();
+  for (int j = 1; j <= line.length(); j++) {
+    matrix[i][j] = line.charAt(j - 1) - '0';
+  }
+}
+
+int[][] dp = new int[N + 1][M + 1];
+int[] dy = { 1, 0, -1, 0 };
+int[] dx = { 0, 1, 0, -1 };
+Queue<int[]> queue = new LinkedList<>();
+queue.add(new int[] { 1, 1 });
+while (queue.size() > 0) {
+  int[] pop = queue.poll();
+  int y = pop[0];
+  int x = pop[1];
+  for (int i = 0; i < 4; i++) {
+    int ny = y + dy[i];
+    int nx = x + dx[i];
+    if (1 <= ny && ny <= N && 1 <= nx && nx <= M && dp[ny][nx] == 0 && matrix[ny][nx] == 1) {
+      dp[ny][nx] = dp[y][x] + 1;
+      queue.add(new int[] { ny, nx });
+    }
+  }
+}
+System.out.println(dp[N][M] + 1);
+```
+
 ## 1주차
 
 ### 4375 1
