@@ -8,6 +8,144 @@
 
 ```
 
+### 2828 사과 담기 게임
+
+```java
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+StringTokenizer st = new StringTokenizer(br.readLine());
+int N = Integer.parseInt(st.nextToken());
+int M = Integer.parseInt(st.nextToken());
+int J = Integer.parseInt(br.readLine());
+int left = 1;
+int right = M;
+int moved = 0;
+
+for (int i = 0; i < J; i++) {
+  int applePoint = Integer.parseInt(br.readLine());
+  if (right < applePoint) {
+    int gap = applePoint - right;
+    moved += gap;
+    right += gap;
+    left += gap;
+  } else if (left > applePoint) {
+    int gap = left - applePoint;
+    moved += gap;
+    right -= gap;
+    left -= gap;
+  }
+}
+System.out.println(moved);
+```
+
+### 1992 쿼드트리
+
+- stream 형식으로 boolean[] 만드는게 불편하다.
+
+```java
+static StringBuilder sb = new StringBuilder();
+static boolean[][] matrix;
+
+public static void main(String[] args) throws IOException {
+  BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+  int N = Integer.parseInt(br.readLine());
+
+  matrix = new boolean[N][N];
+
+  for (int i = 0; i < N; i++) {
+    String line = br.readLine();
+    for (int j = 0; j < line.length(); j++) {
+      matrix[i][j] = line.charAt(j) == '1';
+    }
+  }
+  dfs(0, 0, N);
+  System.out.println(sb);
+}
+
+private static void dfs(int Y, int X, int N) {
+  boolean first = matrix[Y][X];
+
+  for (int y = Y; y < Y + N; y++) {
+    for (int x = X; x < X + N; x++) {
+      if (first != matrix[y][x]) {
+        sb.append("(");
+        int half = N / 2;
+        dfs(Y, X, half);
+        dfs(Y, X + half, half);
+        dfs(Y + half, X, half);
+        dfs(Y + half, X + half, half);
+        sb.append(")");
+        return;
+      }
+    }
+  }
+  sb.append(first == true ? 1 : 0);
+}
+```
+
+### 2583 영역 구하기
+
+```java
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+StringTokenizer stringTokenizer = new StringTokenizer(br.readLine());
+int M = Integer.parseInt(stringTokenizer.nextToken());
+int N = Integer.parseInt(stringTokenizer.nextToken());
+int K = Integer.parseInt(stringTokenizer.nextToken());
+
+boolean[][] matrix = new boolean[M][N];
+
+for (int i = 0; i < K; i++) {
+  StringTokenizer st = new StringTokenizer(br.readLine());
+  int x1 = Integer.parseInt(st.nextToken());
+  int y1 = Integer.parseInt(st.nextToken());
+  int x2 = Integer.parseInt(st.nextToken());
+  int y2 = Integer.parseInt(st.nextToken());
+
+  for (int y = y1; y < y2; y++) {
+    for (int x = x1; x < x2; x++) {
+      matrix[y][x] = true;
+    }
+  }
+}
+int count = 0;
+List<Integer> list = new ArrayList<>();
+Deque<int[]> queue = new ArrayDeque<>();
+int[] dy = { 1, 0, -1, 0 };
+int[] dx = { 0, 1, 0, -1 };
+
+for (int i = 0; i < M; i++) {
+  for (int j = 0; j < N; j++) {
+    if (!matrix[i][j]) {
+      count++;
+      matrix[i][j] = true;
+      queue.add(new int[] { i, j });
+      int size = 1;
+
+      while (queue.size() > 0) {
+        int[] pop = queue.poll();
+        int y = pop[0];
+        int x = pop[1];
+        for (int z = 0; z < 4; z++) {
+          int ny = y + dy[z];
+          int nx = x + dx[z];
+          if (0 <= ny && ny < M && 0 <= nx && nx < N && !matrix[ny][nx]) {
+            matrix[ny][nx] = true;
+            queue.add(new int[] { ny, nx });
+            size++;
+          }
+        }
+      }
+      list.add(size);
+    }
+  }
+}
+
+System.out.println(count + "\n" +
+    list.stream()
+        .sorted()
+        .map((num) -> String.valueOf(num))
+        .collect(Collectors.joining(" ")));
+```
+
 ### 2468 안전 영역
 
 ```java

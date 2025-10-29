@@ -1,56 +1,34 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.stream.Stream;
+import java.util.StringTokenizer;
 
 public class Main {
+
   public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    int N = Integer.parseInt(br.readLine());
-    int[][] matrix = new int[N][N];
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    int N = Integer.parseInt(st.nextToken());
+    int M = Integer.parseInt(st.nextToken());
+    int J = Integer.parseInt(br.readLine());
+    int left = 1;
+    int right = M;
+    int moved = 0;
 
-    for (int i = 0; i < N; i++) {
-      matrix[i] = Stream.of(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-    }
-
-    Deque<int[]> queue = new ArrayDeque<>();
-    int[] dy = { 1, 0, -1, 0 };
-    int[] dx = { 0, 1, 0, -1 };
-    int ans = 1;
-
-    for (int depth = 1; depth < 100; depth++) {
-      boolean[][] isVisited = new boolean[N][N];
-      int count = 0;
-      for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-          if (!isVisited[i][j] && matrix[i][j] > depth) {
-            count++;
-            isVisited[i][j] = true;
-            queue.add(new int[] { i, j });
-
-            while (queue.size() > 0) {
-              int[] pop = queue.poll();
-              int y = pop[0];
-              int x = pop[1];
-              for (int z = 0; z < 4; z++) {
-                int ny = y + dy[z];
-                int nx = x + dx[z];
-                if (0 <= ny && ny < N && 0 <= nx && nx < N && !isVisited[ny][nx] && matrix[ny][nx] > depth) {
-                  isVisited[ny][nx] = true;
-                  queue.add(new int[] { ny, nx });
-                }
-              }
-            }
-          }
-        }
+    for (int i = 0; i < J; i++) {
+      int applePoint = Integer.parseInt(br.readLine());
+      if (right < applePoint) {
+        int gap = applePoint - right;
+        moved += gap;
+        right += gap;
+        left += gap;
+      } else if (left > applePoint) {
+        int gap = left - applePoint;
+        moved += gap;
+        right -= gap;
+        left -= gap;
       }
-      if (count == 0) {
-        break;
-      }
-      ans = Math.max(ans, count);
     }
-    System.out.println(ans);
+    System.out.println(moved);
   }
 }
