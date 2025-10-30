@@ -8,6 +8,130 @@
 
 ```
 
+### 2870 수학숙제
+
+- 문자를 전부 공백으로 만들고 스플릿
+- 숫자가 100자리가 될 수 있음
+
+```java
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+StringBuilder sb = new StringBuilder();
+List<BigInteger> numbers = new ArrayList<>();
+
+int N = Integer.parseInt(br.readLine());
+for (int i = 0; i < N; i++) {
+  String line = br.readLine();
+  for (String s : line.replaceAll("[a-z]", " ").split("\\s+")) {
+    if (!s.isEmpty()) {
+      numbers.add(new BigInteger(s));
+    }
+  }
+}
+
+Collections.sort(numbers);
+
+for (BigInteger num : numbers) {
+  sb.append(num).append('\n');
+}
+
+System.out.println(sb);
+```
+
+### 4659 비밀번호 발음하기
+
+```java
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+StringBuilder sb = new StringBuilder();
+
+Set<Character> vows = Set.of('a', 'e', 'i', 'o', 'u');
+while (true) {
+  String line = br.readLine();
+  if (line.equals("end")) {
+    break;
+  }
+  boolean flag1 = false;
+  boolean flag2 = false;
+  boolean flag3 = false;
+  char[] charArray = line.toCharArray();
+  char last = '0';
+  int count = 0;
+  boolean isVowSeq = false;
+
+  for (char c : charArray) {
+    boolean isVow = vows.contains(c);
+    if (isVow) {
+      flag1 = true;
+    }
+    if (isVow) {
+      if (isVowSeq) {
+        count += 1;
+      } else {
+        count = 1;
+        isVowSeq = true;
+      }
+    } else {
+      if (isVowSeq) {
+        count = 1;
+        isVowSeq = false;
+      } else {
+        count += 1;
+      }
+    }
+    if (count == 3) {
+      flag2 = true;
+    }
+    if (last == c && c != 'o' && c != 'e') {
+      flag3 = true;
+    }
+    last = c;
+  }
+  sb.append('<').append(line).append('>');
+  if (flag1 && !flag2 && !flag3) {
+    sb.append(" is acceptable.\n");
+  } else {
+    sb.append(" is not acceptable.\n");
+  }
+}
+
+System.out.println(sb);
+```
+
+### 2910 빈도 정렬
+
+- 확실히 정렬하고, 데이터를 다루는 부분이 좀 더 장황한 느낌..? 알아야할 인터페이스, 메서드가 많다.
+
+```java
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+br.readLine();
+StringTokenizer st = new StringTokenizer(br.readLine());
+Map<Integer, Integer> map = new HashMap<>();
+Map<Integer, Integer> orderMap = new HashMap<>();
+List<Integer> list = new ArrayList<>();
+int order = 0;
+while (st.hasMoreTokens()) {
+  int n = Integer.parseInt(st.nextToken());
+  map.put(n, map.getOrDefault(n, 0) + 1);
+  if (!orderMap.containsKey(n)) {
+    orderMap.put(n, order++);
+  }
+}
+
+map.entrySet().stream().sorted(
+    Comparator.<Map.Entry<Integer, Integer>>comparingInt(Map.Entry::getValue)
+        .reversed()
+        .thenComparing((a, b) -> orderMap.get(a.getKey()) - orderMap.get(b.getKey())))
+    .forEach(v -> {
+      int key = v.getKey();
+      int val = v.getValue();
+      for (int i = 0; i < val; i++) {
+        list.add(key);
+      }
+    });
+
+System.out.println(list.stream().map((num) -> String.valueOf(num)).collect(Collectors.joining(" ")));
+
+```
+
 ### 2828 사과 담기 게임
 
 ```java
