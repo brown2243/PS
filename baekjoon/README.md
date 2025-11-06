@@ -8,6 +8,58 @@
 
 ```
 
+### 9012 괄호
+
+- stack 문제인데 그냥 int로 처리할 수 있을 것 같아 구현
+
+```java
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+StringBuilder sb = new StringBuilder();
+int N = Integer.parseInt(br.readLine());
+int count = 0;
+
+for (int i = 0; i < N; i++) {
+  for (char c : br.readLine().toCharArray()) {
+    if (c == '(') {
+      count += 1;
+    } else {
+      count -= 1;
+    }
+    if (count < 0) {
+      break;
+    }
+  }
+  if (count == 0) {
+    sb.append("YES").append('\n');
+  } else {
+    sb.append("NO").append('\n');
+  }
+  count = 0;
+}
+System.out.println(sb);
+```
+
+### 1436 영화감독 숌
+
+- 문제푸는 아이디어는 간단한데 뭔가 최적화가 있을 것 같다.
+- 딴 사람 푼거보니 뭔가 복잡쓰
+
+```java
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+int N = Integer.parseInt(br.readLine());
+String text = "666";
+long i = 666;
+int cnt = 1;
+while (true) {
+  if (cnt == N)
+    break;
+  i++;
+  if (String.valueOf(i).contains(text))
+    cnt++;
+}
+System.out.println(i);
+```
+
 ### 2852 NBA 농구
 
 - 구현 문제 초로 통일해야 계산이 편하다.
