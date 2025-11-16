@@ -8,6 +8,50 @@
 
 ```
 
+### 4949 균형잡힌 세상
+
+- 대소문자 유의!
+
+```java
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+StringBuilder sb = new StringBuilder();
+Deque<Character> stack = new ArrayDeque<>();
+String line;
+while ((line = br.readLine()) != null) {
+  if (line.equals(".")) {
+    break;
+  }
+  stack.clear();
+  boolean flag = true;
+  for (int i = 0; i < line.length(); i++) {
+    char c = line.charAt(i);
+    if (c == '(' || c == '[') {
+      stack.add(c);
+    }
+    if (c == ')' || c == ']') {
+      int lastIdx = stack.size();
+      if (lastIdx == 0) {
+        flag = false;
+        break;
+      }
+      char last = stack.peekLast();
+      if ((c == ')' && last == '(') || (c == ']' && last == '[')) {
+        stack.removeLast();
+      } else {
+        flag = false;
+        break;
+      }
+    }
+  }
+  if (flag && stack.size() == 0) {
+    sb.append("yes").append('\n');
+  } else {
+    sb.append("no").append('\n');
+  }
+}
+System.out.println(sb);
+```
+
 ### 9012 괄호
 
 - stack 문제인데 그냥 int로 처리할 수 있을 것 같아 구현
