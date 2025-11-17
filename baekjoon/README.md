@@ -8,6 +8,179 @@
 
 ```
 
+###
+
+```java
+
+```
+
+###
+
+```java
+
+```
+
+###
+
+```java
+
+```
+
+### 2636 치즈
+
+```java
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+String[] split = br.readLine().split(" ");
+int N = Integer.parseInt(split[0]);
+int M = Integer.parseInt(split[1]);
+int[][] matrix = new int[N + 2][M + 2];
+boolean[][] isChecked = new boolean[N + 2][M + 2];
+
+Deque<int[]> isMelting = new ArrayDeque<>();
+Deque<int[]> queue = new ArrayDeque<>();
+
+for (int i = 0; i < N; i++) {
+  StringTokenizer st = new StringTokenizer(br.readLine());
+  for (int j = 0; j < M; j++) {
+    int num = Integer.parseInt(st.nextToken());
+    matrix[i + 1][j + 1] = num;
+  }
+}
+int time = 0;
+int lastCheeseCount = 0;
+int[] dy = { 1, 0, -1, 0 };
+int[] dx = { 0, 1, 0, -1 };
+
+while (true) {
+  queue.push(new int[] { 0, 0 });
+  isChecked[0][0] = true;
+  while (queue.size() > 0) {
+    int[] now = queue.pollFirst();
+    int y = now[0];
+    int x = now[1];
+    for (int i = 0; i < 4; i++) {
+      int ny = y + dy[i];
+      int nx = x + dx[i];
+      if (0 <= ny && ny < matrix.length && 0 <= nx && nx < matrix[0].length && !isChecked[ny][nx]) {
+        isChecked[ny][nx] = true;
+        if (matrix[ny][nx] == 1) {
+          isMelting.add(new int[] { ny, nx });
+        } else {
+          queue.add(new int[] { ny, nx });
+        }
+      }
+    }
+  }
+  if (isMelting.size() == 0) {
+    break;
+  }
+  // isMelting
+  time++;
+  lastCheeseCount = isMelting.size();
+  while (isMelting.size() > 0) {
+    int[] point = isMelting.poll();
+    matrix[point[0]][point[1]] = 0;
+  }
+  isChecked = new boolean[N + 2][M + 2];
+}
+System.out.println(time + "\n" + lastCheeseCount);
+```
+
+### 14502 연구소
+
+- 구현이 약간 복잡한 문제
+- 최적화는 생각 안했는데 놀랍다.
+  ![등수](14502.png)
+
+```java
+static int N;
+static int M;
+static int[][] matrix;
+static boolean[][] isVirus;
+
+public static void main(String[] args) throws IOException {
+  BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+  String[] split = br.readLine().split(" ");
+  N = Integer.parseInt(split[0]);
+  M = Integer.parseInt(split[1]);
+  matrix = new int[N][M];
+  isVirus = new boolean[N][M];
+  int sum = N * M;
+  int wallCount = 3;
+  int ans = 0;
+
+  for (int i = 0; i < N; i++) {
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    for (int j = 0; j < M; j++) {
+      int num = Integer.parseInt(st.nextToken());
+      matrix[i][j] = num;
+      if (num == 1)
+        wallCount++;
+    }
+  }
+
+  int emptyArea = sum - wallCount;
+  for (int x = 0; x < sum; x++) {
+    int y1 = x / M;
+    int x1 = x % M;
+    if (matrix[y1][x1] != 0)
+      continue;
+    matrix[y1][x1] = 1;
+    for (int y = x + 1; y < sum; y++) {
+      int y2 = y / M;
+      int x2 = y % M;
+      if (matrix[y2][x2] != 0)
+        continue;
+      matrix[y2][x2] = 1;
+      for (int z = y + 1; z < sum; z++) {
+        int y3 = z / M;
+        int x3 = z % M;
+        if (matrix[y3][x3] != 0)
+          continue;
+        matrix[y3][x3] = 1;
+        // 전체 영역 - (바이러스 + 벽 갯수) = 안전 영역
+        ans = Math.max(ans, emptyArea - getVirusCount());
+        matrix[y3][x3] = 0;
+      }
+      matrix[y2][x2] = 0;
+    }
+    matrix[y1][x1] = 0;
+  }
+  System.out.println(ans);
+}
+
+static int getVirusCount() {
+  for (int i = 0; i < N; i++) {
+    for (int j = 0; j < M; j++) {
+      if (matrix[i][j] == 2) {
+        dfs(i, j);
+      }
+    }
+  }
+
+  int count = 0;
+  for (int i = 0; i < N; i++) {
+    for (int j = 0; j < M; j++) {
+      if (isVirus[i][j]) {
+        count++;
+        isVirus[i][j] = false;
+      }
+    }
+  }
+  return count;
+}
+
+static void dfs(int i, int j) {
+  if (0 <= i && i < N && 0 <= j && j < M && matrix[i][j] != 1 && !isVirus[i][j]) {
+    isVirus[i][j] = true;
+    dfs(i + 1, j);
+    dfs(i - 1, j);
+    dfs(i, j + 1);
+    dfs(i, j - 1);
+  }
+}
+```
+
 ### 4949 균형잡힌 세상
 
 - 대소문자 유의!
