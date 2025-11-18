@@ -8,22 +8,172 @@
 
 ```
 
-###
+### 17298 오큰수
+
+- `Arrays.stream(ans).mapToObj(String::valueOf)...`
+  - 백만 개의 String 객체 생성
+  - mapToObj(String::valueOf)를 호출하는 순간, 배열에 있는 정수 1,000,000개를 전부 **개별적인 String 객체(힙 메모리)**로 변환
+  - 자바에서 String은 **불변(Immutable)**
+  - GC 폭발: 백만 개의 String 객체들은 합쳐지고 나면 GC 대상
+- StringBuilder 방식:
+  - StringBuilder는 **가변(Mutable)**
+  - StringBuilder를 생성하면 내부에 적당한 크기의 char[] 배열 하나만 생성
+  - 객체 생성 없는 추가: sb.append(123)을 호출하면, 숫자 123을 "123"이라는 String 객체로 만드는 게 아니라 내부 알고리즘이 숫자를 문자 '1', '2', '3'으로 분리해서 char[] 배열의 빈칸에 삽입
+  - 중간에 버려지는 객체가 하나도 없고, 배열이 차면 리사이징
 
 ```java
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+int N = Integer.parseInt(br.readLine());
+StringTokenizer st = new StringTokenizer(br.readLine());
+Deque<Integer> stack = new ArrayDeque<>();
+int[] arr = new int[N];
+int[] ans = new int[N];
+Arrays.fill(ans, -1);
 
+for (int i = 0; i < N; i++) {
+  arr[i] = Integer.parseInt(st.nextToken());
+  while (stack.size() > 0 && arr[stack.peekLast()] < arr[i]) {
+    ans[stack.pollLast()] = arr[i];
+  }
+  stack.add(i);
+}
+
+// System.out.println(Arrays.stream(ans).mapToObj(String::valueOf).collect(Collectors.joining("
+// ")));
+StringBuilder sb = new StringBuilder();
+for (int num : ans) {
+  sb.append(num).append(' ');
+}
+System.out.println(sb);
 ```
 
-###
+### 1325 효율적인 해킹
+
+- dfs는 시간초과 나고 bfs로 해결해야 한다.
+- 이론적으로는 DFS와 BFS 모두 시간 복잡도가 `$O(V + E)$` 로 동일합니다.
+- BFS가 DFS보다 유리한 이유는 "함수 호출 비용(재귀 오버헤드)" 때문
+- 시스템 스택 vs 힙 메모리
+  - DFS(재귀 구현):함수를 호출할 때마다 시스템 스택(Stack Memory) 에 함수 정보(매개변수, 지역변수, 복귀 주소 등)를 저장하는 **'스택 프레임'**이 생성
+    - 이 문제는 최악의 경우(노드가 한 줄로 연결된 경우) 깊이가 10,000
+    - 함수를 부르고, 메모리를 잡고, 다시 돌아오는 과정(Context Switching)이 단순 연산보다 훨씬 무겁다.
+  - BFS(큐 구현): 함수 호출 없이 단순 반복문 안에서 객체만 넣었다 뺐다 함
 
 ```java
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+  StringTokenizer st = new StringTokenizer(br.readLine());
+  StringBuilder sb = new StringBuilder();
+  int N = Integer.parseInt(st.nextToken());
+  int M = Integer.parseInt(st.nextToken());
+  int max = 0;
+  int[] counts = new int[N + 1];
+  isVisited = new boolean[N + 1];
 
+  adjList = new ArrayList<>();
+  for (int i = 0; i <= N; i++) {
+    adjList.add(new ArrayList<>());
+  }
+
+  for (int i = 0; i < M; i++) {
+    StringTokenizer st1 = new StringTokenizer(br.readLine());
+    int to = Integer.parseInt(st1.nextToken());
+    int from = Integer.parseInt(st1.nextToken());
+    adjList.get(from).add(to);
+  }
+  for (int i = 1; i <= N; i++) {
+    int count = bfs(i);
+    counts[i] = count;
+    max = Math.max(max, count);
+    isVisited = new boolean[N + 1];
+  }
+
+  for (int i = 1; i <= N; i++) {
+    if (counts[i] == max) {
+      sb.append(i).append(' ');
+    }
+  }
+  System.out.println(sb);
+}
+
+static int bfs(int node) {
+  int count = 1;
+  Deque<Integer> q = new ArrayDeque<>();
+  isVisited[node] = true;
+  q.add(node);
+  while (q.size() > 0) {
+    int n = q.poll();
+    for (int child : adjList.get(n)) {
+      if (!isVisited[child]) {
+        isVisited[child] = true;
+        q.add(child);
+        count++;
+      }
+    }
+  }
+  return count;
+}
 ```
 
-###
+### 1068 트리
 
 ```java
+// The expression of type ArrayList[] needs unchecked conversion to conform to ArrayList<Integer>[]
+// 경고 발생
+ArrayList<Integer>[] tree = new ArrayList[5]
+```
 
+- 자바의 **'타입 소거(Type Erasure)'**라는 특성 때문입니다.
+- 배열(Array)은 런타임에도 무엇을 담는지 정확히 알고 있어야 합니다.
+  - Integer 배열에 String을 넣으면 바로 에러!
+- 제네릭(`List<T>`)은 컴파일할 때만 타입을 검사하고, 실행될 때는 타입을 지워버립니다.
+  - `ArrayList<Integer>`는 실행 시 그냥 `ArrayList`
+- 그래서 `new ArrayList<Integer>[5]`라고 쓰면, 자바 컴파일러가 생성을 막아버림 - 컴파일 에러 발생
+  - **실행될 때 `<Integer>` 정보가 다 지워져서 `Integer`만 담기는 배열이라고 보장 불가**
+- `new ArrayList[5]` (타입 없는 깡통 리스트 배열)로 생성하고, 앞의 변수에 대입하는 꼼수를 씁니다. 이때 컴파일러가 "이거 타입 안전하지 않은 변환(Unchecked conversion)인데 괜찮아?" 라고 경고를 주는 것입니다.
+- 루트는 0번은 아니라 입력에서 -1을 가진 노드
+- 루트도 리프 가능
+
+```java
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+int N = Integer.parseInt(br.readLine());
+StringTokenizer st = new StringTokenizer(br.readLine());
+deletedNode = Integer.parseInt(br.readLine());
+adjList = new ArrayList<>();
+int root = 0;
+for (int i = 0; i < N; i++) {
+  adjList.add(new ArrayList<>());
+}
+for (int i = 0; i < N; i++) {
+  int num = Integer.parseInt(st.nextToken());
+  if (num == -1) {
+    root = i;
+  } else {
+    adjList.get(num).add(i);
+  }
+}
+
+if (root == deletedNode) {
+  System.out.println(0);
+} else {
+  dfs(root);
+  System.out.println(leefNodeCount);
+}
+
+}
+
+static void dfs(int node) {
+boolean isLeaf = true;
+for (int child : adjList.get(node)) {
+  if (child == deletedNode) {
+    continue;
+  }
+
+  dfs(child);
+  isLeaf = false;
+}
+if (isLeaf) {
+  leefNodeCount++;
+}
+}
 ```
 
 ### 2636 치즈
